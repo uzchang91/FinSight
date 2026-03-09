@@ -196,4 +196,4 @@ loginRouter.post("/auth/google", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = loginRouter;
