@@ -1,50 +1,43 @@
 import React, { useState } from 'react'
 import api from '../config/axios';
+import './Join.css'
+import kakao from '../assets/kakao.svg'
+import google from '../assets/google.svg'
+import iconp from '../assets/icons/icon-placeholder.svg'
 
 const Join = () => {
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-  const [nick, setNick] = useState("");
-  const sendUserData = async (e) => {
-    e.preventDefault();
-    // console.log(id, pw, nick);
-
-    // 서버로 id, pw, nick을 전송
-    try {
-      const res = await api.post('/api/members', {
-        id: id,
-        pw: pw,
-        nick: nick,
-      });
-      console.log(res.data);
-      alert("가입 성공");
-    } catch (error) {
-      console.log(error);
-      alert(error);
-    }
-    setId("");
-    setPw("");
-    setNick("");
-  }
 
   return (
-    <div>
-      <form onSubmit={sendUserData}>
-        <div className='flx-col'>
-          <span>아이디</span>
-          <input type="text" value={id} placeholder='아이디 입력' onChange={e => setId(e.target.value)} />
+    <aside className='floating-nav'>
+      <div className='landing-navigation'>
+        <div className='landing-navigation-menu'>
+          <img src={iconp} alt="home" className='landing-menu' />
+          <p>홈</p>
         </div>
-        <div className='flx-col'>
-          <span>비밀번호</span>
-          <input type="password" value={pw} placeholder='비밀번호 입력' onChange={e => setPw(e.target.value)} />
+        <div className='landing-navigation-menu'>
+          <img src={iconp} alt="servie" className='landing-menu' />
+          <p>서비스</p>
         </div>
-        <div className='flx-col'>
-          <span>별명</span>
-          <input type="text" value={nick} placeholder='별명 입력' onChange={e => setNick(e.target.value)} />
+        <div className='landing-navigation-menu'>
+          <img src={iconp} alt="contact" className='landing-menu' />
+          <p>연락</p>
         </div>
-        <input type="submit" value="회원가입" className='normal'/>
-      </form>
-    </div>
+      </div>
+      <div className='box'>
+        <p>
+          서비스 사용을 위해서는
+          가입 또는 로그인이 필요합니다.
+        </p>
+        <button className='kakao_btn'>
+          <img src={kakao} alt="카카오" />
+          <span>카카오로 시작하기</span>
+        </button>
+        <button className='google_btn'>
+          <img src={google} alt="카카오" />
+          <span>구글로 시작하기</span>
+        </button>
+      </div>
+    </aside>
   )
 }
 

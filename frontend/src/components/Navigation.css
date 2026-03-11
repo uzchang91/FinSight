@@ -1,0 +1,33 @@
+.navigation {
+  height: 100vh;
+  min-width: none;
+  max-width: fit-content;
+
+  background-color: var(--bg);
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+
+  max-width: fit-content;
+  padding: 2.5rem 3rem;
+}
+
+.nav-logo {
+  height: 56px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.nav-menu {
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  gap: 0.5rem;
+}

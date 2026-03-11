@@ -1,0 +1,36 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+
+:root {
+  --primary: #4775FF;
+  --bg: #FFFFFF;
+  --secondary: #1FFF78;
+  --text: #0B1532;
+  --danger: #FF4766;
+  --warning: #FFBF47;
+
+  --bg-grad: linear-gradient(135deg, #E1E9FF, #C4D2FF);
+  --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, var(#001F7A), transparent));
+  --text-highlight: color-mix(in oklab, var(--text) 64%, var(--bg));
+  --border: color-mix(in oklab, var(--text) 12%, transparent);
+}
+
+* {
+  font-family: 'Pretendard', 'Spoqa Han Sans Neo', 'sans-serif';
+  margin: 0;
+  padding: 0;
+  word-break: keep-all;
+  color: var(--text);
+}
+
+body {
+  margin: auto;
+  background: var(--bg-grad);
+}
+
+.icons {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+}

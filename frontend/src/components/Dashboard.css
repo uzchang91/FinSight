@@ -1,0 +1,27 @@
+.dash-container {
+  display: flex;
+  margin:  auto 24px auto 384px;
+}
+
+.dash-title {
+  margin-top: 9rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 16px;
+}
+
+.dash-title h1 {
+  font-size: 3.5rem;
+}
+
+.dash-title p {
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.daily-percent {
+  color: var(--primary);
+  font-weight: 600;
+}

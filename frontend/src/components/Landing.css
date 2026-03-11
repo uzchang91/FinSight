@@ -1,0 +1,156 @@
+.container {
+  max-width: 1320px;
+  margin: auto;
+  
+  display: grid;
+  grid-template-columns: 1fr 312px;
+  gap: 24px;
+}
+
+.white-section {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+
+  background-color: var(--bg);
+  width: 100%;
+  height: 724px;
+  padding-bottom: 8rem;
+}
+
+.title {
+  margin-top: 9rem;
+
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 24px;
+}
+
+.title h1 {
+  font-size: 3.5rem;
+  margin: 0;
+}
+
+.logo {
+  height: 56px;
+}
+
+.title-description {
+  font-size: 1.4rem;
+  font-weight: 500;
+
+  width: 760px;
+  margin: 1.5rem 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title-description p:first-child {
+  align-self: flex-start;
+  /* left */
+}
+
+.title-description p:last-child {
+  align-self: flex-end;
+  /* right */
+}
+
+.title-description p {
+  margin: 0px;
+  line-height: 200%;
+}
+
+.intro-container {
+  margin-top: 8rem;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  line-height: 200%;
+  
+  margin: 8rem auto 13rem;
+  width: 100%;
+}
+
+.landing-idk {
+  height: 300px;
+  width: 224px;
+  border-radius: 24px;
+  object-fit: cover;
+}
+
+.intro-title {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.intro-title h2 {
+  font-size: 2rem;
+}
+
+.intro-description {
+  padding-left: 16px;
+  width: 700px;
+  word-break: keep-all;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.intro-description ul {
+  padding-left: 24px;
+}
+
+.ad-title {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  line-height: 200%;
+
+  margin: 8rem auto 5rem;
+  width: 100%;
+}
+
+.ad-title h2, .ad-title-r h2 {
+  font-size: 2rem;
+}
+
+.ad-title-r {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  line-height: 200%;
+
+  margin: 8rem auto 5rem;
+  padding-left: 312px;
+  width: 100%;
+}
+
+.ad-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  
+  padding-left: 16px;
+
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.ad-btn {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--bg);
+  
+  background-color: var(--primary);
+  border: none;
+  border-radius: 12px;
+  height: 3rem;
+  width: 200px;
+
+  cursor: pointer;
+}
