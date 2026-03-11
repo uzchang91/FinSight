@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import favicon from './assets/favicon.svg'
 import Landing from './components/Landing'
 import Main from './components/Main'
 

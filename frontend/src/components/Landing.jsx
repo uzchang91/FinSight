@@ -1,7 +1,6 @@
 import React from 'react'
 import './Landing.css'
 import Join from './Join'
-import Login from './Login'
 import Footer from './Footer'
 import finsight from '../assets/finsight.svg'
 import idk from '../assets/idk.jpg'
