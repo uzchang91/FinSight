@@ -26,7 +26,7 @@
   align-items: center;
   gap: 0.5rem;
 
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
 
   cursor: pointer;
@@ -63,13 +63,13 @@
   border-radius: 1.5rem;
   box-sizing: border-box;
   backdrop-filter: blur(0.5rem);
-  font-size: 1.15rem;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
 .kakao_btn {
   background-color: #FEE500;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   height: 3rem;
   width: 100%;
   border: none;
@@ -91,7 +91,7 @@
 
 .google_btn {
   background-color: white;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   height: 3rem;
   width: 100%;
   border: 1px solid #747775;

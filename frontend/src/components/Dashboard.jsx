@@ -50,21 +50,20 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        {/* ranks */}
         <div className='dash-rank'>
           <span>🏆리그 순위표</span>
-          <div>
-            <div>
-              <ul>
-                <li>브론즈</li>
-                <li>실버</li>
-                <li>골드</li>
-                <li>다이아</li>
-              </ul>
-            </div>
-            <ul>
-              <li>
+          <div className=''>
+            <ul className=''>
+              <li>브론즈</li>
+              <li>실버</li>
+              <li>골드</li>
+              <li>다이아</li>
+            </ul>
+            <ul className='rank-list'>
+              <li className=''>
                 <span>0</span>
-                <img src={profile} alt="account image" />
+                <img src={profile} alt="account image" className='rank-profile' />
                 <span>userName</span>
                 <span>42 ISR</span>
                 <span>42 ISR</span>
