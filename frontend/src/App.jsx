@@ -1,22 +1,16 @@
-import './App.css'
-import Join from './components/Join'
+import React, { useState } from 'react'
+import favicon from './assets/favicon.svg'
+import Landing from './components/Landing'
 import Login from './components/Login'
-import MemberDelete from './components/MemberDelete'
-import MemberUpdate from './components/MemberUpdate'
+import Main from './components/Main'
 
 function App() {
 
   return (
-    <div className='container'>
-      <h1>React - Node 연동하기</h1>
-      <Join/>
-      <hr />
-      <Login/>
-      <hr />
-      <MemberUpdate/>
-      <hr />
-      <MemberDelete/>
-      <hr />
+    <div>
+      {/* <Landing /> */}
+      {/* <Login /> */}
+      <Main />
     </div>
   )
 }
