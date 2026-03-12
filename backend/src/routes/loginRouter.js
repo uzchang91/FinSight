@@ -1,9 +1,11 @@
+
+
 // console.log("LOGIN ROUTER LOADED");
 
 const express = require("express");
 const axios = require("axios");
 const loginRouter = express.Router();
-const db = require("../config/db");
+const db = require("../../config/db");
 
 loginRouter.get("/test", (req, res) => {
   res.json({ ok: true, message: "login router connected" });
@@ -197,3 +199,4 @@ loginRouter.post("/auth/google", async (req, res) => {
 });
 
 module.exports = loginRouter;
+

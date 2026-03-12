@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 
-const conn = mysql.createPool({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
@@ -11,4 +11,13 @@ const conn = mysql.createPool({
   queueLimit: 0
 });
 
-module.exports = conn;
+db.getConnection((err, conn) => {
+  if (err) {
+    console.error(" DB 연결 실패:", err.message);
+  } else {
+    console.log(" DB 연결 성공 (Connection Pool 준비 완료)");
+    conn.release(); // 연결 확인만 하고 다시 풀(Pool)에 반납
+  }
+});
+
+module.exports = db;
