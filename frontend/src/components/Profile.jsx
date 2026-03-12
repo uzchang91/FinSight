@@ -30,7 +30,7 @@ const Profile = () => {
             <hr />
             <div className='stats-description'>
               <span className='description-top'>ISR</span>
-              <p>86</p>
+              <p>isr_score</p>
             </div>
           </div>
         </div>
@@ -58,6 +58,13 @@ const Profile = () => {
         <div className='profile-stock'>
           <h2>달성한 업적</h2>
           <div className='achievment-list'>
+            <div className='achievment-item'>
+              <img src={vivereBeginner} alt="achievments" className='img-block' />
+              <div className='achievment-description'>
+                <p className='description-slave'>Vivere 주린이</p>
+                <span className='description-top'>기본 지급 칭호</span>
+              </div>
+            </div>
             <div className='achievment-item'>
               <img src={vivereBeginner} alt="achievments" className='img-block' />
               <div className='achievment-description'>

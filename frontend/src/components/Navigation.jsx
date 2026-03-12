@@ -11,6 +11,7 @@ import arrowUp from '../assets/icons/arrow-up-line.svg'
 import rank from '../assets/icons/rank.svg'
 
 const Navigation = () => {
+  const [open, setOpen] = useState(false);
   return (
     <div className='navigation'>
       <nav className='nav-content'>
@@ -26,8 +27,8 @@ const Navigation = () => {
               <img src={education} alt="Education" className='icons' /><span>교육실</span>
             </div>
           </li>
-          <li className='nav-mixed'>
-            <div className='nav-menu'>
+          <li className={`nav-mixed ${open ? "open" : ""}`}>
+            <div className='nav-menu' onClick={() => setOpen(!open)}>
               <div className='nav-line'>
                 <img src={strategy} alt="Strategy Room" className='icons' /><span>전략실</span>
               </div>

@@ -18,7 +18,7 @@
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
   --border: color-mix(in oklab, var(--text) 16%, transparent);
-  --box-bg: color-mix(in oklab, var(--bg) 80%, transparent);
+  --box-bg: color-mix(in oklab, var(--bg) 88%, transparent);
 }
 
 * {
@@ -40,7 +40,7 @@ body {
 }
 
 .description-top {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 400;
   color: var(--text-highlight);
 }

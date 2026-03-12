@@ -14,7 +14,6 @@ const Dashboard = () => {
       {/* content */}
       <div className='dash-master'> {/* grid */}
         <div>
-
           <div className='dash-slave'>
             <div className='dash-box'>
               <span>⏰진행 현황</span>
@@ -34,21 +33,26 @@ const Dashboard = () => {
             <div className='dash-thread'>
               <div className='dash-box'>
                 <span>💖찜한 주식</span>
-                <div>
-                  <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                <div className='stock-box'>
+                  <ul className='stock-list'>
+                    <li className='stock-item'>
+                      <p>stock_name</p>
+                      <p>주식금액</p>
+                      <p>변동금액</p>
+                      <p>변동률</p>
+                    </li>
                   </ul>
                 </div>
               </div>
               <div className='dash-box'>
                 <span>💹보유 주식</span>
-                <div>
-                  <ul>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                <div className='stock-box'>
+                  <ul className='stock-list'>
+                    <li className='stock-item'>
+                      <p>stock_name</p>
+                      <p>주식금액</p>
+                      <p>변동금액</p>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -82,79 +86,7 @@ const Dashboard = () => {
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>2</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>3</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>4</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>5</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>6</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>7</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>8</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>9</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
-              </li>
-              <li className='rank-item'>
-                <div className='item-profile'>
-                  <div className='rank-num'>10</div>
-                  <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
-                </div>
-                <div className='rank-num'>42</div>
+                <div className='rank-num'>score</div>
               </li>
             </ul>
           </div>
