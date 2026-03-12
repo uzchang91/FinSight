@@ -27,6 +27,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
+          {/* stocks */}
           <div className='dash-thread'>
             <div className='dash-box'>
               <span>💖찜한 주식</span>
@@ -50,23 +52,105 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        
         {/* ranks */}
         <div className='dash-rank'>
           <span>🏆리그 순위표</span>
-          <div className=''>
-            <ul className=''>
-              <li>브론즈</li>
-              <li>실버</li>
-              <li>골드</li>
-              <li>다이아</li>
+          <div className='rank-box'>
+            <ul className='rank-league'>
+              <li className='league'>
+                브론즈 <img src="" alt="" />
+              </li>
+              <li className='league'>
+                실버 <img src="" alt="" />
+              </li>
+              <li className='league'>
+                골드 <img src="" alt="" />
+              </li>
+              <li className='league'>
+                다이아 <img src="" alt="" />
+              </li>
             </ul>
             <ul className='rank-list'>
-              <li className=''>
-                <span>0</span>
-                <img src={profile} alt="account image" className='rank-profile' />
-                <span>userName</span>
-                <span>42 ISR</span>
-                <span>42 ISR</span>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
+              </li>
+              <li className='rank-item'>
+                <div className='item-profile'>
+                  <span>0</span>
+                  <img src={profile} alt="account image" className='rank-profile' />
+                  <span>userName</span>
+                </div>
+                <span>42</span>
               </li>
             </ul>
           </div>

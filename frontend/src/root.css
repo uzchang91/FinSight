@@ -15,6 +15,7 @@
   --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, #001F7A, transparent));
   --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
+  --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
   --border: color-mix(in oklab, var(--text) 16%, transparent);
   --box-bg: color-mix(in oklab, var(--bg) 80%, transparent);
 }
@@ -33,11 +34,46 @@ body {
 
 .icons {
   width: 1.5rem;
-  height: 1.5rem;
+  height: 1.5rem;  
+  padding: 1rem;
 }
 
 .description-top {
   font-size: 0.75rem;
   font-weight: 400;
   color: var(--text-highlight);
+}
+
+.achievment-list{
+  height: 9rem;
+  overflow-y: scroll;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.achievment-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.img-block {
+  width: 2.5rem;
+  height: 2.5rem;
+
+  border-radius: 1rem;
+  background-color: var(--border);
+}
+
+.achievment-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.achievment-description p {
+  font-size: 1.125rem;
+  font-weight: 600;
 }
