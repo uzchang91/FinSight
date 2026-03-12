@@ -3,7 +3,9 @@ import api from '../config/axios';
 import './Join.css'
 import kakao from '../assets/kakao.svg'
 import google from '../assets/google.svg'
-import iconp from '../assets/icons/icon-placeholder.svg'
+import home from '../assets/icons/home.svg'
+import service from '../assets/icons/bar-chart.svg'
+import contact from '../assets/icons/mail.svg'
 
 const Join = () => {
 
@@ -11,15 +13,15 @@ const Join = () => {
     <aside className='floating-nav'>
       <div className='landing-navigation'>
         <div className='landing-navigation-menu'>
-          <img src={iconp} alt="home" className='landing-menu' />
+          <img src={home} alt="home" className='landing-menu' />
           <p>홈</p>
         </div>
         <div className='landing-navigation-menu'>
-          <img src={iconp} alt="servie" className='landing-menu' />
+          <img src={service} alt="service" className='landing-menu' />
           <p>서비스</p>
         </div>
         <div className='landing-navigation-menu'>
-          <img src={iconp} alt="contact" className='landing-menu' />
+          <img src={contact} alt="contact" className='landing-menu' />
           <p>연락</p>
         </div>
       </div>

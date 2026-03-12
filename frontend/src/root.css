@@ -9,11 +9,12 @@
   --danger: #FF4766;
   --warning: #FFBF47;
 
-  --primary-70: hsla(225, 100%, 64%, 0.7);
+  --primary-70: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
 
   --bg-grad: linear-gradient(135deg, #C2D1FF, #7094ff);
   --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, #001F7A, transparent));
   --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
+  --border-prim: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
   --border: color-mix(in oklab, var(--text) 16%, transparent);
@@ -34,7 +35,7 @@ body {
 
 .icons {
   width: 1.5rem;
-  height: 1.5rem;  
+  height: 1.5rem;
   padding: 1rem;
 }
 
@@ -44,8 +45,8 @@ body {
   color: var(--text-highlight);
 }
 
-.achievment-list{
-  height: 9rem;
+.achievment-list {
+  height: 10rem;
   overflow-y: scroll;
 
   display: flex;

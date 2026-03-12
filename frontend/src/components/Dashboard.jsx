@@ -13,46 +13,49 @@ const Dashboard = () => {
       </div>
       {/* content */}
       <div className='dash-master'> {/* grid */}
-        <div className='dash-slave'>
-          <div className='dash-box'>
-            <span>⏰진행 현황</span>
-            <div className='dash-tool'>
-              <div className='tool-box'>
-                <span>📋퀘스트 현황</span>
-                <canvas className='dash-quest'></canvas>
-              </div>
-              <div className='tool-box'>
-                <span>🎯ISR 지표</span>
-                <canvas className='dash-isr'></canvas>
-              </div>
-            </div>
-          </div>
+        <div>
 
-          {/* stocks */}
-          <div className='dash-thread'>
+          <div className='dash-slave'>
             <div className='dash-box'>
-              <span>💖찜한 주식</span>
-              <div>
-                <ul>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
+              <span>⏰진행 현황</span>
+              <div className='dash-tool'>
+                <div className='tool-box'>
+                  <span>📋퀘스트 현황</span>
+                  <canvas className='dash-quest'></canvas>
+                </div>
+                <div className='tool-box'>
+                  <span>🎯ISR 지표</span>
+                  <canvas className='dash-isr'></canvas>
+                </div>
               </div>
             </div>
-            <div className='dash-box'>
-              <span>💹보유 주식</span>
-              <div>
-                <ul>
-                  <li></li>
-                  <li></li>
-                  <li></li>
-                </ul>
+
+            {/* stocks */}
+            <div className='dash-thread'>
+              <div className='dash-box'>
+                <span>💖찜한 주식</span>
+                <div>
+                  <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                  </ul>
+                </div>
+              </div>
+              <div className='dash-box'>
+                <span>💹보유 주식</span>
+                <div>
+                  <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
+
         {/* ranks */}
         <div className='dash-rank'>
           <span>🏆리그 순위표</span>
@@ -71,86 +74,87 @@ const Dashboard = () => {
                 다이아 <img src="" alt="" />
               </li>
             </ul>
+            {/* league list */}
             <ul className='rank-list'>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>1</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>2</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>3</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>4</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>5</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>6</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>7</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>8</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>9</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
               <li className='rank-item'>
                 <div className='item-profile'>
-                  <span>0</span>
+                  <div className='rank-num'>10</div>
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>userName</span>
                 </div>
-                <span>42</span>
+                <div className='rank-num'>42</div>
               </li>
             </ul>
           </div>
