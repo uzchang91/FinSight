@@ -9,8 +9,11 @@
   --danger: #FF4766;
   --warning: #FFBF47;
 
-  --bg-grad: linear-gradient(135deg, hsl(225, 100%, 88%), hsl(225, 100%, 72%));
-  --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, var(#001F7A), transparent));
+  --primary-70: hsla(225, 100%, 64%, 0.7);
+
+  --bg-grad: linear-gradient(135deg, #C2D1FF, #7094ff);
+  --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, #001F7A, transparent));
+  --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
   --text-highlight: color-mix(in oklab, var(--text) 64%, var(--bg));
   --border: color-mix(in oklab, var(--text) 16%, transparent);
   --box-bg: color-mix(in oklab, var(--bg) 80%, transparent);
