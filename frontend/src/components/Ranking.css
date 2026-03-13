@@ -1,0 +1,171 @@
+.ranking-container {
+  min-width: 0;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ranking-breadcrumb {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.ranking-summary-card,
+.ranking-status-card,
+.league-card {
+  background-color: var(--box-bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+}
+
+.ranking-summary-card {
+  padding: 1.75rem;
+}
+
+.ranking-summary-card h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ranking-summary-card strong {
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.ranking-summary-card p {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--text);
+}
+
+.ranking-status-card {
+  padding: 1.75rem;
+}
+
+.ranking-status-card h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ranking-status-card p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.league-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.league-card {
+  min-height: 420px;
+  padding: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.league-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.league-user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.league-user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.league-user-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.league-rank {
+  width: 1.5rem;
+  text-align: right;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.league-profile {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.league-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.league-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1400px) {
+  .league-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .ranking-container {
+    padding: 16px;
+  }
+
+  .league-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-summary-card h1 {
+    font-size: 1.8rem;
+  }
+
+  .ranking-summary-card strong {
+    font-size: 1.9rem;
+  }
+
+  .league-title {
+    font-size: 1.6rem;
+  }
+}

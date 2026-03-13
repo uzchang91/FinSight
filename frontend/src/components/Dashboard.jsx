@@ -84,7 +84,7 @@ const Dashboard = () => {
                 <div className='item-profile'>
                   <div className='rank-num'>1</div>
                   <img src={profile} alt="account image" className='rank-profile' />
-                  <span>userName</span>
+                  <span>nickname</span>
                 </div>
                 <div className='rank-num'>score</div>
               </li>
