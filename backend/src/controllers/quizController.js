@@ -11,7 +11,8 @@ function fail(res, message, error = null, status = 500) {
 exports.getAllQuizzes = async (req, res) => {
   try {
     const { difficulty } = req.query;
-    let sql = "SELECT quiz_id, difficulty, question, option_1, option_2, option_3, option_4, created_at FROM quizzes";
+    // 💡 수정됨: SELECT * 를 써서 answer와 explanation까지 모두 프론트로 보냅니다!
+    let sql = "SELECT * FROM quizzes";
     const params = [];
 
     if (difficulty) {
@@ -30,7 +31,8 @@ exports.getAllQuizzes = async (req, res) => {
 exports.getRandomQuiz = async (req, res) => {
   try {
     const { difficulty } = req.query;
-    let sql = "SELECT quiz_id, difficulty, question, option_1, option_2, option_3, option_4, created_at FROM quizzes";
+    // 💡 수정됨: 여기도 SELECT * 로 변경!
+    let sql = "SELECT * FROM quizzes";
     const params = [];
 
     if (difficulty) {
@@ -51,8 +53,9 @@ exports.getRandomQuiz = async (req, res) => {
 exports.getQuizById = async (req, res) => {
   try {
     const { quiz_id } = req.params;
+    // 💡 수정됨: 여기도 SELECT * 로 변경!
     const [rows] = await db.promise().query(
-      "SELECT quiz_id, difficulty, question, option_1, option_2, option_3, option_4, created_at FROM quizzes WHERE quiz_id = ?",
+      "SELECT * FROM quizzes WHERE quiz_id = ?",
       [quiz_id]
     );
 

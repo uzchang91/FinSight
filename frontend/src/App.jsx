@@ -11,7 +11,7 @@ function App() {
     <div>
       {/* <Landing /> */}
       {/* <Login /> */}
-      {/* <Main /> */}
+       <Main /> 
       <QuizPage />
     </div>
   )
