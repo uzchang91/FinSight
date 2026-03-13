@@ -11,7 +11,7 @@ import finsight from '../assets/finsight.svg'
 import idk from '../assets/idk.jpg'
 
 const Landing = ({ setPage }) => {
-
+  
   return (
 
     <div>
@@ -81,18 +81,18 @@ const Landing = ({ setPage }) => {
 
         <aside className='floating-nav'>
           <div className='landing-navigation'>
-            <div className='landing-navigation-menu'>
+            <button className='landing-navigation-menu'>
               <img src={home} alt="home" className='landing-menu' />
               <p>홈</p>
-            </div>
-            <div className='landing-navigation-menu'>
+            </button>
+            <button className='landing-navigation-menu'>
               <img src={service} alt="service" className='landing-menu' />
               <p>서비스</p>
-            </div>
-            <div className='landing-navigation-menu'>
+            </button>
+            <button className='landing-navigation-menu'>
               <img src={contact} alt="contact" className='landing-menu' />
               <p>연락</p>
-            </div>
+            </button>
           </div>
           <div className='box'>
             <p>
@@ -115,7 +115,7 @@ const Landing = ({ setPage }) => {
             </button>
           </div>
         </aside>
-        
+
       </div>
       <div className='white-section' />
       <Footer />

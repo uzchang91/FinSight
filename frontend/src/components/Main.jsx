@@ -5,7 +5,7 @@ import Dashboard from './Dashboard'
 import Profile from './Profile'
 import Education from './Education'
 import Quiz from './QuizPage'
-// import Stocks from './Stocks'
+import Stocks from './Stocks'
 import Ranking from './Ranking'
 
 
@@ -17,7 +17,7 @@ const Main = () => {
       case 'Dashboard': return <Dashboard />;
       case 'Education': return <Education />;
       case 'Quiz': return <Quiz />;
-      // case 'Stocks': return <Stocks />;
+      case 'Stocks': return <Stocks />;
       case 'Ranking': return <Ranking />;
       default: return <Dashboard />;
     }
