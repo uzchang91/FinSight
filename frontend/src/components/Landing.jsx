@@ -68,11 +68,17 @@ const Landing = ({ setPage }) => {
               <h2>당신의 투자 성향은 어떤 모습인가요?</h2>
               <div className='ad-description'>
                 <p>지금 시작하고 나만의 투자 성향 카드를 만들어보세요.</p>
-                <button className='ad-btn'>무료로 시작하기</button>
+                <button
+                  className='ad-btn'
+                  onClick={() => setPage('login')}
+                >
+                  무료로 시작하기
+                </button>
               </div>
             </div>
           </div>
         </main>
+
         <aside className='floating-nav'>
           <div className='landing-navigation'>
             <div className='landing-navigation-menu'>
@@ -109,6 +115,7 @@ const Landing = ({ setPage }) => {
             </button>
           </div>
         </aside>
+        
       </div>
       <div className='white-section' />
       <Footer />

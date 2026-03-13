@@ -3,6 +3,7 @@ import './Profile.css'
 import notification from '../assets/icons/notification.svg'
 import account from '../assets/icons/account.svg'
 import logout from '../assets/icons/logout.svg'
+import iconp from '../assets/icons/icon-placeholder.svg'
 import profile from '../assets/chicken running machine.gif'
 import vivereBeginner from '../assets/icons/achievement/vivere_beginner.png'
 

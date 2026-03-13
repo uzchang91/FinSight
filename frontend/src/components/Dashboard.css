@@ -25,7 +25,7 @@
   justify-content: start;
   gap: 1rem;
 
-  background-color: var(--box-bg);
+  background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: 1.5rem;
   box-sizing: border-box;
@@ -79,7 +79,7 @@
   flex-direction: column;
   gap: 1rem;
 
-  background-color: var(--box-bg);
+  background-color: var(--bg);
   border-radius: 1.5rem;
   border: 1px solid var(--border);
   box-sizing: border-box;
@@ -128,7 +128,7 @@
   flex-direction: column;
   gap: 1rem;
 
-  background-color: var(--box-bg);
+  background-color: var(--bg);
   border-radius: 1.5rem;
   border: 1px solid var(--border);
 }

@@ -11,14 +11,14 @@
 
   --primary-70: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
 
-  --bg-grad: linear-gradient(135deg, #C2D1FF, #7094ff);
+  --bg-grad: linear-gradient(135deg, color-mix(in oklab, var(--bg), transparent 90%), color-mix(in oklab, var(--text-highlight), transparent));
   --progress-bar: linear-gradient(0deg, color-mix(in oklab, var(--primary), transparent 90%), color-mix(in oklab, #001F7A, transparent));
   --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
   --border-prim: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
   --border: color-mix(in oklab, var(--text) 16%, transparent);
-  --box-bg: color-mix(in oklab, var(--bg) 88%, transparent);
+  --box-bg: color-mix(in oklab, var(--bg) 88%, var(--text-highlight));
 }
 
 * {
@@ -30,7 +30,7 @@
 
 body {
   margin: auto;
-  background: var(--bg-grad);
+  background: var(--bg);
 }
 
 .icons {
