@@ -10,14 +10,14 @@ import arrowDown from '../assets/icons/arrow-down-line.svg'
 import arrowUp from '../assets/icons/arrow-up-line.svg'
 import rank from '../assets/icons/rank.svg'
 
-const Navigation = () => {
+const Navigation = ( {setActiveMenu} ) => {
   const [open, setOpen] = useState(false);
   return (
     <div className='navigation'>
       <nav className='nav-content'>
         <img src={logoLong} alt="logo" className='nav-logo' />
         <ul className='nav-list'>
-          <li className='nav-menu'>
+          <li className='nav-menu' onClick={() => setActiveMenu('dashboard')} style={{cursor : 'pointer'}}>
             <div className='nav-line'>
               <img src={dashboard} alt="Dashboard" className='icons' /><span>대시보드</span>
             </div>
@@ -38,7 +38,7 @@ const Navigation = () => {
               <li className='line-item'>
                 <div className='sub-item' /><span>교육</span>
               </li>
-              <li className='line-item'>
+              <li className='line-item' onClick={() => setActiveMenu('quiz')} style={{ cursor: 'pointer' }}>
                 <div className='sub-item' /><span>퀴즈</span>
               </li>
             </ul>

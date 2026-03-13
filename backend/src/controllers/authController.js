@@ -7,7 +7,7 @@ function success(res, message, data = null, status = 200) {
   return res.status(status).json({
     success: true,
     message,
-    data
+    data,
   });
 }
 
@@ -15,7 +15,7 @@ function fail(res, message, error = null, status = 500) {
   return res.status(status).json({
     success: false,
     message,
-    error
+    error,
   });
 }
 
@@ -30,7 +30,7 @@ function createToken(member) {
       member_id: member.member_id ?? null,
       provider: member.provider,
       provider_id: member.provider_id,
-      nickname: member.nickname
+      nickname: member.nickname,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
@@ -43,7 +43,7 @@ const ACHIEVEMENTS = [
   "Drawdown Survivor",
   "Risk Manager",
   "Chart Reader",
-  "Trend Rider"
+  "Trend Rider",
 ];
 
 /* 칭호/티어 계산 */
@@ -93,7 +93,7 @@ function buildMemberPayload(member) {
     tier: getTier(member),
     points: member.points ?? 0,
     isr_score: member.isr_score ?? 0,
-    created_at: member.created_at ?? null
+    created_at: member.created_at ?? null,
   };
 }
 
@@ -102,7 +102,7 @@ function buildLoginResponseData(result, token) {
     isNewUser: result.isNewUser,
     member: buildMemberPayload(result.member),
     recentAchievements: getRecentAchievements(result.member),
-    token
+    token,
   };
 }
 
@@ -222,14 +222,14 @@ async function loginOrRegister(provider, providerId, nickname) {
     await grantDefaultAchievementIfMissing(member.member_id);
     return {
       isNewUser: false,
-      member
+      member,
     };
   }
 
   const newMember = await createMember(provider, providerId, nickname);
   return {
     isNewUser: true,
-    member: newMember
+    member: newMember,
   };
 }
 
@@ -269,7 +269,7 @@ exports.getMe = async (req, res) => {
 
     return success(res, "현재 로그인 사용자 조회 성공", {
       member: buildMemberPayload(member),
-      recentAchievements: getRecentAchievements(member)
+      recentAchievements: getRecentAchievements(member),
     });
   } catch (err) {
     return fail(res, "회원 조회 실패", err.message, 500);
@@ -310,7 +310,7 @@ exports.updateMe = async (req, res) => {
     return success(res, "회원 정보 수정 성공", {
       member: buildMemberPayload(updatedMember),
       recentAchievements: getRecentAchievements(updatedMember),
-      token: newToken
+      token: newToken,
     });
   } catch (err) {
     return fail(res, "회원 정보 수정 실패", err.message, 500);
@@ -320,7 +320,7 @@ exports.updateMe = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     return success(res, "로그아웃 성공", {
-      message: "클라이언트에서 저장된 토큰을 삭제해주세요."
+      message: "클라이언트에서 저장된 토큰을 삭제해주세요.",
     });
   } catch (err) {
     return fail(res, "로그아웃 실패", err.message, 500);
@@ -344,7 +344,7 @@ exports.getProfileMeta = async (req, res) => {
       title: getTitle(member),
       tier: getTier(member),
       recentAchievements: getRecentAchievements(member),
-      availableAchievements: ACHIEVEMENTS
+      availableAchievements: ACHIEVEMENTS,
     });
   } catch (err) {
     return fail(res, "프로필 메타 조회 실패", err.message, 500);
@@ -353,6 +353,10 @@ exports.getProfileMeta = async (req, res) => {
 
 /* Kakao */
 exports.kakaoLogin = (req, res) => {
+  if (!process.env.KAKAO_REST_API_KEY || !process.env.KAKAO_REDIRECT_URI) {
+    return fail(res, "카카오 환경변수가 설정되지 않았습니다.", null, 500);
+  }
+
   const url =
     `https://kauth.kakao.com/oauth/authorize` +
     `?client_id=${process.env.KAKAO_REST_API_KEY}` +
@@ -374,8 +378,8 @@ async function getKakaoAccessToken(code) {
     params.toString(),
     {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
-      }
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      },
     }
   );
 
@@ -385,8 +389,8 @@ async function getKakaoAccessToken(code) {
 async function getKakaoUserInfo(accessToken) {
   const response = await axios.get("https://kapi.kakao.com/v2/user/me", {
     headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 
   const data = response.data;
@@ -397,7 +401,7 @@ async function getKakaoUserInfo(accessToken) {
     nickname:
       data?.properties?.nickname ||
       data?.kakao_account?.profile?.nickname ||
-      "kakao_user"
+      "kakao_user",
   };
 }
 
@@ -438,6 +442,14 @@ exports.kakaoCallback = async (req, res) => {
 
 /* Google */
 exports.googleLogin = (req, res) => {
+  if (
+    !process.env.GOOGLE_CLIENT_ID ||
+    !process.env.GOOGLE_CLIENT_SECRET ||
+    !process.env.GOOGLE_REDIRECT_URI
+  ) {
+    return fail(res, "구글 환경변수가 설정되지 않았습니다.", null, 500);
+  }
+
   const url =
     `https://accounts.google.com/o/oauth2/v2/auth` +
     `?client_id=${process.env.GOOGLE_CLIENT_ID}` +
@@ -462,8 +474,8 @@ async function getGoogleAccessToken(code) {
     params.toString(),
     {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
   );
 
@@ -475,8 +487,8 @@ async function getGoogleUserInfo(accessToken) {
     "https://www.googleapis.com/oauth2/v2/userinfo",
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     }
   );
 
@@ -485,7 +497,7 @@ async function getGoogleUserInfo(accessToken) {
   return {
     provider: "google",
     providerId: String(data.id),
-    nickname: data.name || "google_user"
+    nickname: data.name || "google_user",
   };
 }
 

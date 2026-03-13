@@ -37,16 +37,7 @@ const TITLES = [
   { title: "💎 전설의 투자자", description: "최상위 랭커 또는 ISR 점수 90점 이상 달성자" }
 ];
 
-/**
- * @swagger
- * /api/achievements:
- *   get:
- *     summary: 업적 목록 조회
- *     tags: [Achievements]
- *     responses:
- *       200:
- *         description: 업적 목록 조회 성공
- */
+
 router.get("/achievements", (req, res) => {
   return res.status(200).json({
     success: true,
@@ -55,16 +46,6 @@ router.get("/achievements", (req, res) => {
   });
 });
 
-/**
- * @swagger
- * /api/titles:
- *   get:
- *     summary: 칭호 목록 조회
- *     tags: [Achievements]
- *     responses:
- *       200:
- *         description: 칭호 목록 조회 성공
- */
 router.get("/titles", (req, res) => {
   return res.status(200).json({
     success: true,
@@ -73,16 +54,7 @@ router.get("/titles", (req, res) => {
   });
 });
 
-/**
- * @swagger
- * /api/titles/default:
- *   get:
- *     summary: 기본 칭호 조회
- *     tags: [Achievements]
- *     responses:
- *       200:
- *         description: 기본 칭호 조회 성공
- */
+
 router.get("/titles/default", (req, res) => {
   return res.status(200).json({
     success: true,
