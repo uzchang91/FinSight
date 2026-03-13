@@ -3,7 +3,6 @@ import favicon from './assets/favicon.svg'
 import Landing from './components/Landing'
 import Login from './components/Login'
 import Main from './components/Main'
-import QuizPage from './components/QuizPage'
 
 function App() {
 
@@ -11,8 +10,7 @@ function App() {
     <div>
       {/* <Landing /> */}
       {/* <Login /> */}
-       <Main /> 
-      <QuizPage />
+      <Main />
     </div>
   )
 }
