@@ -1,0 +1,15 @@
+PORT=5000
+DB_HOST=project-db-campus.smhrd.com
+DB_PORT=3307
+DB_USER= est_25K_front9_p3_1
+DB_PASSWORD=smhrd1
+DB_NAME=est_25K_front9_p3_1
+
+JWT_SECRET=my_super_secret_key_123456
+
+KAKAO_REST_API_KEY=4e600d5c5dc4416108cde152b88ae665
+KAKAO_REDIRECT_URI=http://localhost:5000/api/auth/kakao/callback
+
+GOOGLE_CLIENT_ID=1004836140280-q2dbuq9j84can93jgcc775srh3bggc46.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:5000/api/auth/google/callback

@@ -93,16 +93,16 @@ const Dashboard = () => {
           <div className='rank-box'>
             <ul className='rank-league'>
               <li className='league'>
-                브론즈 <img src="" alt="" />
+                브론즈 <img src="" alt="브론즈 티어" />
               </li>
               <li className='league'>
-                실버 <img src="" alt="" />
+                실버 <img src="" alt="실버 티어" />
               </li>
               <li className='league'>
-                골드 <img src="" alt="" />
+                골드 <img src="" alt="골드 티어" />
               </li>
               <li className='league'>
-                다이아 <img src="" alt="" />
+                다이아 <img src="" alt="다이아 티어" />
               </li>
             </ul>
             {/* league list */}
