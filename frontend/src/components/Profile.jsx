@@ -30,13 +30,15 @@ const Profile = () => {
   }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('member')
-    localStorage.removeItem('nickname')
-    sessionStorage.clear()
+    if (!confirm("로그아웃 하시겠어요?")) return;
 
-    alert('안전하게 로그아웃 되었습니다! 👋')
-    window.location.href = '/'
+    localStorage.removeItem('token');
+    localStorage.removeItem('member');
+    localStorage.removeItem('nickname');
+    sessionStorage.clear();
+
+    alert('안전하게 로그아웃 되었습니다! 👋');
+    window.location.href = '/';
   }
 
   if (loading) {
