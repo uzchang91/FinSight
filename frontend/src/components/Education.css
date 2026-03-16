@@ -295,6 +295,9 @@
   height: 2.5rem;
   padding: 0 0.75rem;
 
+  display: flex;
+  align-items: center;
+  
   background: var(--btn-prim);
   border: none;
   border-radius: 0.75rem;

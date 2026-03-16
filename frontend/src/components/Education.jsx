@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import './Education.css'
 import { educationLessons, getEducationProgress } from './educationData'
 import arrowDown from '../assets/icons/arrow-down-line.svg'
+import play from '../assets/icons/play.svg'
 
 const Education = () => {
   const [searchText, setSearchText] = useState('')
@@ -149,7 +150,7 @@ const Education = () => {
                     </div>
 
                     <button type='button' className='education-xp-btn'>
-                      학습 시작
+                      <img src={play} alt="play" className='icons'/>학습 시작
                     </button>
                   </div>
                 )}
