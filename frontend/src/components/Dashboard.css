@@ -172,11 +172,9 @@
 }
 
 .rank-list {
-  width: fit-content;
-
-  height: 480px;
-  padding: 1rem 0;
-  overflow-y: scroll;
+  height: 512px;
+  padding: 1rem 0.5rem;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
@@ -187,19 +185,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 
   font-size: 1rem;
   font-weight: 400;
 }
 
 .item-profile {
+  width: fit-content;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .rank-num {
-  width: 1.25rem;
+  min-width: 1.25rem;
+  max-width: fit-content;
 
   text-align: end;
 }
@@ -244,7 +245,7 @@
 .stock-item {
   display: flex;
   justify-content: space-between;
-  
+
   font-size: 1rem;
   font-weight: 500;
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import profile from '../assets/chicken running machine.gif'
 import './Dashboard.css'
+import { api } from '../config/api'
 
 const Dashboard = () => {
   const [member, setMember] = useState(null)
@@ -112,7 +113,7 @@ const Dashboard = () => {
                   <img src={profile} alt="account image" className='rank-profile' />
                   <span>{member?.nickname || 'nickname'}</span>
                 </div>
-                <div className='rank-num'>score</div>
+                <div className='rank-num'>{member?.points ?? 0}</div>
               </li>
             </ul>
           </div>
