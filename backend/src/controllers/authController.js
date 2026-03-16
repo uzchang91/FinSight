@@ -1,6 +1,6 @@
 const axios = require("axios");
-const jwt = require("jsonwebtoken");
 const db = require("../../config/db");
+const { createToken } = require("../utils/jwt");
 
 /* 공통 응답 */
 function success(res, message, data = null, status = 200) {
@@ -17,24 +17,6 @@ function fail(res, message, error = null, status = 500) {
     message,
     error,
   });
-}
-
-/* JWT 생성 */
-function createToken(member) {
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET이 설정되지 않았습니다.");
-  }
-
-  return jwt.sign(
-    {
-      member_id: member.member_id ?? null,
-      provider: member.provider,
-      provider_id: member.provider_id,
-      nickname: member.nickname,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
 }
 
 /* 업적 데이터 */
@@ -106,51 +88,16 @@ function buildLoginResponseData(result, token) {
   };
 }
 
-function renderLoginSuccessPage(providerLabel, data) {
-  const achievementHtml = data.recentAchievements.length
-    ? data.recentAchievements.map((item) => `<li>${item}</li>`).join("")
-    : "<li>업적 없음</li>";
+function buildFrontendRedirectUrl(data) {
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
-  return `
-    <html lang="ko">
-      <head>
-        <meta charset="UTF-8" />
-        <title>${providerLabel} 로그인 성공</title>
-      </head>
-      <body style="font-family:sans-serif; padding:40px; line-height:1.8;">
-        <h1>${providerLabel} 로그인 성공</h1>
+  const params = new URLSearchParams({
+    token: data.token,
+    nickname: data.member.nickname || "",
+    provider: data.member.provider || "",
+  });
 
-        <h2>
-          ${data.member.nickname}
-          <span style="font-size:18px; border:1px solid #d4a017; border-radius:12px; padding:4px 10px; margin-left:8px;">
-            ${data.member.title}
-          </span>
-          <span style="font-size:18px; border:1px solid #999; border-radius:12px; padding:4px 10px; margin-left:8px;">
-            ${data.member.tier}
-          </span>
-        </h2>
-
-        <ul>
-          <li><strong>member_id:</strong> ${data.member.member_id}</li>
-          <li><strong>provider:</strong> ${data.member.provider}</li>
-          <li><strong>provider_id:</strong> ${data.member.provider_id}</li>
-          <li><strong>points:</strong> ${data.member.points}</li>
-          <li><strong>isr_score:</strong> ${data.member.isr_score}</li>
-          <li><strong>신규회원 여부:</strong> ${data.isNewUser ? "예" : "아니오"}</li>
-        </ul>
-
-        <h3>최근 업적</h3>
-        <ul>${achievementHtml}</ul>
-
-        <h3>토큰</h3>
-        <textarea style="width:100%; height:120px;">${data.token}</textarea>
-
-        <p style="margin-top:20px;">
-          <a href="/api/auth">소셜 로그인 화면으로 돌아가기</a>
-        </p>
-      </body>
-    </html>
-  `;
+  return `${frontendUrl}/?${params.toString()}`;
 }
 
 /* DB 함수 */
@@ -158,6 +105,15 @@ async function findMember(provider, providerId) {
   const [rows] = await db.promise().query(
     "SELECT * FROM members WHERE provider = ? AND provider_id = ?",
     [provider, providerId]
+  );
+
+  return rows[0] || null;
+}
+
+async function findMemberById(memberId) {
+  const [rows] = await db.promise().query(
+    "SELECT * FROM members WHERE member_id = ?",
+    [memberId]
   );
 
   return rows[0] || null;
@@ -256,16 +212,11 @@ exports.test = (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
-    const [rows] = await db.promise().query(
-      "SELECT * FROM members WHERE member_id = ?",
-      [req.user.member_id]
-    );
+    const member = await findMemberById(req.user.member_id);
 
-    if (!rows[0]) {
+    if (!member) {
       return fail(res, "회원 정보를 찾을 수 없습니다.", null, 404);
     }
-
-    const member = rows[0];
 
     return success(res, "현재 로그인 사용자 조회 성공", {
       member: buildMemberPayload(member),
@@ -280,31 +231,16 @@ exports.updateMe = async (req, res) => {
   try {
     const { nickname } = req.body;
 
-    if (!nickname || !nickname.trim()) {
-      return fail(res, "닉네임은 필수입니다.", null, 400);
-    }
-
-    const trimmedNickname = nickname.trim();
-
-    if (trimmedNickname.length > 100) {
-      return fail(res, "닉네임은 100자 이하로 입력해주세요.", null, 400);
-    }
-
     const [updateResult] = await db.promise().query(
       "UPDATE members SET nickname = ? WHERE member_id = ?",
-      [trimmedNickname, req.user.member_id]
+      [nickname, req.user.member_id]
     );
 
     if (updateResult.affectedRows === 0) {
       return fail(res, "회원 정보를 찾을 수 없습니다.", null, 404);
     }
 
-    const [rows] = await db.promise().query(
-      "SELECT * FROM members WHERE member_id = ?",
-      [req.user.member_id]
-    );
-
-    const updatedMember = rows[0];
+    const updatedMember = await findMemberById(req.user.member_id);
     const newToken = createToken(updatedMember);
 
     return success(res, "회원 정보 수정 성공", {
@@ -329,16 +265,11 @@ exports.logout = async (req, res) => {
 
 exports.getProfileMeta = async (req, res) => {
   try {
-    const [rows] = await db.promise().query(
-      "SELECT * FROM members WHERE member_id = ?",
-      [req.user.member_id]
-    );
+    const member = await findMemberById(req.user.member_id);
 
-    if (!rows[0]) {
+    if (!member) {
       return fail(res, "회원 정보를 찾을 수 없습니다.", null, 404);
     }
-
-    const member = rows[0];
 
     return success(res, "프로필 메타 조회 성공", {
       title: getTitle(member),
@@ -361,7 +292,8 @@ exports.kakaoLogin = (req, res) => {
     `https://kauth.kakao.com/oauth/authorize` +
     `?client_id=${process.env.KAKAO_REST_API_KEY}` +
     `&redirect_uri=${encodeURIComponent(process.env.KAKAO_REDIRECT_URI)}` +
-    `&response_type=code`;
+    `&response_type=code` +
+    `&prompt=select_account`;
 
   return res.redirect(url);
 };
@@ -429,8 +361,9 @@ exports.kakaoCallback = async (req, res) => {
     const token = createToken(result.member);
     const responseData = buildLoginResponseData(result, token);
 
-    return res.send(renderLoginSuccessPage("카카오", responseData));
+    return res.redirect(buildFrontendRedirectUrl(responseData));
   } catch (err) {
+    console.error("카카오 로그인 상세 오류:", err.response?.data || err.message);
     return fail(
       res,
       "카카오 로그인 실패",
@@ -456,7 +389,7 @@ exports.googleLogin = (req, res) => {
     `&redirect_uri=${encodeURIComponent(process.env.GOOGLE_REDIRECT_URI)}` +
     `&response_type=code` +
     `&scope=openid%20email%20profile` +
-    `&prompt=select_account`;
+    `&prompt=consent%20select_account`;
 
   return res.redirect(url);
 };
@@ -525,8 +458,9 @@ exports.googleCallback = async (req, res) => {
     const token = createToken(result.member);
     const responseData = buildLoginResponseData(result, token);
 
-    return res.send(renderLoginSuccessPage("구글", responseData));
+    return res.redirect(buildFrontendRedirectUrl(responseData));
   } catch (err) {
+    console.error("구글 로그인 상세 오류:", err.response?.data || err.message);
     return fail(
       res,
       "구글 로그인 실패",
