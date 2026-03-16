@@ -15,6 +15,7 @@ function App() {
       localStorage.setItem('token', token);
       window.history.replaceState({}, document.title, "/");
       setPage('main');
+      return
     }
 
     const savedToken = localStorage.getItem('token')
