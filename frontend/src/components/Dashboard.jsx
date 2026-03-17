@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react'
 import profile from '../assets/chicken running machine.gif'
 import './Dashboard.css'
 import { api } from '../config/api'
+import bronze from '../assets/icons/ranked/bronze.png'
+import silver from '../assets/icons/ranked/silver.png'
+import gold from '../assets/icons/ranked/gold.png'
+import diamond from '../assets/icons/ranked/diamond.png'
 
 const Dashboard = () => {
   const [member, setMember] = useState(null)
@@ -93,16 +97,16 @@ const Dashboard = () => {
           <div className='rank-box'>
             <ul className='rank-league'>
               <li className='league'>
-                <img src="" alt="브론즈 티어" />
+                <img src={bronze} alt="브론즈 티어" className='league-badge' />
               </li>
               <li className='league'>
-                <img src="" alt="실버 티어" />
+                <img src={silver} alt="실버 티어" className='league-badge' />
               </li>
               <li className='league'>
-                <img src="" alt="골드 티어" />
+                <img src={gold} alt="골드 티어" className='league-badge' />
               </li>
               <li className='league'>
-                <img src="" alt="다이아 티어" />
+                <img src={diamond} alt="다이아 티어" className='league-badge' />
               </li>
             </ul>
             {/* league list */}
