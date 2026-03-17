@@ -76,6 +76,7 @@ function buildMemberPayload(member) {
     points: member.points ?? 0,
     isr_score: member.isr_score ?? 0,
     created_at: member.created_at ?? null,
+    profile_image: member.profile_image,
   };
 }
 
@@ -133,7 +134,7 @@ async function grantDefaultAchievementIfMissing(memberId) {
   }
 }
 
-async function createMember(provider, providerId, nickname) {
+async function createMember(provider, providerId, nickname, profile_image) {
   const safeNickname =
     nickname && nickname.trim()
       ? nickname.trim()
@@ -145,8 +146,8 @@ async function createMember(provider, providerId, nickname) {
     await conn.beginTransaction();
 
     const [result] = await conn.query(
-      "INSERT INTO members (provider, provider_id, nickname) VALUES (?, ?, ?)",
-      [provider, providerId, safeNickname]
+      "INSERT INTO members (provider, provider_id, nickname, profile_image) VALUES (?, ?, ?, ?)",
+      [provider, providerId, safeNickname, profile_image]
     );
 
     const newMemberId = result.insertId;
@@ -171,7 +172,7 @@ async function createMember(provider, providerId, nickname) {
   }
 }
 
-async function loginOrRegister(provider, providerId, nickname) {
+async function loginOrRegister(provider, providerId, nickname, profile_image) {
   const member = await findMember(provider, providerId);
 
   if (member) {
@@ -182,7 +183,7 @@ async function loginOrRegister(provider, providerId, nickname) {
     };
   }
 
-  const newMember = await createMember(provider, providerId, nickname);
+  const newMember = await createMember(provider, providerId, nickname, profile_image);
   return {
     isNewUser: true,
     member: newMember,
@@ -332,8 +333,8 @@ async function getKakaoUserInfo(accessToken) {
     providerId: String(data.id),
     nickname:
       data?.properties?.nickname ||
-      data?.kakao_account?.profile?.nickname ||
-      "kakao_user",
+      data?.kakao_account?.profile?.nickname || "kakao_user",
+    profile_image: data?.kakao_account?.profile?.profile_image_url || ""
   };
 }
 
@@ -355,7 +356,8 @@ exports.kakaoCallback = async (req, res) => {
     const result = await loginOrRegister(
       user.provider,
       user.providerId,
-      user.nickname
+      user.nickname,
+      user.profile_image,
     );
 
     const token = createToken(result.member);
