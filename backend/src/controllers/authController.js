@@ -19,24 +19,15 @@ function fail(res, message, error = null, status = 500) {
   });
 }
 
-/* 업적 데이터 */
-const ACHIEVEMENTS = [
-  "Winning Streak",
-  "Drawdown Survivor",
-  "Risk Manager",
-  "Chart Reader",
-  "Trend Rider",
-];
-
-/* 칭호/티어 계산 */
+/* 칭호/티어 계산 — achievements 테이블의 실제 name 값 사용 */
 function getTitle(member) {
   const isr = Number(member.isr_score || 0);
   const points = Number(member.points || 0);
 
-  if (isr >= 80) return "철벽의 방어자";
-  if (isr >= 60) return "리스크 전략가";
-  if (points >= 100000) return "야수의 심장";
-  return "시장 입문자";
+  if (isr >= 90) return "💎 전설의 투자자";
+  if (isr >= 80) return "🛡️ 철벽의 방어자";
+  if (points >= 100000) return "🦁 야수의 심장";
+  return "🌱 Vivere 주린이";
 }
 
 function getTier(member) {
@@ -46,23 +37,26 @@ function getTier(member) {
   if (isr >= 80) return "플래티넘 II";
   if (isr >= 65) return "골드 III";
   if (isr >= 50) return "실버 IV";
-  return "브론즈 I";
+  return "브론즈 V";
 }
 
-function getRecentAchievements(member) {
-  const result = [];
-  const isr = Number(member.isr_score || 0);
-  const points = Number(member.points || 0);
+/* DB 에서 회원의 실제 업적 목록을 조회 (최근 획득순 3개) */
+async function getRecentAchievements(memberId) {
+  const [rows] = await db.promise().query(
+    `SELECT a.name
+     FROM member_achievements ma
+     JOIN achievements a ON ma.ach_id = a.ach_id
+     WHERE ma.member_id = ?
+     ORDER BY ma.obtained_at DESC
+     LIMIT 3`,
+    [memberId]
+  );
 
-  if (points >= 10000) result.push("Winning Streak");
-  if (isr >= 50) result.push("Risk Manager");
-  if (points >= 5000) result.push("Chart Reader");
-
-  if (result.length === 0) {
-    result.push("Getting Started");
+  if (!rows.length) {
+    return ["🌱 Vivere 주린이"];
   }
 
-  return result.slice(0, 3);
+  return rows.map((r) => r.name);
 }
 
 function buildMemberPayload(member) {
@@ -80,11 +74,11 @@ function buildMemberPayload(member) {
   };
 }
 
-function buildLoginResponseData(result, token) {
+async function buildLoginResponseData(result, token) {
   return {
     isNewUser: result.isNewUser,
     member: buildMemberPayload(result.member),
-    recentAchievements: getRecentAchievements(result.member),
+    recentAchievements: await getRecentAchievements(result.member.member_id),
     token,
   };
 }
@@ -176,6 +170,14 @@ async function loginOrRegister(provider, providerId, nickname, profile_image) {
   const member = await findMember(provider, providerId);
 
   if (member) {
+    if (profile_image) {
+      await db.promise().query(
+        "UPDATE members SET profile_image = ? WHERE member_id = ?",
+        [profile_image, member.member_id]
+      );
+      member.profile_image = profile_image; // 프론트로 보낼 객체도 최신 프사로 갱신
+    }
+
     await grantDefaultAchievementIfMissing(member.member_id);
     return {
       isNewUser: false,
@@ -221,7 +223,7 @@ exports.getMe = async (req, res) => {
 
     return success(res, "현재 로그인 사용자 조회 성공", {
       member: buildMemberPayload(member),
-      recentAchievements: getRecentAchievements(member),
+      recentAchievements: await getRecentAchievements(member.member_id),
     });
   } catch (err) {
     return fail(res, "회원 조회 실패", err.message, 500);
@@ -246,7 +248,7 @@ exports.updateMe = async (req, res) => {
 
     return success(res, "회원 정보 수정 성공", {
       member: buildMemberPayload(updatedMember),
-      recentAchievements: getRecentAchievements(updatedMember),
+      recentAchievements: await getRecentAchievements(updatedMember.member_id),
       token: newToken,
     });
   } catch (err) {
@@ -275,11 +277,30 @@ exports.getProfileMeta = async (req, res) => {
     return success(res, "프로필 메타 조회 성공", {
       title: getTitle(member),
       tier: getTier(member),
-      recentAchievements: getRecentAchievements(member),
-      availableAchievements: ACHIEVEMENTS,
+      recentAchievements: await getRecentAchievements(member.member_id),
     });
   } catch (err) {
     return fail(res, "프로필 메타 조회 실패", err.message, 500);
+  }
+};
+
+/* 토큰 재발급 */
+exports.refreshToken = async (req, res) => {
+  try {
+    const member = await findMemberById(req.user.member_id);
+
+    if (!member) {
+      return fail(res, "회원 정보를 찾을 수 없습니다.", null, 404);
+    }
+
+    const newToken = createToken(member);
+
+    return success(res, "토큰 재발급 성공", {
+      token: newToken,
+      member: buildMemberPayload(member),
+    });
+  } catch (err) {
+    return fail(res, "토큰 재발급 실패", err.message, 500);
   }
 };
 
@@ -321,12 +342,23 @@ async function getKakaoAccessToken(code) {
 
 async function getKakaoUserInfo(accessToken) {
   const response = await axios.get("https://kapi.kakao.com/v2/user/me", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers: { Authorization: `Bearer ${accessToken}`, },
   });
 
   const data = response.data;
+
+  const profileNeedsAgreement =
+    data?.kakao_account?.profile_needs_agreement;
+
+  if (profileNeedsAgreement) {
+    console.warn("카카오 프로필 동의 필요 - 콘솔에서 동의항목 설정 확인 필요");
+  }
+
+  const profile_image =
+    data?.kakao_account?.profile?.profile_image_url ||
+    data?.kakao_account?.profile?.thumbnail_image_url ||
+    data?.properties?.profile_image ||
+    null;
 
   return {
     provider: "kakao",
@@ -334,7 +366,7 @@ async function getKakaoUserInfo(accessToken) {
     nickname:
       data?.properties?.nickname ||
       data?.kakao_account?.profile?.nickname || "kakao_user",
-    profile_image: data?.kakao_account?.profile?.profile_image_url || ""
+    profile_image,
   };
 }
 
@@ -361,7 +393,7 @@ exports.kakaoCallback = async (req, res) => {
     );
 
     const token = createToken(result.member);
-    const responseData = buildLoginResponseData(result, token);
+    const responseData = await buildLoginResponseData(result, token);
 
     return res.redirect(buildFrontendRedirectUrl(responseData));
   } catch (err) {
@@ -385,12 +417,13 @@ exports.googleLogin = (req, res) => {
     return fail(res, "구글 환경변수가 설정되지 않았습니다.", null, 500);
   }
 
+  const scope = encodeURIComponent("openid email profile");
   const url =
     `https://accounts.google.com/o/oauth2/v2/auth` +
     `?client_id=${process.env.GOOGLE_CLIENT_ID}` +
     `&redirect_uri=${encodeURIComponent(process.env.GOOGLE_REDIRECT_URI)}` +
     `&response_type=code` +
-    `&scope=openid%20email%20profile` +
+    `&scope=${scope}` +
     `&prompt=consent%20select_account`;
 
   return res.redirect(url);
@@ -433,6 +466,7 @@ async function getGoogleUserInfo(accessToken) {
     provider: "google",
     providerId: String(data.id),
     nickname: data.name || "google_user",
+    profile_image: data.picture || "",
   };
 }
 
@@ -454,11 +488,12 @@ exports.googleCallback = async (req, res) => {
     const result = await loginOrRegister(
       user.provider,
       user.providerId,
-      user.nickname
+      user.nickname,
+      user.profile_image,
     );
 
     const token = createToken(result.member);
-    const responseData = buildLoginResponseData(result, token);
+    const responseData = await buildLoginResponseData(result, token);
 
     return res.redirect(buildFrontendRedirectUrl(responseData));
   } catch (err) {

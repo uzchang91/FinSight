@@ -24,7 +24,7 @@
   --progress-bar: linear-gradient(90deg, color-mix(in oklab, var(--primary), transparent 0%), color-mix(in oklab, #001F7A, transparent 0%));
   --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
   
-  --shadow-1: color-mix(in oklab, var(--text) 12%, transparent);
+  --shadow-1: color-mix(in oklab, var(--text) 24%, transparent);
   --shadow-2: color-mix(in oklab, var(--text) 8%, transparent);
 }
 

@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import './Profile.css'
 import notification from '../assets/icons/notification.svg'
 import account from '../assets/icons/account.svg'
 import logout from '../assets/icons/logout.svg'
-import defaultProfile from '../assets/chicken running machine.gif'
+import defaultProfile from '../assets/chicken running machine.png'
 import vivereBeginner from '../assets/icons/achievement/vivere_beginner.png'
 import { api } from '../config/api.js'
 
 const Profile = () => {
+
   const [member, setMember] = useState(null)
   const [recentAchievements, setRecentAchievements] = useState([])
   const [loading, setLoading] = useState(true)
@@ -28,6 +29,8 @@ const Profile = () => {
 
     loadProfile()
   }, [])
+
+  const profileImg = member?.profile_image || defaultProfile;
 
   const handleLogout = () => {
     if (!confirm("로그아웃 하시겠어요?")) return;
@@ -74,7 +77,9 @@ const Profile = () => {
 
         <div className='profile-master'>
           <div className='profile-account'>
-            <img src={member?.profile_image || defaultProfile} alt="profile image" className='profile-pic' />
+            <div className='glowing-container' style={{ '--profile-url': `url(${profileImg})` }}>
+              <img src={profileImg} alt="profile image" className='profile-pic' />
+            </div>
             <div className='profile-premium'>👑</div>
           </div>
 

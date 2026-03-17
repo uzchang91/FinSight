@@ -56,11 +56,58 @@
   font-size: 1rem;
 }
 
+.glowing-container {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.glowing-container img {
+  position: relative;
+  /* width: 100%; */
+  z-index: 2;
+
+  display: block;
+
+  border-radius: 8.5rem;
+}
+
+.glowing-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Use the same image as the glow source */
+  background-image: var(--profile-url);
+  background-size: cover;
+  background-position: center;
+
+  /* The "Magic" filters */
+  filter: blur(0.5rem) brightness(1.2) saturate(1);
+  opacity: 0.72;
+
+  /* Place it behind the main image */
+  border-radius: 50%;
+  
+  z-index: -1;
+  transform: scale(1.12);
+}
+
+.profile-pic {
+  width: 8.5rem;
+  height: 8.5rem;
+
+  border-radius: 8.5rem;
+}
+
 .profile-premium {
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 5;
 
   width: 2.5rem;
   height: 1.5rem;
@@ -69,13 +116,6 @@
   background-color: var(--warning-highlight);
   border: 2px solid var(--warning);
   border-radius: 1rem;
-}
-
-.profile-pic {
-  width: 8.5rem;
-  height: 8.5rem;
-
-  border-radius: 8.5rem;
 }
 
 .profile-name {
