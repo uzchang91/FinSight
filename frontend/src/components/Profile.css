@@ -12,6 +12,8 @@
 .profile-content {
   width: 100%;
   box-sizing: border-box;
+  overflow-y: scroll;
+  
 
   display: flex;
   flex-direction: column;
@@ -219,4 +221,126 @@
 .profile-stock h2 {
   font-size: 1.125rem;
   font-weight: 600;
+}
+ 
+/* ── 인라인 편집 모드 ── */
+.set-icons--active {
+  background: var(--primary-highlight);
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+ 
+/* 프로필 사진 — 편집 가능 상태 */
+.glowing-container--editable {
+  cursor: pointer;
+}
+ 
+.avatar-edit-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 3;
+}
+ 
+.glowing-container--editable:hover .avatar-edit-overlay {
+  opacity: 1;
+}
+ 
+/* 닉네임 인라인 편집 */
+.nickname-edit-wrap {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.15s ease;
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+.nickname-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+ 
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--primary);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+ 
+.nickname-input:focus {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+ 
+.nickname-error {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin: 0;
+}
+ 
+.nickname-actions {
+  width: 100%;
+  display: flex;
+  gap: 0.4rem;
+}
+ 
+.edit-btn {
+  padding: 0.5rem 0;
+  
+  flex: 1;
+  border: none;
+  border-radius: 0.75rem;
+
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: opacity 0.3s ease, transform 0.2s ease;
+}
+ 
+.edit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+ 
+.edit-btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+ 
+.edit-btn--cancel {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+ 
+.edit-btn--cancel:not(:disabled):hover {
+  background: var(--border);
+}
+ 
+.edit-btn--save {
+  background: var(--btn-prim, var(--primary));
+  color: var(--text);
+}
+ 
+.edit-btn--save:not(:disabled):hover {
+  opacity: 0.85;
 }

@@ -33,11 +33,10 @@ function getTitle(member) {
 function getTier(member) {
   const isr = Number(member.isr_score || 0);
 
-  if (isr >= 90) return "다이아 I";
-  if (isr >= 80) return "플래티넘 II";
-  if (isr >= 65) return "골드 III";
-  if (isr >= 50) return "실버 IV";
-  return "브론즈 V";
+  if (isr >= 90) return "다이아";
+  if (isr >= 65) return "골드";
+  if (isr >= 50) return "실버";
+  return "브론즈";
 }
 
 /* DB 에서 회원의 실제 업적 목록을 조회 (최근 획득순 3개) */
