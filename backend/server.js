@@ -8,7 +8,9 @@ const authRoutes = require("./src/routes/authRoutes");
 const stockRoutes = require("./src/routes/stockRoutes");
 const quizRoutes = require("./src/routes/quizRoutes");
 const achievementRoutes = require("./src/routes/achievementRoutes");
-// const educationRoutes = require("./src/routes/educationRoutes");
+const educationRoutes = require("./src/routes/educationRoutes");
+const isrRoutes = require("./src/routes/isrRoutes");
+const rankingRoutes = require("./src/routes/rankingRoutes");
 
 const app = express();
 
@@ -39,8 +41,10 @@ app.use("/", router);
 app.use("/api/auth", authRoutes);
 app.use("/api/stocks", stockRoutes);
 app.use("/api/quiz", quizRoutes);
-// app.use("/api/education", educationRoutes);
+app.use("/api/education", educationRoutes);
 app.use("/api", achievementRoutes);
+app.use("/api/isr", isrRoutes);
+app.use("/api/ranking", rankingRoutes);
 
 app.get("/__whoami", (req, res) => {
   res.json({

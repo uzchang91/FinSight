@@ -14,6 +14,7 @@
   
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
+  --primary-highlight2: color-mix(in oklab, var(--primary) 24%, var(--bg) 96%);
   --danger-highlight: color-mix(in oklab, var(--danger) 4%, var(--bg) 96%);
   --warning-highlight:  color-mix(in oklab, var(--warning) 24%, var(--bg));
   

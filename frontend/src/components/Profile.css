@@ -12,7 +12,7 @@
 .profile-content {
   width: 100%;
   box-sizing: border-box;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   
 
   display: flex;
@@ -22,7 +22,7 @@
 
 .profile-set {
   padding: 0 1rem;
-
+  
   display: flex;
   justify-content: space-between;
   gap: 1.5rem;
@@ -30,8 +30,10 @@
 
 .set-icons {
   padding: 1rem;
+
   background: var(--bg) transparent 100;
   border-radius: 0.75rem;
+  
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -102,6 +104,7 @@
   height: 8.5rem;
 
   border-radius: 8.5rem;
+  object-fit: cover
 }
 
 .profile-premium {
@@ -225,9 +228,9 @@
  
 /* ── 인라인 편집 모드 ── */
 .set-icons--active {
-  background: var(--primary-highlight);
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  background: var(--primary-highlight2);
+  border: 2px solid var(--primary);
+  /* outline-offset: 2px; */
 }
  
 /* 프로필 사진 — 편집 가능 상태 */

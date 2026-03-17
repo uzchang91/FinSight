@@ -1,64 +1,199 @@
-// isrController.js (현재 테이블 기준 안정화)
+function success(res, message, data = null, status = 200) {
+  return res.status(status).json({
+    success: true,
+    message,
+    data,
+  });
+}
 
-const db = require('../db')
-const { calculateISR } = require('./isrEngine')
+function fail(res, message, error = null, status = 500) {
+  return res.status(status).json({
+    success: false,
+    message,
+    error,
+  });
+}
 
-exports.calculateUserISR = async (req, res) => {
-  const { member_id } = req.params
-
-  try {
-    // 1. 로그 조회 (현재 gameLog 구조 그대로)
-    const [logs] = await db.query(
-      `SELECT 
-        log_id,
-        member_id,
-        prediction,
-        bet_amount,
-        pnl_amount,
-        penalty_amount,
-        status
-      FROM gameLog
-      WHERE member_id = ?`,
-      [member_id]
+async function saveISR(memberId, result) {
+  await db.promise().query(
+    `
+    INSERT INTO isr_chart
+    (
+      member_id,
+      isr_accuracy,
+      isr_risk,
+      isr_strategy,
+      isr_stability,
+      isr_discipline,
+      isr_adaptability,
+      isr_score
     )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+    [
+      memberId,
+      result.accuracy,
+      result.risk,
+      result.strategy,
+      result.stability,
+      result.discipline,
+      result.adaptability,
+      result.isr,
+    ]
+  );
 
-    if (!logs || logs.length === 0) {
-      return res.json({ message: 'No logs', isr: 0 })
+  await db.promise().query(
+    `UPDATE members SET isr_score = ? WHERE member_id = ?`,
+    [result.isr, memberId]
+  );
+}
+
+/* =========================
+   특정 회원 ISR 계산
+========================= */
+exports.calculateUserISR = async (req, res) => {
+  try {
+    const memberId = Number(req.params.member_id);
+
+    if (!memberId) {
+      return fail(res, "member_id가 올바르지 않습니다.", null, 400);
     }
 
-    // 2. ISR 계산
-    const result = calculateISR(logs)
+    const [logRows] = await db.promise().query(
+      `SELECT COUNT(*) AS cnt FROM gameLog WHERE member_id = ?`,
+      [memberId]
+    );
 
-    // 3. isr_chart 저장 (현재 테이블 그대로)
-    await db.query(
-      `INSERT INTO isr_chart 
-      (member_id, isr_accuracy, isr_risk, isr_strategy, isr_stability, isr_discipline, isr_adaptability, isr_score)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        member_id,
-        result.accuracy,
-        result.risk,
-        result.strategy,
-        result.stability,
-        result.discipline,
-        result.adaptability,
-        result.isr,
-      ]
-    )
+    if (!logRows[0]?.cnt) {
+      const emptyResult = {
+        accuracy: 0,
+        risk: 0,
+        stability: 0,
+        discipline: 0,
+        strategy: 0,
+        adaptability: 0,
+        isr: 0,
+      };
 
-    // 4. members 업데이트
-    await db.query(
-      `UPDATE members SET isr_score = ? WHERE member_id = ?`,
-      [result.isr, member_id]
-    )
+      await db.promise().query(
+        `UPDATE members SET isr_score = 0 WHERE member_id = ?`,
+        [memberId]
+      );
 
-    // 5. 응답
-    res.json({
-      message: 'ISR calculated',
-      data: result,
-    })
+      return success(res, "로그가 없어 ISR 0으로 처리되었습니다.", emptyResult);
+    }
+
+    const result = await calculateISR(memberId);
+    await saveISR(memberId, result);
+
+    return success(res, "ISR 계산 완료", result);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'ISR calculation failed' })
+    console.error("calculateUserISR error =", err);
+    return fail(res, "ISR 계산 실패", err.message, 500);
   }
-}
+};
+
+/* =========================
+   전체 회원 ISR 재계산
+========================= */
+exports.calculateAllISR = async (req, res) => {
+  try {
+    const [members] = await db.promise().query(
+      `SELECT member_id FROM members ORDER BY member_id ASC`
+    );
+
+    const results = [];
+
+    for (const member of members) {
+      const memberId = Number(member.member_id);
+
+      const [logRows] = await db.promise().query(
+        `SELECT COUNT(*) AS cnt FROM gameLog WHERE member_id = ?`,
+        [memberId]
+      );
+
+      if (!logRows[0]?.cnt) {
+        await db.promise().query(
+          `UPDATE members SET isr_score = 0 WHERE member_id = ?`,
+          [memberId]
+        );
+
+        results.push({
+          memberId,
+          accuracy: 0,
+          risk: 0,
+          stability: 0,
+          discipline: 0,
+          strategy: 0,
+          adaptability: 0,
+          isr: 0,
+        });
+
+        continue;
+      }
+
+      const result = await calculateISR(memberId);
+      await saveISR(memberId, result);
+
+      results.push({
+        memberId,
+        ...result,
+      });
+    }
+
+    return success(res, "전체 회원 ISR 재계산 완료", results);
+  } catch (err) {
+    console.error("calculateAllISR error =", err);
+    return fail(res, "전체 회원 ISR 재계산 실패", err.message, 500);
+  }
+};
+
+/* =========================
+   특정 회원 최신 ISR 조회
+========================= */
+exports.getLatestISR = async (req, res) => {
+  try {
+    const memberId = Number(req.params.member_id);
+
+    if (!memberId) {
+      return fail(res, "member_id가 올바르지 않습니다.", null, 400);
+    }
+
+    const [rows] = await db.promise().query(
+      `
+      SELECT
+        member_id,
+        isr_accuracy AS accuracy,
+        isr_risk AS risk,
+        isr_strategy AS strategy,
+        isr_stability AS stability,
+        isr_discipline AS discipline,
+        isr_adaptability AS adaptability,
+        isr_score AS isr,
+        created_at
+      FROM isr_chart
+      WHERE member_id = ?
+      ORDER BY created_at DESC, chart_id DESC
+      LIMIT 1
+      `,
+      [memberId]
+    );
+
+    if (!rows.length) {
+      return success(res, "저장된 ISR 데이터가 없습니다.", {
+        accuracy: 0,
+        risk: 0,
+        stability: 0,
+        discipline: 0,
+        strategy: 0,
+        adaptability: 0,
+        isr: 0,
+      });
+    }
+
+    return success(res, "최신 ISR 조회 성공", rows[0]);
+  } catch (err) {
+    console.error("getLatestISR error =", err);
+    return fail(res, "최신 ISR 조회 실패", err.message, 500);
+  }
+};

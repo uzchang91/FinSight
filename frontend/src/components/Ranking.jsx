@@ -1,6 +1,11 @@
 import React from 'react'
-import profile from '../assets/chicken running machine.gif'
 import './Ranking.css'
+import profile from '../assets/chicken running machine.gif'
+import bronze from '../assets/icons/ranked/bronze.png'
+import silver from '../assets/icons/ranked/silver.png'
+import gold from '../assets/icons/ranked/gold.png'
+import diamond from '../assets/icons/ranked/diamond.png'
+
 
 const currentSeason = '2026-S1'
 const myMemberId = 2

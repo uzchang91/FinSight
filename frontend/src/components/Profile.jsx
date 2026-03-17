@@ -11,6 +11,7 @@ const Profile = () => {
 
   const [member, setMember] = useState(null)
   const [recentAchievements, setRecentAchievements] = useState([])
+  const [gameLog, setGameLog] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -24,19 +25,34 @@ const Profile = () => {
   const fileInputRef = useRef(null)
   const nicknameInputRef = useRef(null)
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const data = await api.get('/api/auth/me')
-        setMember(data.data.member)
-        setRecentAchievements(data.data.recentAchievements || [])
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
+  const loadProfile = async () => {
+    try {
+      const data = await api.get('/api/auth/me');
+      setMember(data.data.member);
+      setRecentAchievements(data.data.recentAchievements || []);
+      setGameLog(data.data.gameLog);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
+  useEffect(() => {
+    // Initial load
     loadProfile()
+
+    // Listen for the custom event
+    const handleRefresh = () => {
+      console.log('Refreshing profile due to points update...')
+      loadProfile()
+    }
+
+    window.addEventListener('pointsUpdated', handleRefresh)
+
+    // Clean up listener on unmount
+    return () => {
+      window.removeEventListener('pointsUpdated', handleRefresh)
+    }
   }, [])
 
   const profileImg = member?.profile_image || defaultProfile
@@ -220,14 +236,14 @@ const Profile = () => {
           <div className='stock-list'>
             <div className='stock-content'>
               <span className='description-top'>원금</span>
-              <p className='description-slave'>{member?.points ?? 0}<span>pt</span></p>
+              <p className='description-slave'>{member?.bet_amount?? 0}<span>pt</span></p>
             </div>
             <div className='stock-content'>
-              <span className='description-top'>총수익</span>
-              <p className='description-slave gain'>{member?.points ?? 0}<span>pt</span></p>
+              <span className='description-top'>총순익</span>
+              <p className='description-slave gain'>{member?.pnl_amount?? 0}<span>pt</span></p>
             </div>
             <div className='stock-content'>
-              <span className='description-top'>수익률</span>
+              <span className='description-top'>변동률</span>
               <p className='description-slave gain'>0<span>%</span></p>
             </div>
           </div>
