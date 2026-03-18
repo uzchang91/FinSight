@@ -359,7 +359,7 @@ const Dashboard = () => {
                       />
                       <span>{rankMember.nickname || '사용자'}</span>
                     </div>
-                    <div className='rank-num'>
+                    <div className='score-num'>
                       {Number(rankMember.isr_score || 0).toLocaleString('ko-KR')}
                     </div>
                   </li>
