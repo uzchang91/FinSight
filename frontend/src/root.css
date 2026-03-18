@@ -63,14 +63,18 @@ body {
 }
 
 .achievment-item {
+  width: 3.5rem;
+
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
 }
 
 .img-block {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
 
   border-radius: 1rem;
   background-color: var(--border);

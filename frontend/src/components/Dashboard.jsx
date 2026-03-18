@@ -54,7 +54,7 @@ const Dashboard = () => {
           api.get('/api/stocks/owned'),
           api.get('/api/isr/me'),
           api.get('/api/ranking'),
-          api.get('/api/quiz/status/me'),
+          api.get('/api/quizzes/status/me'),
         ])
 
         if (memberRes.status === 'fulfilled') {
@@ -186,20 +186,19 @@ const Dashboard = () => {
       <div className='breadcrumb'>대시보드</div>
       <div className='dash-title'>
         <h1>어서오세요, <strong>{member?.nickname || '사용자'}</strong>님!</h1>
-        <p>일일 퀘스트 <span className='daily-percent'>0% 달성했어요!</span></p>
+        <p>일일 퀘스트 <span className='daily-percent'>{Number(questStatus.dailyPercent || 0).toFixed(2)}% 달성했어요!</span></p>
       </div>
       {/* content */}
       <div className='dash-master'> {/* grid */}
         <div>
           <div className='dash-slave'>
             <div className='dash-box'>
-              <span>⏰진행 현황</span>
+              <span className='dash-summary'>⏰진행 현황</span>
               <div className='dash-tool'>
                 <div className='tool-box'>
-                  <span>📋퀘스트 현황</span>
+                  <span className='box-title'>📋퀘스트 달성률</span>
                   <div className='quest-status-box'>
                     <div className='quest-summary'>
-                      <div className='quest-summary-label'>오늘 달성률</div>
                       <div className='quest-summary-score'>
                         {Number(questStatus.dailyPercent || 0).toFixed(2)}%
                       </div>
@@ -233,9 +232,8 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className='tool-box'>
-                  <span>🎯ISR 지표</span>
+                  <span className='box-title'>🎯현재 ISR</span>
                   <div className='isr-summary'>
-                    <div className='isr-summary-label'>현재 ISR</div>
                     <div className='isr-summary-score'>{formatScore(isrData.isr)}</div>
                     <div className='isr-summary-desc'>
                       판단력·생존력·성과 품질·행동 통제력·사고 체계·시장 대응력 종합
@@ -270,7 +268,7 @@ const Dashboard = () => {
             {/* stocks */}
             <div className='dash-thread'>
               <div className='dash-box'>
-                <span>💖찜한 주식</span>
+                <span className='dash-summary'>💖찜한 주식</span>
                 <div className='stock-box'>
                   <ul className='stock-list'>
                     <li className='stock-item stock-head liked-grid'>
@@ -296,7 +294,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className='dash-box'>
-                <span>💹보유 주식</span>
+                <span className='dash-summary'>💹보유 주식</span>
                 <div className='stock-box'>
                   <ul className='stock-list'>
                     <li className='stock-item stock-head liked-grid'>
@@ -362,7 +360,7 @@ const Dashboard = () => {
                       <span>{rankMember.nickname || '사용자'}</span>
                     </div>
                     <div className='rank-num'>
-                      {Number(rankMember.points || 0).toLocaleString('ko-KR')}
+                      {Number(rankMember.isr_score || 0).toLocaleString('ko-KR')}
                     </div>
                   </li>
                 ))

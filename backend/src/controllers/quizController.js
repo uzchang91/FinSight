@@ -9,18 +9,6 @@ function fail(res, message, error = null, status = 500) {
   return res.status(status).json({ success: false, message, error });
 }
 
-function getTodayRange() {
-  const now = new Date();
-
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(now);
-  end.setHours(23, 59, 59, 999);
-
-  return { start, end };
-}
-
 exports.getAllQuizzes = async (req, res) => {
   try {
     const { difficulty } = req.query;
@@ -167,8 +155,6 @@ exports.getMyQuestStatus = async (req, res) => {
       return fail(res, "사용자 정보가 없습니다.", null, 401);
     }
 
-    const { start, end } = getTodayRange();
-
     const [totalQuizRows] = await db.promise().query(
       "SELECT COUNT(*) AS totalCount FROM quizzes"
     );
@@ -178,9 +164,9 @@ exports.getMyQuestStatus = async (req, res) => {
       SELECT COUNT(*) AS todaySolved
       FROM member_quiz_history
       WHERE member_id = ?
-        AND solved_at BETWEEN ? AND ?
+        AND DATE(solved_at) = CURDATE()
       `,
-      [memberId, start, end]
+      [memberId]
     );
 
     const [todayCorrectRows] = await db.promise().query(
@@ -189,9 +175,9 @@ exports.getMyQuestStatus = async (req, res) => {
       FROM member_quiz_history
       WHERE member_id = ?
         AND is_correct = 1
-        AND solved_at BETWEEN ? AND ?
+        AND DATE(solved_at) = CURDATE()
       `,
-      [memberId, start, end]
+      [memberId]
     );
 
     const [totalSolvedRows] = await db.promise().query(

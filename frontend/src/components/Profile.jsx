@@ -213,7 +213,7 @@ const Profile = () => {
           <div className='profile-stats'>
             <div className='stats-description'>
               <span className='description-top'>{member?.tier || '브론즈'}</span>
-              <img src={""} alt="" /><p>{member?.rank_num ?? 999}</p>
+              <p>{member?.rank_num ?? 999}</p>
             </div>
             <hr />
             <div className='stats-description'>
@@ -257,8 +257,7 @@ const Profile = () => {
                 <div className='achievment-item' key={`${item}-${index}`}>
                   <img src={vivereBeginner} alt="achievments" className='img-block' />
                   <div className='achievment-description'>
-                    <p className='description-slave'>{item}</p>
-                    <span className='description-top'>최근 획득 업적</span>
+                    <span className='achievement-slave'>{item}</span>
                   </div>
                 </div>
               ))
@@ -266,8 +265,7 @@ const Profile = () => {
               <div className='achievment-item'>
                 <img src={vivereBeginner} alt="achievments" className='img-block' />
                 <div className='achievment-description'>
-                  <p className='description-slave'>업적 없음</p>
-                  <span className='description-top'>표시할 업적이 없습니다.</span>
+                  <span className='achievement-slave'>표시할 업적이 없습니다.</span>
                 </div>
               </div>
             )}
