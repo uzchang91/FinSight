@@ -156,7 +156,8 @@
 }
 
 .rank-league {
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
+  list-style-type: none;
 
   display: flex;
   justify-content: space-around;
@@ -164,23 +165,22 @@
   background-color: var(--primary-highlight);
   border-bottom: 1px solid var(--border);
   border-radius: 0.75rem 0.75rem 0 0;
-
-  list-style-type: none;
 }
 
 .league {
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .league-badge {
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .rank-list {
   height: 512px;
   padding: 1rem;
+  list-style-type: none;
   box-sizing: border-box;
 
   display: flex;

@@ -112,7 +112,7 @@ const Profile = () => {
     localStorage.removeItem('nickname');
     sessionStorage.clear();
 
-    alert('안전하게 로그아웃 되었습니다! 👋');
+    alert('안전하게 로그아웃 되었습니다!');
     window.location.href = '/';
   }
 
