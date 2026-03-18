@@ -37,7 +37,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-
   useEffect(() => {
     const loadDashboard = async () => {
       try {
@@ -64,7 +63,10 @@ const Dashboard = () => {
             payload?.data ||
             payload?.member ||
             null
+
           setMember(memberData)
+        } else {
+          setMember(null)
         }
 
         if (likedRes.status === 'fulfilled') {
@@ -102,8 +104,17 @@ const Dashboard = () => {
 
         if (rankingRes.status === 'fulfilled') {
           const payload = rankingRes.value
-          const rankingData = payload?.data || []
-          setRankingList(Array.isArray(rankingData) ? rankingData : [])
+          const rankingData = payload?.data || {}
+          const leagues = rankingData?.leagues || {}
+
+          const mergedRanking = [
+            ...(leagues.diamond || []),
+            ...(leagues.gold || []),
+            ...(leagues.silver || []),
+            ...(leagues.bronze || []),
+          ]
+
+          setRankingList(Array.isArray(mergedRanking) ? mergedRanking : [])
         } else {
           setRankingList([])
         }
@@ -172,6 +183,11 @@ const Dashboard = () => {
     [isrData]
   )
 
+  const todaySolvedDisplay = Math.min(
+    Number(questStatus.todaySolved || 0),
+    Number(questStatus.dailyGoal || 3)
+  )
+
   if (loading) {
     return <div className='dash-container'>대시보드 불러오는 중...</div>
   }
@@ -182,14 +198,21 @@ const Dashboard = () => {
 
   return (
     <div className='dash-container'>
-      {/* breadcrumb */}
       <div className='breadcrumb'>대시보드</div>
+
       <div className='dash-title'>
-        <h1>어서오세요, <strong>{member?.nickname || '사용자'}</strong>님!</h1>
-        <p>일일 퀘스트 <span className='daily-percent'>0% 달성했어요!</span></p>
+        <h1>
+          어서오세요, <strong>{member?.nickname || '사용자'}</strong>님!
+        </h1>
+        <p>
+          일일 퀘스트{' '}
+          <span className='daily-percent'>
+            {Number(questStatus.dailyPercent || 0).toFixed(2)}% 달성했어요!
+          </span>
+        </p>
       </div>
-      {/* content */}
-      <div className='dash-master'> {/* grid */}
+
+      <div className='dash-master'>
         <div>
           <div className='dash-slave'>
             <div className='dash-box'>
@@ -212,26 +235,32 @@ const Dashboard = () => {
                       <li className='quest-item'>
                         <span>오늘 푼 퀴즈</span>
                         <strong>
-                          {questStatus.todaySolved} / {questStatus.dailyGoal}
+                          {todaySolvedDisplay} / {questStatus.dailyGoal}
                         </strong>
                       </li>
+
                       <li className='quest-item'>
                         <span>오늘 정답 수</span>
                         <strong>{questStatus.todayCorrect}</strong>
                       </li>
+
                       <li className='quest-item'>
                         <span>누적 풀이 수</span>
                         <strong>
                           {questStatus.totalSolved} / {questStatus.totalCount}
                         </strong>
                       </li>
+
                       <li className='quest-item'>
                         <span>누적 정답률</span>
-                        <strong>{Number(questStatus.accuracy || 0).toFixed(2)}%</strong>
+                        <strong>
+                          {Number(questStatus.accuracy || 0).toFixed(2)}%
+                        </strong>
                       </li>
                     </ul>
                   </div>
                 </div>
+
                 <div className='tool-box'>
                   <span>🎯ISR 지표</span>
                   <div className='isr-summary'>
@@ -267,7 +296,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* stocks */}
             <div className='dash-thread'>
               <div className='dash-box'>
                 <span>💖찜한 주식</span>
@@ -295,6 +323,7 @@ const Dashboard = () => {
                   </ul>
                 </div>
               </div>
+
               <div className='dash-box'>
                 <span>💹보유 주식</span>
                 <div className='stock-box'>
@@ -327,42 +356,41 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* ranks */}
         <div className='dash-rank'>
           <span>🏆리그 순위표</span>
           <div className='rank-box'>
             <ul className='rank-league'>
               <li className='league'>
-                <img src={bronze} alt="브론즈 티어" className='league-badge' />
+                <img src={bronze} alt='브론즈 티어' className='league-badge' />
               </li>
               <li className='league'>
-                <img src={silver} alt="실버 티어" className='league-badge' />
+                <img src={silver} alt='실버 티어' className='league-badge' />
               </li>
               <li className='league'>
-                <img src={gold} alt="골드 티어" className='league-badge' />
+                <img src={gold} alt='골드 티어' className='league-badge' />
               </li>
               <li className='league'>
-                <img src={diamond} alt="다이아 티어" className='league-badge' />
+                <img src={diamond} alt='다이아 티어' className='league-badge' />
               </li>
             </ul>
-            {/* league list */}
+
             <ul className='rank-list'>
               {rankingList.length === 0 ? (
                 <li className='stock-empty'>랭킹 데이터가 없습니다.</li>
               ) : (
-                rankingList.map((rankMember, index) => (
-                  <li key={rankMember.member_id} className='rank-item'>
+                rankingList.slice(0, 7).map((rankMember, index) => (
+                  <li key={rankMember.memberId} className='rank-item'>
                     <div className='item-profile'>
                       <div className='rank-num'>{index + 1}</div>
                       <img
-                        src={rankMember.profile_image || profile}
+                        src={rankMember.profileImage || profile}
                         alt='account_image'
                         className='rank-profile'
                       />
                       <span>{rankMember.nickname || '사용자'}</span>
                     </div>
                     <div className='rank-num'>
-                      {Number(rankMember.points || 0).toLocaleString('ko-KR')}
+                      {Number(rankMember.isrScore || 0).toFixed(2)}
                     </div>
                   </li>
                 ))
