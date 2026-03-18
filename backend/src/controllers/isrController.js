@@ -1,3 +1,6 @@
+const db = require("../../config/db");
+const { calculateISR } = require("../engines/isrEngine");
+
 function success(res, message, data = null, status = 200) {
   return res.status(status).json({
     success: true,
@@ -83,7 +86,12 @@ exports.calculateUserISR = async (req, res) => {
       return success(res, "로그가 없어 ISR 0으로 처리되었습니다.", emptyResult);
     }
 
-    const result = await calculateISR(memberId);
+    const [logs] = await db.promise().query(
+      `SELECT * FROM gameLog WHERE member_id = ?`,
+      [memberId]
+    );
+
+    const result = calculateISR(logs);
     await saveISR(memberId, result);
 
     return success(res, "ISR 계산 완료", result);
@@ -132,7 +140,12 @@ exports.calculateAllISR = async (req, res) => {
         continue;
       }
 
-      const result = await calculateISR(memberId);
+      const [logs] = await db.promise().query(
+        `SELECT * FROM gameLog WHERE member_id = ?`,
+        [memberId]
+      );
+
+      const result = calculateISR(logs);
       await saveISR(memberId, result);
 
       results.push({

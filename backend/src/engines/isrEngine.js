@@ -1,27 +1,23 @@
 // isrEngine.js (현재 테이블 완전 호환 버전)
 
 function calculateAccuracy(logs) {
-  const valid = logs.filter(l => l.status === 'SUCCESS' || l.status === 'FAIL')
+  const data = Array.isArray(logs) ? logs : []
+  const valid = data.filter(l => l.status === 'SUCCESS' || l.status === 'FAIL')
   if (valid.length === 0) return 0
-
   const success = valid.filter(l => l.status === 'SUCCESS').length
   return (success / valid.length) * 100
 }
 
 function calculateRisk(logs) {
-  if (logs.length === 0) return 0
-
-  const losses = logs.filter(l => l.pnl_amount < 0)
-
+  const data = Array.isArray(logs) ? logs : []
+  if (data.length === 0) return 0
+  const losses = data.filter(l => l.pnl_amount < 0)
   const avgLoss =
     losses.reduce((sum, l) => sum + Math.abs(l.pnl_amount || 0), 0) /
     (losses.length || 1)
-
   const avgBet =
-    logs.reduce((sum, l) => sum + (l.bet_amount || 0), 0) / logs.length
-
+    data.reduce((sum, l) => sum + (l.bet_amount || 0), 0) / data.length
   if (avgBet === 0) return 0
-
   return Math.max(0, 100 - (avgLoss / avgBet) * 100)
 }
 
