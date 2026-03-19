@@ -3,7 +3,6 @@
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr) minmax(240px, 320px);
   gap: 2rem;
-  align-items: start;
 }
 
 .navigation-area,

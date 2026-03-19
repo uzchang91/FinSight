@@ -340,4 +340,7 @@ const QuizPage = () => {
   )
 }
 
+
+
 export default QuizPage
+QuizPage.jsx

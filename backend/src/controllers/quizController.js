@@ -183,6 +183,11 @@ exports.checkAnswer = async (req, res) => {
       [pts, memberId]
     );
 
+    await db.promise().query(
+      `INSERT INTO point_history (member_id, change_amount, reason) VALUES (?, ?, ?)`,
+      [memberId, pts, `quiz_${difficulty}_${isCorrect ? 'correct' : 'wrong'}`]
+    );
+
     const [memberRows] = await db.promise().query(
       `SELECT member_id, nickname, points FROM members WHERE member_id = ?`,
       [memberId]
@@ -212,9 +217,16 @@ exports.bonusReward = async (req, res) => {
     const { difficulty } = req.body;
     if (!memberId) return fail(res, "사용자 인증 필요", null, 401);
 
+    const bonusPts = PERFECT_BONUS[difficulty] ?? 5000;
+
     await db.promise().query(
       `UPDATE members SET points = points + ? WHERE member_id = ?`,
       [PERFECT_BONUS[difficulty] ?? 5000, memberId]
+    );
+
+    await db.promise().query(
+      `INSERT INTO point_history (member_id, change_amount, reason) VALUES (?, ?, ?)`,
+      [memberId, bonusPts, `quiz_perfect_bonus_${difficulty}`]
     );
 
     const [memberRows] = await db.promise().query(

@@ -70,6 +70,7 @@ function buildMemberPayload(member) {
     isr_score: member.isr_score ?? 0,
     created_at: member.created_at ?? null,
     profile_image: member.profile_image,
+    profile_image2: member.profile_image2 ?? null,
   };
 }
 
@@ -230,11 +231,17 @@ async function createMember(provider, providerId, nickname, profile_image) {
   }
 }
 
-async function loginOrRegister(provider, providerId, nickname, profile_image) {
+async function loginOrRegister(provider, providerId, nickname, profile_image, profile_image2) {
   const member = await findMember(provider, providerId);
 
   if (member) {
-    if (profile_image) {
+    if (profile_image2) {
+      await db.promise().query(
+        "UPDATE members SET profile_image2 = ? WHERE member_id = ?",
+        [profile_image2, member.member_id]
+      );
+      member.profile_image2 = profile_image2;
+    } else {
       await db.promise().query(
         "UPDATE members SET profile_image = ? WHERE member_id = ?",
         [profile_image, member.member_id]
@@ -445,7 +452,7 @@ async function getKakaoUserInfo(accessToken) {
       data?.properties?.nickname ||
       data?.kakao_account?.profile?.nickname ||
       "kakao_user",
-    profile_image,
+    profile_image
   };
 }
 
@@ -468,7 +475,8 @@ exports.kakaoCallback = async (req, res) => {
       user.provider,
       user.providerId,
       user.nickname,
-      user.profile_image
+      user.profile_image,
+      user.profile_image2
     );
 
     const token = createToken(result.member);
@@ -568,7 +576,8 @@ exports.googleCallback = async (req, res) => {
       user.provider,
       user.providerId,
       user.nickname,
-      user.profile_image
+      user.profile_image,
+      user.profile_image2
     );
 
     const token = createToken(result.member);
@@ -583,5 +592,37 @@ exports.googleCallback = async (req, res) => {
       err.response?.data || err.message,
       500
     );
+  }
+};
+/* =========================
+   프로필 이미지 업로드
+========================= */
+
+exports.updateProfileImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return fail(res, "이미지 파일이 없습니다.", null, 400);
+    }
+
+    const memberId = req.user.member_id;
+
+    // Convert uploaded file buffer to base64 data URL for DB storage
+    const mime = req.file.mimetype;
+    const base64 = req.file.buffer.toString("base64");
+    const dataUrl = `data:${mime};base64,${base64}`;
+
+    await db.promise().query(
+      "UPDATE members SET profile_image2 = ? WHERE member_id = ?",
+      [dataUrl, memberId]
+    );
+
+    const updatedMember = await findMemberById(memberId);
+
+    return success(res, "프로필 이미지 업로드 성공", {
+      member: buildMemberPayload(updatedMember),
+    });
+  } catch (err) {
+    console.error("updateProfileImage error =", err);
+    return fail(res, "이미지 업로드 실패", err.message, 500);
   }
 };

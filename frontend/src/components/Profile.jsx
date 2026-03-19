@@ -8,13 +8,15 @@ import vivereBeginner from '../assets/icons/achievement/vivere_beginner.png'
 import { api } from '../config/api.js'
 
 const Profile = () => {
-
   const [member, setMember] = useState(null)
   const [ownedStocks, setOwnedStocks] = useState([])
   const [recentAchievements, setRecentAchievements] = useState([])
   const [gameLog, setGameLog] = useState([])
+  const [notifications, setNotifications] = useState([])
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [hasUnreadNotification, setHasUnreadNotification] = useState(false)
 
   // 편집 모드
   const [editMode, setEditMode] = useState(false)
@@ -25,6 +27,22 @@ const Profile = () => {
 
   const fileInputRef = useRef(null)
   const nicknameInputRef = useRef(null)
+
+  const notificationRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // 클릭한 곳이 알림창 바깥 영역이고, 알림창이 열려있다면 닫기!
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const loadProfile = async () => {
     try {
@@ -56,19 +74,49 @@ const Profile = () => {
     }
   }
 
+  const loadNotifications = async () => {
+    try {
+      const res = await api.get('/api/points/notifications')
+
+      const payload = res?.data?.data
+        ? res.data
+        : res?.data
+        ? res
+        : {}
+
+      const list = Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload)
+        ? payload
+        : []
+
+      console.log('notifications payload =', res)
+      console.log('notifications list =', list)
+
+      setNotifications(list)
+      setHasUnreadNotification(list.length > 0)
+    } catch (err) {
+      console.error('알림 조회 실패 =', err)
+      setNotifications([])
+      setHasUnreadNotification(false)
+    }
+  }
+
   useEffect(() => {
     loadProfile()
+    loadNotifications()
 
     const handleRefresh = () => {
       console.log('Refreshing profile due to points update...')
       loadProfile()
+      loadNotifications()
     }
 
     window.addEventListener('pointsUpdated', handleRefresh)
     return () => window.removeEventListener('pointsUpdated', handleRefresh)
   }, [])
 
-  const profileImg = member?.profile_image2 || member?.profile_image
+  const profileImg = member?.profile_image2 || member?.profile_image || defaultProfile
   const displayImg = editPreviewUrl || profileImg
 
   const openEdit = () => {
@@ -76,7 +124,6 @@ const Profile = () => {
     setEditPreviewUrl(null)
     setSaveError('')
     setEditMode(true)
-    // 편집 모드 전환 후 닉네임 input 에 포커스
     setTimeout(() => nicknameInputRef.current?.focus(), 50)
   }
 
@@ -93,31 +140,41 @@ const Profile = () => {
   }
 
   const handleSave = async () => {
-    if (!editNickname.trim()) {
-      setSaveError('닉네임을 입력해주세요.')
-      nicknameInputRef.current?.focus()
-      return
-    }
-    setSaving(true)
-    setSaveError('')
-    try {
-      const data = await api.patch('/api/auth/me', { nickname: editNickname.trim() })
-      setMember(prev => ({
-        ...prev,
-        ...data.data.member,
-        // 백엔드 사진 업로드 전까지 로컬 미리보기 유지
-        profile_image: editPreviewUrl || data.data.member.profile_image,
-      }))
-      setEditMode(false)
-      setEditPreviewUrl(null)
-    } catch (err) {
-      setSaveError(err.message)
-    } finally {
-      setSaving(false)
-    }
+  if (!editNickname.trim()) {
+    setSaveError('닉네임을 입력해주세요.')
+    nicknameInputRef.current?.focus()
+    return
   }
 
+  setSaving(true)
+  setSaveError('')
 
+  try {
+    if (fileInputRef.current?.files[0]) {
+      const formData = new FormData()
+      formData.append('profile_image', fileInputRef.current.files[0])
+
+      await fetch(`http://localhost:5000/api/auth/me/image`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: formData,
+      })
+    }
+
+    await api.patch('/api/auth/me', { nickname: editNickname.trim() })
+
+    await loadProfile()
+
+    setEditMode(false)
+    setEditPreviewUrl(null)
+  } catch (err) {
+    setSaveError(err.message)
+  } finally {
+    setSaving(false)
+  }
+}
 
   const formatNumber = (value) => {
     const num = Number(value || 0)
@@ -135,17 +192,30 @@ const Profile = () => {
     const prefix = num > 0 ? '+' : ''
     return `${prefix}${num.toFixed(2)}%`
   }
-  
+
+  const formatNoticeDate = (value) => {
+    if (!value) return '-'
+
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return '-'
+
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
+
   const handleLogout = () => {
-    if (!confirm("로그아웃 하시겠어요?")) return;
+    if (!confirm('로그아웃 하시겠어요?')) return
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('member');
-    localStorage.removeItem('nickname');
-    sessionStorage.clear();
+    localStorage.removeItem('token')
+    localStorage.removeItem('member')
+    localStorage.removeItem('nickname')
+    sessionStorage.clear()
 
-    alert('안전하게 로그아웃 되었습니다!');
-    window.location.href = '/';
+    alert('안전하게 로그아웃 되었습니다!')
+    window.location.href = '/'
   }
 
   if (loading) {
@@ -167,29 +237,76 @@ const Profile = () => {
   return (
     <div className='profile'>
       <div className='profile-content'>
-
-        {/* 상단 아이콘 */}
         <div className='profile-set'>
-          <img src={notification} alt="notification" className='icons set-icons' />
+          <div className='notification-wrap' ref={notificationRef}>
+            <img
+              src={notification}
+              alt='notification'
+              className={`icons set-icons ${isNotificationOpen ? 'set-icons--active' : ''}`}
+              onClick={() => {
+                setIsNotificationOpen((prev) => {
+                  const next = !prev
+
+                  if (next) {
+                    setHasUnreadNotification(false)
+                  }
+
+                  return next
+                })
+              }}
+              title='최근 포인트 변동 알림'
+            />
+
+            {hasUnreadNotification && <span className='notification-dot' />}
+
+            {isNotificationOpen && (
+              <div className='notification-dropdown'>
+                <div className='notification-dropdown-title'>최근 알림 목록</div>                
+
+                {notifications.length === 0 ? (
+                  <div className='notification-empty'>알림이 없습니다.</div>
+                ) : (
+                  notifications.slice(0,5).map((item) => (
+                    <div className='notification-item' key={item.history_id}>
+                      <div className='notification-item-left'>
+                        <div className='notification-name'>{item.type}</div>
+                        <div className='notification-date'>
+                          {formatNoticeDate(item.createdAt)}
+                        </div>
+                      </div>
+
+                      <div
+                        className={`notification-amount ${
+                          Number(item.changeAmount) >= 0 ? 'positive' : 'negative'
+                        }`}
+                      >
+                        {Number(item.changeAmount) >= 0 ? '+' : ''}
+                        {Number(item.changeAmount).toLocaleString('ko-KR')}pt
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
           <img
             src={account}
-            alt="account"
+            alt='account'
             className={`icons set-icons ${editMode ? 'set-icons--active' : ''}`}
             onClick={editMode ? closeEdit : openEdit}
             title={editMode ? '편집 취소' : '프로필 편집'}
           />
+
           <img
             src={logout}
-            alt="logout"
+            alt='logout'
             className='icons set-icons'
             onClick={handleLogout}
           />
         </div>
 
-        {/* 프로필 마스터 */}
         <div className='profile-master'>
-
-          {/* 프로필 사진 — 편집 모드일 때 클릭 가능 */}
           <div className='profile-account'>
             <div
               className={`glowing-container ${editMode ? 'glowing-container--editable' : ''}`}
@@ -197,30 +314,31 @@ const Profile = () => {
               onClick={editMode ? () => fileInputRef.current?.click() : undefined}
               title={editMode ? '사진 변경' : undefined}
             >
-              <img src={displayImg} alt="profile image" className='profile-pic' />
+              <img src={displayImg} alt='profile image' className='profile-pic' />
               {editMode && (
                 <div className='avatar-edit-overlay'>
                   <span>📷</span>
                 </div>
               )}
             </div>
+
             <div className='profile-premium'>👑</div>
+
             <input
               ref={fileInputRef}
-              type="file"
-              accept="image/*"
+              type='file'
+              accept='image/*'
               style={{ display: 'none' }}
               onChange={handleImageChange}
             />
           </div>
 
-          {/* 닉네임 — 편집 모드일 때 input으로 전환 */}
           {editMode ? (
             <div className='nickname-edit-wrap'>
               <input
                 ref={nicknameInputRef}
                 className='nickname-input'
-                type="text"
+                type='text'
                 value={editNickname}
                 maxLength={20}
                 onChange={(e) => setEditNickname(e.target.value)}
@@ -228,12 +346,24 @@ const Profile = () => {
                   if (e.key === 'Enter') handleSave()
                   if (e.key === 'Escape') closeEdit()
                 }}
-                placeholder="닉네임 입력"
+                placeholder='닉네임 입력'
               />
+
               {saveError && <p className='nickname-error'>{saveError}</p>}
+
               <div className='nickname-actions'>
-                <button className='edit-btn edit-btn--cancel' onClick={closeEdit} disabled={saving}>취소</button>
-                <button className='edit-btn edit-btn--save' onClick={handleSave} disabled={saving}>
+                <button
+                  className='edit-btn edit-btn--cancel'
+                  onClick={closeEdit}
+                  disabled={saving}
+                >
+                  취소
+                </button>
+                <button
+                  className='edit-btn edit-btn--save'
+                  onClick={handleSave}
+                  disabled={saving}
+                >
                   {saving ? '저장 중...' : '저장'}
                 </button>
               </div>
@@ -268,15 +398,24 @@ const Profile = () => {
           <div className='stock-list'>
             <div className='stock-content'>
               <span className='description-top'>원금</span>
-              <p className='description-slave'>{member?.bet_amount ?? 0}<span>pt</span></p>
+              <p className='description-slave'>
+                {member?.bet_amount ?? 0}
+                <span>pt</span>
+              </p>
             </div>
             <div className='stock-content'>
               <span className='description-top'>총순익</span>
-              <p className='description-slave gain'>{member?.pnl_amount ?? 0}<span>pt</span></p>
+              <p className='description-slave gain'>
+                {member?.pnl_amount ?? 0}
+                <span>pt</span>
+              </p>
             </div>
             <div className='stock-content'>
               <span className='description-top'>변동률</span>
-              <p className='description-slave gain'>0<span>%</span></p>
+              <p className='description-slave gain'>
+                0
+                <span>%</span>
+              </p>
             </div>
           </div>
         </div>
@@ -287,7 +426,7 @@ const Profile = () => {
             {recentAchievements.length > 0 ? (
               recentAchievements.map((item, index) => (
                 <div className='achievment-item' key={`${item}-${index}`}>
-                  <img src={vivereBeginner} alt="achievments" className='img-block' />
+                  <img src={vivereBeginner} alt='achievments' className='img-block' />
                   <div className='achievment-description'>
                     <span className='achievement-slave'>{item}</span>
                   </div>
@@ -295,7 +434,7 @@ const Profile = () => {
               ))
             ) : (
               <div className='achievment-item'>
-                <img src={vivereBeginner} alt="achievments" className='img-block' />
+                <img src={vivereBeginner} alt='achievments' className='img-block' />
                 <div className='achievment-description'>
                   <span className='achievement-slave'>표시할 업적이 없습니다.</span>
                 </div>
