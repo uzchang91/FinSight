@@ -729,7 +729,7 @@ const Stocks = () => {
                   return (
                     <>
                       <div key={`liked-${stock.stockCode}`}
-                        className={`side-stock-item2 ${openLikeCode === stock.stockCode ? 'flex' : ''}`}
+                        className={`side-stock-item ${openLikeCode === stock.stockCode ? 'flex' : ''}`}
                         onClick={() =>
                           setOpenLikeCode((prev) =>
                             prev === stock.stockCode ? null : stock.stockCode
@@ -748,8 +748,6 @@ const Stocks = () => {
                             </p>
                           </div>
                         </div>
-
-                        <div className='side-stock-mid'></div>
 
                         <div className={`side-liked-actions ${openLikeCode === stock.stockCode ? 'flex' : ''}`}>
 

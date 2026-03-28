@@ -369,11 +369,11 @@ const Dashboard = () => {
   const formatSignedPercent = (value) => {
     const num = Number(value || 0)
     const prefix = num > 0 ? '+' : ''
-    return `${prefix}${num.toFixed(2)}%`
+    return `${prefix}${num.toFixed(1)}%`
   }
 
   const formatScore = (value) => {
-    return Number(value || 0).toFixed(2)
+    return Number(value || 0).toFixed(1)
   }
 
   const formatRankingPoint = (value) => {
@@ -500,8 +500,9 @@ const Dashboard = () => {
           <span>퀘스트 현황</span>
           <div className='quest-status-box'>
             <div className='dash-summary'>
-              <div className='dash-summary-score'>
-                {Number(questStatus.dailyPercent || 0).toFixed(2)}%
+              <div className='dash-score'>
+                {Number(questStatus.dailyPercent || 0).toFixed(1)}
+                <span>%</span>
               </div>
               <div className='dash-summary-desc'>
                 오늘 {questStatus.dailyGoal}문제 목표 기준
@@ -531,7 +532,7 @@ const Dashboard = () => {
               <li className='quest-item'>
                 <span>누적 정답률</span>
                 <strong>
-                  {Number(questStatus.accuracy || 0).toFixed(2)}%
+                  {Number(questStatus.accuracy || 0).toFixed(1)}%
                 </strong>
               </li>
             </ul>
@@ -548,7 +549,7 @@ const Dashboard = () => {
           </div>
 
           <div className='dash-summary'>
-            <div className='dash-summary-score'>{formatScore(isrData.isr)}</div>
+            <div className='dash-score'>{formatScore(isrData.isr)}</div>
             <div className='isr-one-line'>
               <strong>한 줄 분석</strong>
               <p>{isrData?.summary || '아직 분석 결과가 없습니다.'}</p>
@@ -638,12 +639,12 @@ const Dashboard = () => {
                           alt='account_image'
                           className='rank-profile'
                         />
-                        <span className={isMine ? 'rank-name-mine' : ''}>
+                        <span>
                           {rankMember.nickname || '사용자'}
                         </span>
                       </div>
 
-                      <div className={`rank-num ${isMine ? 'rank-score-mine' : ''}`}>
+                      <div className='rank-point'>
                         {formatRankingPoint(rankMember.rankingPoint)}
                       </div>
                     </li>
@@ -674,8 +675,8 @@ const Dashboard = () => {
                     className='stock-item liked-grid'
                   >
                     <p>{stock.stockName || stock.stockCode}</p>
-                    <p className='numbers'>{formatNumber(stock.price)}</p>
-                    <p className='numbers'>{formatSignedNumber(stock.change)}</p>
+                    <p className='numbers'>{formatNumber(stock.price)}pt</p>
+                    <p className='numbers'>{formatSignedNumber(stock.change)}pt({formatSignedPercent(stock.changeRate)})</p>
                   </li>
                 ))
               )}
@@ -703,9 +704,9 @@ const Dashboard = () => {
                   >
                     <p>{stock.stockName || stock.stockCode}</p>
                     <p className='numbers'>{stock.quantity}</p>
-                    <p className='numbers'>{formatNumber(stock.principal)}</p>
+                    <p className='numbers'>{formatNumber(stock.principal)}pt</p>
                     <p className='numbers'>
-                      {formatSignedNumber(stock.changeAmount)}({formatSignedPercent(stock.changeRate)})
+                      {formatSignedNumber(stock.changeAmount)}pt({formatSignedPercent(stock.changeRate)})
                     </p>
                   </li>
                 ))
