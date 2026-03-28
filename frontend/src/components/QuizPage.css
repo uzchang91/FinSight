@@ -1,0 +1,949 @@
+.quiz-container {
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* ─── Shared section wrapper ─────────────────── */
+.quiz-section {
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+}
+
+.quiz-title {
+  height: fit-content;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 1rem;
+
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+}
+
+.quiz-title h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.quiz-title strong {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.quiz-title p {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.quiz-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quiz-loading {
+  color: var(--text-highlight);
+  font-size: 1rem;
+}
+
+.quiz-badge {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  background: var(--btn-prim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* ─── Difficulty step ────────────────────────── */
+.difficulty-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-difficulty {
+  border: 1px solid var(--border-prim);
+  background-color: var(--primary-highlight);
+  border-radius: 0.75rem;
+  flex: 1;
+  padding: 1.25rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.btn-difficulty:hover {
+  box-shadow: 0 0.25rem 0.75rem var(--shadow-2);
+}
+
+/* ─── Quiz card ──────────────────────────────── */
+.quiz-card {
+  padding: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+}
+
+.quiz-question {
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* ─── Options ────────────────────────────────── */
+.option-list {
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 1rem;
+  background: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.btn-option:hover {
+  background: var(--primary-highlight2);
+}
+
+.btn-option.selected {
+  background: var(--accent, #007BFF);
+  border-color: var(--accent-dark, #0056b3);
+  color: white;
+}
+
+.option-num {
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: var(--border);
+
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-option.selected .option-num {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ─── Submit ─────────────────────────────────── */
+.btn-submit {
+  padding: 1rem;
+  margin: 0.5rem;
+
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--bg);
+
+  background: var(--primary);
+  border: none;
+  border-radius: 0.75rem;
+
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+  box-shadow: 0 0.25rem 0.5rem var(--shadow-1);
+}
+
+/* ─── Result step ────────────────────────────── */
+.result-banner {
+  font-size: 1.75rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 1rem;
+}
+
+.result-banner.correct {
+  background: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+
+.result-banner.wrong {
+  background: #f8d7da;
+  color: #721c24;
+  border: 2px solid #f5c6cb;
+}
+
+.result-points {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #28a745;
+  margin: 0;
+}
+
+.explanation-card {
+  background: var(--box-bg, #f9faff);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.explanation-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.explanation-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+  color: var(--text, #333);
+}
+
+.result-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ─── Generic buttons ────────────────────────── */
+.btn {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  padding: 1rem;
+
+  flex: 1;
+
+  background: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
+
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.btn-primary:hover {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+.btn-secondary {
+  padding: 1rem;
+
+  flex: 1;
+
+  background: var(--danger-highlight);
+  border: 1px solid var(--danger);
+  border-radius: 0.75rem;
+  
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: var(--danger);
+  color: var(--bg);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ─── Progress bar ───────────────────────────── */
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-highlight);
+  font-weight: 500;
+}
+
+.progress-correct {
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary, #007BFF);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Result banner (points inline) ─────────── */
+.result-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-pts {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+/* ─── Point guide ────────────────────────────── */
+.point-guide {
+  padding: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.point-guide h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.point-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.point-table th,
+.point-table td {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.point-table th {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+}
+
+.bonus-note {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+/* ─── Summary step ───────────────────────────── */
+.summary-section {
+  gap: 1.25rem;
+}
+
+.summary-score {
+  text-align: center;
+  padding: 2rem;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+}
+
+.summary-fraction {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.summary-correct {
+  color: var(--primary);
+}
+
+.summary-total {
+  color: var(--text-highlight);
+  font-size: 2rem;
+}
+
+.summary-label {
+  /* margin: 0.5rem 0 0; */
+  color: var(--text-highlight);
+  font-size: 1rem;
+}
+
+.bonus-banner {
+  padding: 1rem;
+  text-align: center;
+
+  background: linear-gradient(135deg, var(--bg)8e1, var(--bg)3cd);
+  border: 2px solid var(--warning);
+  border-radius: 1rem;
+
+  font-weight: 700;
+  font-size: 1rem;
+  color: #856404;
+}
+
+.summary-points {
+  padding: 1rem 1.5rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+
+  font-size: 1rem;
+}
+
+.summary-points strong {
+  font-size: 1.25rem;
+}
+
+/* ─── Session log ────────────────────────────── */
+.session-log {
+  max-height: 360px;
+  padding: 1rem;
+  list-style: none;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.log-item {
+  padding: 1rem;
+
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.log-item.correct {
+  background: var(--secondary-highlight);
+  border: 1px solid var(--secondary);
+}
+
+.log-item.wrong {
+  background: var(--danger-highlight);
+  border: 1px solid var(--danger);
+}
+
+.log-num {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.log-question {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+
+.log-pts {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ─── Utility colors ─────────────────────────── */
+.plus {
+  color: #28a745;
+}
+
+.minus {
+  color: #dc3545;
+}
+
+/* ─── 일일 O/X 퀴즈 전용 스타일 ────────────────── */
+
+/* 플로팅 버튼 */
+.ox-floating-btn {
+
+  /* 크기 확대 */
+  padding: 20px 45px;
+  /* 버튼 안쪽 여백을 늘려 크기 확대 */
+  font-size: 1.25rem;
+  /* 글자 크기 확대 */
+  font-weight: 500;
+  /* 글자를 더 두껍게 */
+
+  background: var(--btn-gd);
+  color: var(--bg);
+  border: none;
+  border-radius: 0.75rem;
+  /* 버튼이 커진 만큼 둥글게 조정 */
+  box-shadow: 0 0rem 0rem var(--shadow-2);
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+/* 마우스 올렸을 때 효과도 살짝 키워줍니다 */
+.ox-floating-btn:hover {
+  box-shadow: 0 0.25rem 0.75rem var(--shadow-2);
+}
+
+/* 모달 오버레이 */
+.ox-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--shadow-1);
+  /* 더 어둡게 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+/* 모달 본체 (다크 테마 대시보드 스타일) */
+.ox-modal-content {
+  width: 90%;
+  max-width: 500px;
+  background: var(--box-bg);
+  /* 이미지 2의 다크 배경색 */
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0.75rem 1rem var(--shadow-1);
+}
+
+/* 모달 헤더 */
+.ox-modal-header {
+  padding: 20px 25px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ox-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ox-header-title h2 {
+  font-size: 1.25rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.ox-modal-close {
+  background: none;
+  border: none;
+  color: #8a94a6;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* 모달 바디 */
+.ox-modal-body {
+  padding: 30px;
+  text-align: center;
+}
+
+.ox-guide-text {
+  color: #8a94a6;
+  font-size: 0.9rem;
+  margin-bottom: 25px;
+}
+
+.ox-reference-date {
+  color: #8a94a6;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 문제 카드 영역 */
+.ox-question-card {
+  background: #232a35;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 1px solid #36404d;
+}
+
+.ox-question-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  word-break: keep-all;
+}
+
+/* O/X 버튼 그룹 */
+.ox-btn-group {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-ox {
+  flex: 1;
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid #2d353f;
+  background: #1a1f26;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.ox-char {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.ox-label {
+  font-size: 0.9rem;
+  color: #8a94a6;
+}
+
+/* O/X 버튼 각각의 색상 */
+.btn-o:hover {
+  border-color: #48bb78;
+  background: rgba(72, 187, 120, 0.1);
+}
+
+.btn-o .ox-char {
+  color: #48bb78;
+}
+
+.btn-x:hover {
+  border-color: #f56565;
+  background: rgba(245, 101, 101, 0.1);
+}
+
+.btn-x .ox-char {
+  color: #f56565;
+}
+
+/* 결과 및 완료 박스 */
+.ox-status-box {
+  padding: 1rem;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  border-radius: 0.75rem;
+}
+
+.ox-status-box.correct {
+  border: 1px solid var(--secondary);
+  background: var(--secondary-highlight);
+}
+
+.ox-status-box.wrong {
+  border: 1px solid var(--danger);
+  background: var(--danger-highlight);
+}
+
+.ox-reward {
+  font-size: 1.1rem;
+}
+
+.ox-reward span {
+  color: var(--warning);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.ox-explanation-card {
+  padding: 1rem;
+  text-align: left;
+  background: var(--bg-trans2);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.exp-answer {
+  margin-bottom: 8px;
+  color: #a0aec0;
+}
+
+/* =========================================
+   🏆 퀴즈 명예의 전당 (하단 랭킹) 스타일
+   ========================================= */
+.quiz-ranking-container {
+  padding: 1.5rem;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.quiz-ranking-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quiz-ranking-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quiz-ranking-title h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text);
+}
+
+.quiz-ranking-tabs {
+  display: flex;
+  background: color-mix(in srgb, var(--border) 30%, transparent);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.qr-tab {
+  flex: 1;
+  padding: 0.75rem 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-tab:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--text);
+}
+
+.qr-tab.active {
+  background: var(--bg);
+  color: var(--primary);
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.quiz-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 200px;
+}
+
+.qr-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--text-highlight);
+  font-size: 0.95rem;
+  background: color-mix(in srgb, var(--border) 10%, transparent);
+  border-radius: 12px;
+}
+
+.qr-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.2rem;
+  background: color-mix(in srgb, var(--bg) 95%, var(--text) 5%);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.qr-item:hover {
+  transform: translateX(4px);
+  background: var(--primary-highlight);
+}
+
+.qr-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.qr-rank {
+  width: 24px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text-highlight);
+}
+
+/* 금, 은, 동메달 색상 하이라이트 */
+.qr-rank.num-1 {
+  color: #f59e0b;
+  font-size: 1.2rem;
+}
+
+/* 금 */
+.qr-rank.num-2 {
+  color: #94a3b8;
+  font-size: 1.1rem;
+}
+
+/* 은 */
+.qr-rank.num-3 {
+  color: #b45309;
+  font-size: 1.05rem;
+}
+
+/* 동 */
+
+.qr-profile-placeholder {
+  width: 36px;
+  height: 36px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.qr-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qr-nickname {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.qr-score {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--primary);
+}
+
+.diff-btn-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+/* 잠긴 버튼 디자인 (클릭 불가 느낌) */
+.diff-btn-wrapper.locked .btn-difficulty {
+  background-color: var(--border);
+  color: var(--text-highlight);
+  border: 1px solid var(--border);
+  cursor: default;
+  box-shadow: none;
+}
+
+.lock-icon {
+  margin-left: 8px;
+  font-size: 1.1rem;
+}
+
+/* 툴팁 (말풍선) 기본 숨김 세팅 */
+.premium-tooltip {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  /* 버튼 살짝 위 */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  /* 부드럽게 나타나게 하기 위한 세팅 */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  pointer-events: none;
+  /* 툴팁에 마우스가 걸리지 않게 */
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 말풍선 꼬리 (아래쪽 세모) */
+.premium-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--bg);
+}
+
+/* 마우스를 올렸을 때 툴팁 나타나게 하기 */
+.diff-btn-wrapper.locked:hover .premium-tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 12px);
+  /* 스르륵 위로 올라오는 효과 */
+}

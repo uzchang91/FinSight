@@ -1,57 +1,183 @@
 import React, { useState } from 'react'
 import { api } from '../config/api'
+import './Quizpage.css'
+
+const POINT_TABLE = {
+  하: { correct: 1000, wrong: 0 },
+  중: { correct: 2000, wrong: 0 },
+  상: { correct: 3000, wrong: 0 },
+}
+const PERFECT_BONUS = { 하: 5000, 중: 10000, 상: 20000 };
+
+const MAX_QUESTIONS = 10
+const DIFFICULTIES = ['하', '중', '상']
+
+const getReferenceDate = () => {
+  const today = new Date();
+  let offset = 1; // 기본적으로 무조건 하루 전(어제)을 기준으로 잡음
+  const day = today.getDay(); // 0:일, 1:월, 2:화 ... 6:토
+
+  // 주말 예외 처리
+  if (day === 1) {
+    offset = 3; // 월요일 접속 -> 3일 전인 금요일 장 마감 기준
+  } else if (day === 0) {
+    offset = 2; // 일요일 접속 -> 2일 전인 금요일 장 마감 기준
+  }
+
+  const targetDate = new Date(today.getTime() - offset * 24 * 60 * 60 * 1000);
+  return `${targetDate.getFullYear()}년 ${targetDate.getMonth() + 1}월 ${targetDate.getDate()}일`;
+};
 
 const QuizPage = () => {
-  const [step, setStep] = useState('DIFFICULTY')
+  const [step, setStep] = useState('DIFFICULTY') // 'DIFFICULTY' | 'PLAYING' | 'RESULT' | 'SUMMARY'
   const [difficulty, setDifficulty] = useState(null)
   const [currentQuiz, setCurrentQuiz] = useState(null)
   const [userAnswer, setUserAnswer] = useState(null)
   const [isCorrect, setIsCorrect] = useState(null)
+  const [resultData, setResultData] = useState(null)
   const [shuffledOptions, setShuffledOptions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isPremium, setIsPremium] = useState(false)
 
-  const startQuiz = async (selectedLevel) => {
+  // O/X 퀴즈 상태
+  const [isOxModalOpen, setIsOxModalOpen] = useState(false);
+  const [oxQuizData, setOxQuizData] = useState(null);
+  const [oxTodayCount, setOxTodayCount] = useState(0);
+  const [oxResult, setOxResult] = useState(null);
+
+  // Session tracking
+  const [attemptNum, setAttemptNum] = useState(0)       // 0-based current question index
+  const [correctCount, setCorrectCount] = useState(0)
+  const [totalPoints, setTotalPoints] = useState(0)
+  const [sessionLog, setSessionLog] = useState([])      // [{question, correct, points}]
+  const [allQuizzes, setAllQuizzes] = useState([])      // cached quiz list
+
+  const [quizRankingTab, setQuizRankingTab] = useState('accuracy'); // 'accuracy', 'total', 'weekly'
+  const [quizRankings, setQuizRankings] = useState([]);
+  const [rankingLoading, setRankingLoading] = useState(false);
+
+  React.useEffect(() => {
+    const fetchUserAuth = async () => {
+      try {
+        const res = await api.get('/api/auth/me');
+        const memberData = res?.data?.member || res?.data?.data?.member || res?.data;
+        const membership = String(memberData?.membership_type || '').toLowerCase();
+
+        // 프리미엄 회원이면 true로 세팅!
+        setIsPremium(['premium', 'premium_member', 'paid'].includes(membership));
+      } catch (err) {
+        console.error('유저 정보 로딩 실패', err);
+      }
+    };
+    fetchUserAuth();
+  }, []);
+
+  React.useEffect(() => {
+    if (step === 'DIFFICULTY') {
+      fetchQuizRankings(quizRankingTab);
+    }
+  }, [step, quizRankingTab]);
+
+  // 🟢 3. 랭킹 데이터 Fetch 함수 (현재는 UI 확인용 더미 데이터 세팅)
+  const fetchQuizRankings = async (tab) => {
+    setRankingLoading(true);
+    try {
+      const res = await api.get(`/api/quiz/ranking?type=${tab}`);
+      const data = res?.data?.data || res?.data || [];
+      setQuizRankings(data);
+    } catch (err) {
+      console.error('랭킹 로딩 실패', err);
+      setQuizRankings([]);
+    } finally {
+      setRankingLoading(false);
+    }
+  };
+
+  /* ─────────────────────────────────────────
+     O/X 퀴즈 전용 함수
+  ───────────────────────────────────────── */
+  // 💡 모달창 열고 오늘의 퀴즈(야후 파이낸스) 불러오기
+  const handleOpenOxModal = async () => {
+    setIsOxModalOpen(true);
+    setOxResult(null);
+    try {
+      const res = await api.get('/api/quiz/ox');
+      // 💡 에러 방어: res.data가 없을 때를 대비합니다.
+      if (!res || !res.data) throw new Error("데이터 오류");
+
+      if (res.data.isLimitReached) {
+        setOxTodayCount(1); // 💡 3을 1로 변경
+      } else {
+        setOxQuizData(res.data.quiz);
+        setOxTodayCount(res.data.todayCount);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("O/X 퀴즈를 불러오지 못했습니다.");
+      setIsOxModalOpen(false); // 에러 나면 창을 다시 닫아줍니다.
+    }
+  };
+
+  // 💡 정답 제출하기
+  const handleOxSubmit = async (answer) => {
+    try {
+      const res = await api.post('/api/quiz/ox/submit', { userAnswer: answer });
+      setOxResult(res.data);
+      window.dispatchEvent(new Event('pointsUpdated')); // 오른쪽 알림창 갱신
+    } catch (err) {
+      alert("정답 제출 중 오류가 발생했습니다.");
+    }
+  };
+
+  /* ─────────────────────────────────────────
+     기존 난이도별 퀴즈 함수들
+  ───────────────────────────────────────── */
+  const startSession = async (selectedLevel) => {
     setDifficulty(selectedLevel)
     setLoading(true)
+    setAttemptNum(0)
+    setCorrectCount(0)
+    setTotalPoints(0)
+    setSessionLog([])
 
     try {
       const response = await api.get('/api/quiz/all')
+      if (!response.success) throw new Error('퀴즈 로딩 실패')
 
-      if (response.success) {
-        const allQuizzes = response.data
-        const filteredQuizzes = allQuizzes.filter((q) => q.difficulty === selectedLevel)
-
-        if (filteredQuizzes.length === 0) {
-          alert(`DB에 난이도 '${selectedLevel}'인 문제가 하나도 없습니다!`)
-          setLoading(false)
-          return
-        }
-
-        const randomIdx = Math.floor(Math.random() * filteredQuizzes.length)
-        const selectedQuiz = filteredQuizzes[randomIdx]
-
-        setCurrentQuiz(selectedQuiz)
-
-        const options = [
-          { originalNum: 1, text: selectedQuiz.option_1 },
-          { originalNum: 2, text: selectedQuiz.option_2 },
-          { originalNum: 3, text: selectedQuiz.option_3 },
-          { originalNum: 4, text: selectedQuiz.option_4 },
-        ]
-
-        options.sort(() => Math.random() - 0.5)
-        setShuffledOptions(options)
-
-        setUserAnswer(null)
-        setIsCorrect(null)
-        setStep('PLAYING')
+      const filtered = response.data.filter((q) => q.difficulty === selectedLevel)
+      if (filtered.length === 0) {
+        alert(`DB에 난이도 '${selectedLevel}'인 문제가 하나도 없습니다!`)
+        return
       }
+
+      setAllQuizzes(filtered)
+      await loadNextQuestion(filtered, 0)
     } catch (err) {
       console.error(err)
       alert(err.message || '백엔드 서버와 통신할 수 없습니다!')
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadNextQuestion = async (quizList, nextIndex) => {
+    const list = quizList ?? allQuizzes
+    const selected = list[Math.floor(Math.random() * list.length)]
+    setCurrentQuiz(selected)
+
+    const options = [
+      { originalNum: 1, text: selected.option_1 },
+      { originalNum: 2, text: selected.option_2 },
+      { originalNum: 3, text: selected.option_3 },
+      { originalNum: 4, text: selected.option_4 },
+    ].sort(() => Math.random() - 0.5)
+
+    setShuffledOptions(options)
+    setUserAnswer(null)
+    setIsCorrect(null)
+    setResultData(null)
+    setAttemptNum(nextIndex)
+    setStep('PLAYING')
   }
 
   const submitAnswer = async () => {
@@ -64,157 +190,375 @@ const QuizPage = () => {
       const response = await api.post('/api/quiz/check', {
         quiz_id: currentQuiz.quiz_id,
         answer: userAnswer,
+        difficulty,
       })
 
-      setIsCorrect(response.data.isCorrect)
+      const correct = response.data.isCorrect
+      const pts = POINT_TABLE[difficulty]?.[correct ? 'correct' : 'wrong'] ?? 0
+      const newCorrectCount = correctCount + (correct ? 1 : 0)
+      const newTotalPoints = totalPoints + pts
+
+      setIsCorrect(correct)
+      setResultData(response.data)
+      setCorrectCount(newCorrectCount)
+      setTotalPoints(newTotalPoints)
+      setSessionLog(prev => [...prev, {
+        question: currentQuiz.question,
+        correct,
+        points: pts,
+      }])
+      window.dispatchEvent(new Event('pointsUpdated'))
       setStep('RESULT')
     } catch (err) {
       alert(err.message || '정답 확인에 실패했습니다.')
     }
   }
 
-  if (step === 'DIFFICULTY') {
-    return (
-      <div style={{ padding: '40px 20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        <h2>📝 주식/금융 퀴즈</h2>
-        <p style={{ color: 'gray', marginBottom: '30px' }}>도전할 난이도를 선택해 주세요!</p>
+  const handleNext = async () => {
+    const nextIndex = attemptNum + 1
 
-        {loading && <p>문제를 불러오는 중...</p>}
+    if (nextIndex >= MAX_QUESTIONS) {
+      const isPerfect = correctCount + (isCorrect ? 1 : 0) === MAX_QUESTIONS
+      if (isPerfect) {
+        try {
+          await api.post('/api/quiz/bonus', { difficulty })
+          window.dispatchEvent(new Event('pointsUpdated'))
+        } catch (err) {
+          console.error('보너스 지급 실패', err)
+        }
+      }
+      setStep('SUMMARY')
+      return
+    }
 
-        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-          {['하', '중', '상'].map((level) => (
+    await loadNextQuestion(null, nextIndex)
+  }
+
+  const resetAll = () => {
+    setStep('DIFFICULTY')
+    setDifficulty(null)
+    setCurrentQuiz(null)
+    setUserAnswer(null)
+    setIsCorrect(null)
+    setResultData(null)
+    setShuffledOptions([])
+    setAttemptNum(0)
+    setCorrectCount(0)
+    setTotalPoints(0)
+    setSessionLog([])
+    setAllQuizzes([])
+  }
+
+  /* ─────────────────────────────────────────
+     Render sections
+  ───────────────────────────────────────── */
+  const renderQuizRanking = () => (
+    <div className='quiz-ranking-container'>
+      <div className='quiz-ranking-header'>
+        <div className='quiz-ranking-title'>
+          <h2>퀴즈 명예의 전당</h2>
+        </div>
+
+        <div className='quiz-ranking-tabs'>
+          <button
+            className={`qr-tab ${quizRankingTab === 'accuracy' ? 'active' : ''}`}
+            onClick={() => setQuizRankingTab('accuracy')}
+          >
+            정답률 TOP
+          </button>
+          <button
+            className={`qr-tab ${quizRankingTab === 'total' ? 'active' : ''}`}
+            onClick={() => setQuizRankingTab('total')}
+          >
+            다득점 TOP
+          </button>
+          <button
+            className={`qr-tab ${quizRankingTab === 'weekly' ? 'active' : ''}`}
+            onClick={() => setQuizRankingTab('weekly')}
+          >
+            주간 TOP
+          </button>
+        </div>
+      </div>
+
+      <div className='quiz-ranking-list'>
+        {rankingLoading ? (
+          <div className='qr-empty'>순위를 분석 중입니다...</div>
+        ) : quizRankings.length > 0 ? (
+          quizRankings.map((user, index) => (
+            <div className='qr-item' key={user.id || index}>
+              <div className='qr-item-left'>
+                <span className={`qr-rank num-${index + 1}`}>{index + 1}</span>
+                <div className='qr-profile-placeholder'>
+                  {user.profileImage ? (
+                    <img src={user.profileImage} alt='profile' className='qr-profile-img' />
+                  ) : (
+                    user.nickname.substring(0, 1)
+                  )}
+                </div>
+                <span className='qr-nickname'>{user.nickname}</span>
+              </div>
+              <div className='qr-item-right'>
+                <span className='qr-score'>
+                  {quizRankingTab === 'total'
+                    ? `${user.score}문제`
+                    : `${Number(user.score).toFixed(1)}%`}
+                </span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className='qr-empty'>아직 랭킹 데이터가 없습니다.</div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderDifficulty = () => (
+    <>
+      <div className='quiz-section'>
+        <p className='quiz-subtitle'>먼저, 도전할 난이도를 선택해 주세요!</p>
+        {loading && <p className='quiz-loading'>문제를 불러오는 중...</p>}
+        <div className='difficulty-buttons'>
+          {DIFFICULTIES.map((level) => {
+            // 🟢 3. '상' 난이도이면서, 프리미엄 회원이 아니면 버튼을 잠급니다.
+            const isLocked = level === '상' && !isPremium;
+
+            return (
+              <div key={level} className={`diff-btn-wrapper ${isLocked ? 'locked' : ''}`}>
+                <button
+                  className='btn btn-difficulty'
+                  onClick={() => startSession(level)}
+                  disabled={loading || isLocked} // 잠겼으면 클릭 불가!
+                >
+                  {isLocked && <span className="lock-icon">🔒</span>}
+                  난이도 {level}
+                </button>
+
+                {/* 마우스를 올렸을 때 나타날 말풍선 */}
+                {isLocked && (
+                  <div className="premium-tooltip">구독 후 이용 가능합니다</div>
+                )}
+              </div>
+            )
+          })}
+          <button className="ox-floating-btn" onClick={handleOpenOxModal}>
+            일일 O/X
+          </button>
+
+          {isOxModalOpen && (
+            <div className="ox-modal-overlay">
+              <div className="ox-modal-content">
+                {/* 헤더 섹션 */}
+                <div className="ox-modal-header">
+                  <div className="ox-header-title">
+                    <h2>FinSight 일일 O/X 퀴즈</h2>
+                  </div>
+                  <button className="ox-modal-close" onClick={() => setIsOxModalOpen(false)}>✕</button>
+                </div>
+
+                <div className="ox-modal-body">
+                  <p className="ox-guide-text">하루에 단 한 번 참여 가능합니다. (정답 시 500P, 참가상 100P)</p>
+
+                  {oxTodayCount >= 1 && !oxResult ? (
+                    <div className="ox-status-box finished">
+                      <h3>오늘의 퀴즈 완료!</h3>
+                      <p>내일 새로운 주가 퀴즈로 만나요</p>
+                      <button className="btn btn-primary" onClick={() => setIsOxModalOpen(false)}>닫기</button>
+                    </div>
+                  ) : oxResult ? (
+                    <div className={`ox-status-box result ${oxResult.isCorrect ? 'correct' : 'wrong'}`}>
+                      <h3>{oxResult.isCorrect ? '정답입니다!' : '아쉬워요!'}</h3>
+                      <p className="ox-reward"><span>{oxResult.rewardPoints}pt</span> 지급 완료</p>
+                      <div className="ox-explanation-card">
+                        <div className="exp-answer">정답: <strong>{oxResult.correctAnswer}</strong></div>
+                        <p className="exp-text">{oxResult.explanation}</p>
+                      </div>
+                      <button className="btn btn-primary" onClick={() => setIsOxModalOpen(false)}>돌아가기</button>
+                    </div>
+                  ) : oxQuizData ? (
+                    <div className="ox-quiz-play">
+                      <div className="ox-question-card">
+                        {oxQuizData.referenceDate && (
+                          <div className="ox-reference-date">
+                            ({oxQuizData.referenceDate} 종가 기준)
+                          </div>
+                        )}
+                        <p className="ox-question-text">{oxQuizData.question}</p>
+                      </div>
+                      <div className="ox-btn-group">
+                        <button className="btn-ox btn-o" onClick={() => handleOxSubmit('O')}>
+                          <span className="ox-char">O</span>
+                          <span className="ox-label">그렇다</span>
+                        </button>
+                        <button className="btn-ox btn-x" onClick={() => handleOxSubmit('X')}>
+                          <span className="ox-char">X</span>
+                          <span className="ox-label">아니다</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="ox-loading">
+                      <div className="spinner"></div>
+                      <p>실시간 주가 데이터 분석 중...</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      {renderQuizRanking()}
+      <div className='point-guide'>
+        <div>
+          <h4>포인트 안내</h4>
+          <table className='point-table'>
+            <thead>
+              <tr><th>난이도</th><th>정답</th><th>만점</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>하</td><td className='plus'>+1,000</td><td className='plus'>+{PERFECT_BONUS.하}</td></tr>
+              <tr><td>중</td><td className='plus'>+2,000</td><td className='plus'>+{PERFECT_BONUS.중}</td></tr>
+              <tr><td>상</td><td className='plus'>+3,000</td><td className='plus'>+{PERFECT_BONUS.상}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  )
+
+  const renderPlaying = () => (
+    <div className='quiz-section'>
+        <h1>퀴즈 <strong>난이도 {difficulty}</strong></h1>
+      <div className='progress-wrap'>
+        <div className='progress-meta'>
+          <span>{attemptNum + 1} / {MAX_QUESTIONS} 문제</span>
+          <span className='progress-correct'>정답 {correctCount}개</span>
+        </div>
+        <div className='progress-bar'>
+          <div className='progress-fill' style={{ width: `${(attemptNum / MAX_QUESTIONS) * 100}%` }} />
+        </div>
+      </div>
+      <div className='quiz-card'>
+        <h3 className='quiz-question'>Q{attemptNum + 1}. {currentQuiz?.question}</h3>
+        <div className='option-list'>
+          {shuffledOptions.map((opt, index) => (
             <button
-              key={level}
-              onClick={() => startQuiz(level)}
-              style={{
-                padding: '20px 40px',
-                fontSize: '20px',
-                backgroundColor: '#007BFF',
-                color: 'white',
-                border: 'none',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                transition: '0.2s',
-              }}
+              key={opt.originalNum}
+              className={`btn btn-option ${userAnswer === opt.originalNum ? 'selected' : ''}`}
+              onClick={() => setUserAnswer(opt.originalNum)}
             >
-              난이도 {level}
+              <span className='option-num'>{index + 1}</span>
+              {opt.text}
             </button>
           ))}
         </div>
+        <button className='btn btn-submit' onClick={submitAnswer}>정답 제출하기</button>
       </div>
-    )
-  }
+    </div>
+  )
 
-  if (step === 'PLAYING' && currentQuiz) {
+  const renderResult = () => {
+    const isLastQuestion = attemptNum + 1 >= MAX_QUESTIONS
+    const pts = POINT_TABLE[difficulty]?.[isCorrect ? 'correct' : 'wrong'] ?? 0
+
     return (
-      <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-        <h2>📝 퀴즈 풀기 (난이도: {difficulty})</h2>
-        <div style={{ border: '2px solid #007BFF', padding: '25px', borderRadius: '10px', backgroundColor: 'white' }}>
-          <h3 style={{ marginTop: 0, lineHeight: '1.4' }}>Q. {currentQuiz.question}</h3>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
-            {shuffledOptions.map((opt, index) => (
-              <button
-                key={opt.originalNum}
-                onClick={() => setUserAnswer(opt.originalNum)}
-                style={{
-                  padding: '15px',
-                  textAlign: 'left',
-                  fontSize: '16px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  backgroundColor: userAnswer === opt.originalNum ? '#007BFF' : '#f8f9fa',
-                  color: userAnswer === opt.originalNum ? 'white' : 'black',
-                  border: userAnswer === opt.originalNum ? '2px solid #0056b3' : '1px solid #ddd',
-                }}
-              >
-                {index + 1}. {opt.text}
-              </button>
-            ))}
+      <div className='quiz-section result-section'>
+        <div className='progress-wrap'>
+          <div className='progress-meta'>
+            <span>{attemptNum + 1} / {MAX_QUESTIONS} 문제</span>
+            <span className='progress-correct'>정답 {correctCount}개</span>
           </div>
-
-          <button
-            onClick={submitAnswer}
-            style={{
-              width: '100%',
-              padding: '15px',
-              marginTop: '25px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '18px',
-              fontWeight: 'bold',
-            }}
-          >
-            정답 제출하기
+          <div className='progress-bar'>
+            <div className='progress-fill' style={{ width: `${((attemptNum + 1) / MAX_QUESTIONS) * 100}%` }} />
+          </div>
+        </div>
+        <div className={`result-banner ${isCorrect ? 'correct' : 'wrong'}`}>
+          <span>{isCorrect ? '정답입니다!' : ' 아쉽게도 오답입니다.'}</span>
+          <span className={`result-pts ${isCorrect ? 'plus' : 'minus'}`}>
+            {pts > 0 ? '+' : ''}{pts.toLocaleString('ko-KR')} P
+          </span>
+        </div>
+        <div className='explanation-card'>
+          <h3 className='explanation-title'>💡 주식 용어 정리 (해설)</h3>
+          <p className='explanation-text'>{currentQuiz?.explanation}</p>
+        </div>
+        <div className='result-actions'>
+          <button className='btn btn-primary' onClick={handleNext}>
+            {isLastQuestion ? '결과 보기' : `다음 문제 (${attemptNum + 2} / ${MAX_QUESTIONS})`}
           </button>
+          <button className='btn btn-secondary' onClick={resetAll}>그만하기</button>
         </div>
       </div>
     )
   }
 
-  if (step === 'RESULT' && currentQuiz) {
+  const renderSummary = () => {
+    const isPerfect = correctCount === MAX_QUESTIONS
+    const finalPoints = totalPoints + (isPerfect ? PERFECT_BONUS : 0)
+
     return (
-      <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-        {isCorrect ? (
-          <h1 style={{ color: '#28a745' }}>🎉 정답입니다!</h1>
-        ) : (
-          <h1 style={{ color: '#dc3545' }}>🥲 아쉽게도 오답입니다.</h1>
-        )}
-
-        <div
-          style={{
-            border: '1px solid #ddd',
-            padding: '20px',
-            borderRadius: '10px',
-            backgroundColor: '#f9faff',
-            textAlign: 'left',
-            marginTop: '20px',
-          }}
-        >
-          <h3 style={{ marginTop: 0 }}>💡 주식 용어 정리 (해설)</h3>
-          <p style={{ fontSize: '16px', lineHeight: '1.6' }}>{currentQuiz.explanation}</p>
+      <div className='quiz-section summary-section'>
+        <div className='quiz-title'>
+          <h1>{isPerfect ? '🏆 완벽해요!' : '📊 세션 결과'}</h1>
         </div>
-
-        <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
-          <button
-            onClick={() => startQuiz(difficulty)}
-            style={{
-              flex: 1,
-              padding: '15px',
-              backgroundColor: '#007BFF',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '16px',
-            }}
-          >
-            같은 난이도 계속 풀기
-          </button>
-          <button
-            onClick={() => setStep('DIFFICULTY')}
-            style={{
-              flex: 1,
-              padding: '15px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '16px',
-            }}
-          >
-            난이도 다시 선택
-          </button>
+        <div className='summary-score'>
+          <div className='summary-fraction'>
+            <span className='summary-correct'>{correctCount}</span>
+            <span className='summary-total'> / {MAX_QUESTIONS}</span>
+          </div>
+          <p className='summary-label'>정답</p>
+        </div>
+        {isPerfect && (
+          <div className='bonus-banner'>
+            🎊 10문제 전부 정답! 보너스 +{PERFECT_BONUS.toLocaleString('ko-KR')} 포인트 지급!
+          </div>
+        )}
+        <div className='summary-points'>
+          <span>획득 포인트 결과</span>
+          <strong className={finalPoints >= 0 ? 'plus' : 'minus'}>
+            {finalPoints >= 0 ? '+' : ''}{finalPoints.toLocaleString('ko-KR')} P
+          </strong>
+        </div>
+        <ul className='session-log'>
+          {sessionLog.map((log, i) => (
+            <li key={i} className={`log-item ${log.correct ? 'correct' : 'wrong'}`}>
+              <span className='log-num'>Q{i + 1}</span>
+              <span className='log-question'>{log.question}</span>
+              <span className={`log-pts ${log.correct ? 'plus' : 'minus'}`}>
+                {log.points > 0 ? '+' : ''}{log.points.toLocaleString('ko-KR')} P
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className='result-actions'>
+          <button className='btn btn-primary' onClick={() => startSession(difficulty)}>같은 난이도 다시 도전</button>
+          <button className='btn btn-secondary' onClick={resetAll}>난이도 다시 선택</button>
         </div>
       </div>
     )
   }
 
-  return null
+  /* ─────────────────────────────────────────
+     단일 화면(return) 출력 영역
+  ───────────────────────────────────────── */
+  return (
+    <div className='quiz-container'>
+      <div className='breadcrumb'>대시보드 &gt; 퀴즈</div>
+
+      <div className='quiz-title'>
+        <h1>나의 기초를 <strong>도전해보자!</strong></h1>
+        <p>교육실에서 배운 내용을 적용해보세요.</p>
+      </div>
+
+      {/* 기존 난이도별 퀴즈 화면 라우팅 */}
+      {step === 'DIFFICULTY' && renderDifficulty()}
+      {step === 'PLAYING' && currentQuiz && renderPlaying()}
+      {step === 'RESULT' && currentQuiz && renderResult()}
+      {step === 'SUMMARY' && renderSummary()}
+    </div>
+  )
 }
 
 export default QuizPage
