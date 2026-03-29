@@ -178,6 +178,7 @@ const Dashboard = () => {
             principal,
             totalPrice,
             changeAmount,
+            myChangeRate,
             changeRate,
           }
         })
@@ -294,10 +295,8 @@ const Dashboard = () => {
   const getStockPrincipal = (stock) => {
     const directTotalPrice = Number(
       stock?.totalPrice ??
-      stock?.total_price ??
       stock?.principal ??
-      stock?.originPrice ??
-      stock?.origin_price ??
+      stock?.price ??
       0
     )
 
@@ -705,8 +704,8 @@ const Dashboard = () => {
                     <p>{stock.stockName || stock.stockCode}</p>
                     <p className='numbers'>{stock.quantity}</p>
                     <p className='numbers'>{formatNumber(stock.principal)}pt</p>
-                    <p className='numbers'>
-                      {formatSignedNumber(stock.changeAmount)}pt({formatSignedPercent(stock.changeRate)})
+                    <p className='numbers '>
+                      {formatSignedNumber(stock.changeAmount)}pt({formatSignedPercent(stock.myChangeRate)})
                     </p>
                   </li>
                 ))

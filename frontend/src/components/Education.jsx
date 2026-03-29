@@ -369,13 +369,6 @@ const Education = () => {
           </p>
         </div>
 
-        <div className='education-top-meta'>
-          <div className='education-meta-chip'>
-            오늘 학습 초급 {dailyCounts.beginner}/5 · 중급 {dailyCounts.intermediate}/5 · 상급 {dailyCounts.advanced}/5
-          </div>
-          <div className='education-meta-chip'>누적 포인트 {totalEarnedPoints}pt</div>
-        </div>
-
         <div className='education-progress-wrap'>
           <div className='education-progress-top'>
             <span>학습 진행도</span>
@@ -386,6 +379,13 @@ const Education = () => {
           <div className='education-progress-bar'>
             <div className='education-progress-fill' style={{ width: `${progress.percent}%` }} />
           </div>
+        </div>
+
+        <div className='education-top-meta'>
+          <div className='education-meta-chip'>
+            오늘 학습 초급 {dailyCounts.beginner}/5 · 중급 {dailyCounts.intermediate}/5 · 상급 {dailyCounts.advanced}/5
+          </div>
+          <div className='education-meta-chip'>누적 포인트 {totalEarnedPoints}pt</div>
         </div>
       </div>
 

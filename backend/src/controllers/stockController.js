@@ -852,7 +852,7 @@ exports.getOwnedStocks = async (req, res) => {
           avgPrice,
           price,
           totalPrice: price * quantity,
-          changeAmount: (price - avgPrice) * quantity,
+          changeAmount: Number((price - avgPrice) * quantity),
           myChangeRate: Number((price / avgPrice)-1),
           changeRate,
           createdAt: row.created_at,
