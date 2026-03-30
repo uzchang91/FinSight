@@ -363,6 +363,7 @@
 }
 
 .stocks-card-body {
+  height: 100%;
   padding-bottom: 0.75rem;
   overflow-y: scroll;
 
@@ -380,9 +381,28 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  cursor: pointer;
 
   transition: all 0.3s ease;
-  cursor: pointer;
+}
+
+.side-stock-item:first-child:hover {
+  padding:  0.75rem 0.5rem 0.5rem;
+  margin: 0.5rem 0.5rem 0;
+
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
+}
+
+.side-stock-item:hover {
+  padding:  0.75rem 0.5rem 0.5rem;
+  margin: 0 0.5rem;
+
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
 }
 
 .side-stock-item2 {
@@ -410,9 +430,13 @@
 
 .side-stock-description {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3rem minmax(6rem, 1fr);
   align-items: last baseline;
   gap: 0.5rem;
+}
+
+.side-stock-description > p {
+  text-align: end;
 }
 
 .side-stock-top span {
@@ -762,7 +786,7 @@
 
 .st-history-name {
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -780,7 +804,7 @@
 
 .st-history-action {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .st-history-right.buy .st-history-action {

@@ -62,6 +62,7 @@ const getStockProfit = (stock) => {
     0
   )
 }
+
 const PIE_COLORS = [
   '#3b82f6',
   '#22c55e',
@@ -132,6 +133,50 @@ const buildPortfolioSegments = (stocks) => {
   }
 }
 
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
+
+const buildAnimatedPortfolioSegments = (chartData, progress = 1) => {
+  if (!chartData || !Array.isArray(chartData.segments) || chartData.segments.length === 0) {
+    return {
+      ...chartData,
+      total: 0,
+      gradient: '#e5e7eb',
+      segments: [],
+    }
+  }
+
+  const safeProgress = Math.max(0, Math.min(1, progress))
+  let currentDeg = 0
+
+  const animatedSegments = chartData.segments.map((item) => {
+    const fullDegree = Number(item.endDeg || 0) - Number(item.startDeg || 0)
+    const animatedDegree = fullDegree * safeProgress
+
+    const nextItem = {
+      ...item,
+      animatedStartDeg: currentDeg,
+      animatedEndDeg: currentDeg + animatedDegree,
+    }
+
+    currentDeg += animatedDegree
+    return nextItem
+  })
+
+  const gradient =
+    animatedSegments.length > 0
+      ? `conic-gradient(${animatedSegments
+          .map((item) => `${item.color} ${item.animatedStartDeg}deg ${item.animatedEndDeg}deg`)
+          .join(', ')})`
+      : '#e5e7eb'
+
+  return {
+    ...chartData,
+    total: chartData.total * safeProgress,
+    segments: animatedSegments,
+    gradient,
+  }
+}
+
 const getTooltipText = (item, fallback = '설명이 없습니다.') => {
   return item?.description || item?.desc || item?.detail || fallback
 }
@@ -142,6 +187,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const [likedStocks, setLikedStocks] = useState([])
   const [recentAchievements, setRecentAchievements] = useState([])
   const [showInvestmentModal, setShowInvestmentModal] = useState(false)
+  const [portfolioChartProgress, setPortfolioChartProgress] = useState(0)
   const [allAchievements, setAllAchievements] = useState([])
   const [achievementSummary, setAchievementSummary] = useState({
     obtainedCount: 0,
@@ -236,6 +282,37 @@ const Profile = ({ collapsed, setCollapsed }) => {
     }
   }, [showInvestmentModal])
 
+  useEffect(() => {
+    if (!showInvestmentModal) {
+      setPortfolioChartProgress(0)
+      return
+    }
+
+    let frameId = null
+    let startTime = null
+    const duration = 1200
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp
+
+      const elapsed = timestamp - startTime
+      const rawProgress = Math.min(elapsed / duration, 1)
+      const easedProgress = easeOutCubic(rawProgress)
+
+      setPortfolioChartProgress(easedProgress)
+
+      if (rawProgress < 1) {
+        frameId = window.requestAnimationFrame(animate)
+      }
+    }
+
+    setPortfolioChartProgress(0)
+    frameId = window.requestAnimationFrame(animate)
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId)
+    }
+  }, [showInvestmentModal])
 
   useEffect(() => {
     return () => {
@@ -287,7 +364,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const formatSignedPercent = (value) => {
     const num = Number(value || 0)
     const prefix = num > 0 ? '+' : ''
-    return `${prefix}${num.toFixed(1)}`
+    return `${prefix}${num.toFixed(2)}`
   }
 
   const formatNoticeDate = (value) => {
@@ -304,6 +381,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
       minute: 'numeric',
     })
   }
+
   const formatCompactDateTime = (value) => {
     if (!value) return '-'
 
@@ -339,6 +417,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
       setLoading(false)
       return
     }
+
     try {
       const [memberRes, ownedRes, likedRes, recentAchRes, equippedTitleRes] = await Promise.allSettled([
         api.get('/api/auth/me'),
@@ -731,6 +810,9 @@ const Profile = ({ collapsed, setCollapsed }) => {
     return buildPortfolioSegments(ownedStocks)
   }, [ownedStocks])
 
+  const animatedPortfolioChartData = useMemo(() => {
+    return buildAnimatedPortfolioSegments(portfolioChartData, portfolioChartProgress)
+  }, [portfolioChartData, portfolioChartProgress])
 
   const recentTradeList = useMemo(() => {
     return Array.isArray(gameLog) ? gameLog.slice(0, 10) : []
@@ -748,7 +830,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   const totalProfitRate =
     Number(displayTotalInvested) > 0
-      ? (Number(displayTotalProfit/displayTotalInvested)-1)
+      ? (Number(displayTotalProfit) / Number(displayTotalInvested) - 1)
       : 0
 
   const obtainedAchievements = useMemo(
@@ -889,8 +971,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                     <div className='notification-item-left'>
                       <div className='notification-name'>{item.type}</div>
                       <div
-                        className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'
-                          }`}
+                        className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'}`}
                       >
                         {Number(item.changeAmount) >= 0 ? '+' : ''}
                         {Number(item.changeAmount).toLocaleString('ko-KR')}pt
@@ -920,8 +1001,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
               )}
               {filteredPointHistory.length > 10 && (
                 <div
-                  className={`point-history-more-row ${visibleHistoryCount <= 10 ? 'single' : 'double'
-                    }`}
+                  className={`point-history-more-row ${visibleHistoryCount <= 10 ? 'single' : 'double'}`}
                 >
                   {visibleHistoryCount <= 10 ? (
                     <button
@@ -1015,8 +1095,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                       </div>
 
                       <button
-                        className={`title-equip-btn ${isEquipped ? 'title-equip-btn--active' : ''
-                          }`}
+                        className={`title-equip-btn ${isEquipped ? 'title-equip-btn--active' : ''}`}
                         disabled={titleEquipLoading || isEquipped}
                         onClick={() => handleEquipTitle(item.ach_id)}
                       >
@@ -1092,10 +1171,8 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 <div className='achievement-empty-block'>불러오는 중...</div>
               ) : inProgressAchievements.length > 0 ? (
                 inProgressAchievements.map((item) => (
-                  /* hover의 대상이 되는 트리거 요소 */
                   <div className='achievement-trigger-item' key={item.ach_id}>
 
-                    {/* 1. 평소에 보여줄 초소형 Identifier (예: 이름 앞글자 또는 별도 디자인) */}
                     <div className='achievement-mini-icon'>
                       <img
                         src={getAchievementIcon(item.ach_id)}
@@ -1104,12 +1181,8 @@ const Profile = ({ collapsed, setCollapsed }) => {
                       />
                     </div>
 
-                    {/* 2. hover 시 나타날 CSS 기반 말풍선 (Tooltip) */}
                     <div className='achievement-speech-bubble'>
-                      {/* 말풍선 꼬리 */}
-                      <div className='bubble-arrow'></div>
-
-                      {/* 말풍선 내용 */}
+                      <div className='bubble-arrow'/>
                       <div className='bubble-content'>
                         <strong className='bubble-name'>{item.name}</strong>
                         <p className='bubble-desc'>
@@ -1202,8 +1275,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                             <div className='notification-item-left'>
                               <div className='notification-name'>{item.type}</div>
                               <div
-                                className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'
-                                  }`}
+                                className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'}`}
                               >
                                 {Number(item.changeAmount) >= 0 ? '+' : ''}
                                 {Number(item.changeAmount).toLocaleString('ko-KR')}pt
@@ -1240,11 +1312,10 @@ const Profile = ({ collapsed, setCollapsed }) => {
               </>
             )}
           </div>
+
           {!isProfileCollapsed && (
             <>
-
               <div className='profile-master'>
-
                 <div className='profile-account'>
                   <div
                     className={`glowing-container ${editMode ? 'glowing-container--editable' : ''}`}
@@ -1427,10 +1498,8 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   </div>
 
                   <div className='stock-content'>
-                    <span
-                      className={`description-top ${Number(displayTotalProfit) >= 0 ? '' : 'loss'}`}
-                    >
-                      총순익
+                    <span className='description-top'>
+                      총손익
                     </span>
                     <p
                       className={`description-slave ${Number(displayTotalProfit) >= 0 ? 'gain' : 'loss'}`}
@@ -1526,7 +1595,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 </div>
 
                 <div className='profile-investment-summary-card'>
-                  <span className='profile-investment-summary-label'>총순익</span>
+                  <span className='profile-investment-summary-label'>총손익</span>
                   <strong
                     className={`profile-investment-summary-value ${Number(displayTotalProfit) >= 0 ? 'gain' : 'loss'
                       }`}
@@ -1558,46 +1627,46 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   <div className='profile-investment-section-body'>
                     {ownedStocks.length > 0 ? (
                       ownedStocks.map((stock) => (
-                        <div
-                          key={`profile-owned-${stock.stockCode ?? stock.stock_code ?? stock.stockName}`}
-                          className='profile-side-stock-item'
-                        >
-                          <div className='profile-side-stock-top'>
-                            <p>{stock.stockName || stock.name || '-'}</p>
-                            <p>
-                              {stock.price !== null && stock.price !== undefined
-                                ? `${Number(stock.price).toLocaleString()}원`
-                                : '-'}
-                            </p>
-                          </div>
-
-                          <div className='profile-side-stock-mid'>
-                            <span>
-                              {Number(stock.quantity || 0)}주
-                              {' '}
-                              (평단가 {Number(stock.avgPrice || stock.avg_price || 0).toLocaleString()}원)
-                            </span>
-                            <span
-                              className={
-                                Number(stock.myChangeRate || stock.myChangeRate || 0) >= 0
-                                  ? 'gain'
-                                  : 'loss'
-                              }
-                            >
-                              {stock.myChangeRate !== null &&
-                                stock.myChangeRate !== undefined
-                                ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(
-                                  stock.myChangeRate
-                                ).toFixed(2)}%`
-                                : stock.change_rate !== null &&
-                                  stock.change_rate !== undefined
-                                  ? `${Number(stock.change_rate) >= 0 ? '+' : ''}${Number(
-                                    stock.change_rate
-                                  ).toFixed(2)}%`
+                        <>
+                          <div
+                            key={`profile-owned-${stock.stockCode ?? stock.stock_code ?? stock.stockName}`}
+                            className='profile-side-stock-item'
+                          >
+                            <div className='profile-side-stock-top'>
+                              <p>{stock.stockName || stock.name || '-'}</p>
+                              <p>
+                                {stock.price !== null && stock.price !== undefined
+                                  ? `${Number(stock.price).toLocaleString()}원`
                                   : '-'}
-                            </span>
+                              </p>
+                            </div>
+
+                            <div className='profile-side-stock-mid'>
+                              <span>
+                                {Number(stock.quantity || 0)}주
+                                {' '}
+                                (평단가 {Number(stock.avgPrice || stock.avg_price || 0).toLocaleString()}원)
+                              </span>
+                              <span
+                                className={
+                                  Number(stock.myChangeRate || stock.myChangeRate || 0) >= 0
+                                    ? 'gain'
+                                    : 'loss'
+                                }
+                              >
+                                {stock.myChangeRate !== null && stock.myChangeRate !== undefined
+                                  ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(
+                                    stock.myChangeRate).toFixed(2)}%`
+                                  : stock.change_rate !== null && stock.change_rate !== undefined
+                                    ? `${Number(stock.change_rate) >= 0 ? '+' : ''}${Number(
+                                      stock.change_rate
+                                    ).toFixed(2)}%`
+                                    : '-'}
+                              </span>
+                            </div>
                           </div>
-                        </div>
+                          <div className='hr' />
+                        </>
                       ))
                     ) : (
                       <div className='profile-investment-empty'>보유 주식이 없습니다.</div>
@@ -1617,7 +1686,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                         <div className='profile-investment-pie-wrap'>
                           <div
                             className='profile-investment-pie'
-                            style={{ background: portfolioChartData.gradient }}
+                            style={{ background: animatedPortfolioChartData.gradient }}
                           >
                             <div className='profile-investment-pie-hole'>
                               <span className='profile-investment-pie-hole-label'>총 원금</span>
@@ -1641,8 +1710,10 @@ const Profile = ({ collapsed, setCollapsed }) => {
                               </div>
 
                               <div className='profile-investment-legend-right'>
-                                <strong>{item.ratio.toFixed(1)}%</strong>
                                 <span>{formatNumber(item.amount)}pt</span>
+                                <strong>
+                                  {item.ratio.toFixed(2)}%
+                                </strong>
                               </div>
                             </div>
                           ))}

@@ -47,7 +47,7 @@
 .profile-set {
   position: relative;
   z-index: 200;
-  padding: 0.75rem 0.5rem 0;
+  padding: 0.5rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -62,28 +62,29 @@
 .set-icons {
   width: 3rem;
   height: 3rem;
+  box-sizing: border-box;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   background: transparent;
-  border: 2px solid transparent;
-  box-sizing: border-box;
+  border: none;
   border-radius: 0;
   position: relative;
-  transition: all 0.3s ease;
   cursor: pointer;
-  padding: 0;
+  outline: none;
   appearance: none;
   -webkit-appearance: none;
-  outline: none;
-  line-height: 1;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
 .icons {
   width: 1.35rem;
   height: 1.35rem;
   object-fit: contain;
+
   display: block;
   pointer-events: none;
 }
@@ -137,16 +138,40 @@
   border-radius: 2.5rem;
   opacity: 0.7;
   z-index: -1;
-  transform: scale(1.11);
-  animation: glowWave 3s ease-in-out infinite;
+  transform: scale(1.05) rotate(0);
+  animation: glowWave 5s ease-in-out infinite;
 }
 
 @keyframes glowWave {
-  0%   { opacity: 0.7;  transform: scale(1.11);  filter: blur(0.75rem) brightness(1.2) saturate(1.2); transform: rotate(0); }
-  25%  { opacity: 0.88; transform: scale(1.115); filter: blur(1.15rem) brightness(1.25) saturate(1.38); transform: rotate(90); }
-  50%  { opacity: 0.92; transform: scale(1.125); filter: blur(1.25rem) brightness(1.5) saturate(1.8); transform: rotate(180); }
-  75%  { opacity: 0.88; transform: scale(1.115); filter: blur(1.15rem) brightness(1.25) saturate(1.38); transform: rotate(270); }
-  100% { opacity: 0.7;  transform: scale(1.11);  filter: blur(0.75rem) brightness(1.2) saturate(1.2); transform: rotate(0); }
+  0% {
+    opacity: 0.7;
+    transform: scale(1.05) rotate(0);
+    filter: blur(0.75rem) brightness(1.2) saturate(1.2);
+  }
+
+  25% {
+    opacity: 0.88;
+    transform: scale(1.1) rotate(180);
+    filter: blur(1.15rem) brightness(1.25) saturate(1.38);
+  }
+
+  50% {
+    opacity: 0.92;
+    transform: scale(1.1) rotate(360);
+    filter: blur(0.75rem) brightness(1.25) saturate(1.2);
+  }
+
+  75% {
+    opacity: 0.88;
+    transform: scale(1.1) rotate(180);
+    filter: blur(1.15rem) brightness(1.25) saturate(1.38);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: scale(1.05) rotate(0);
+    filter: blur(0.75rem) brightness(1.2) saturate(1.2);
+  }
 }
 
 .glowing-container--editable {
@@ -189,7 +214,7 @@
 .profile-membership--free {
   background-color: var(--box-bg);
   border: 1px solid var(--text-highlight);
-  color: #6b7280;
+  color: var(--text-highlight);
 }
 
 .profile-premium {
@@ -217,8 +242,9 @@
 }
 
 .profile-name {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .profile-stats {
@@ -250,7 +276,7 @@
 
   display: flex;
   flex-direction: column;
-  
+
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   font-size: 1.5rem;
@@ -344,14 +370,16 @@
   width: 100%;
   padding: 0.5rem 1rem;
   box-sizing: border-box;
+
   outline: none;
   background: var(--bg);
-  border: 1.5px solid var(--primary);
-  border-radius: 0.5rem;
+  border: 1px solid var(--primary);
+  border-radius: 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
   text-align: center;
   color: var(--text);
+
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -394,7 +422,7 @@
   background: var(--box-bg);
   color: var(--text);
   border: 1px solid var(--border);
-  
+
   transition: all 0.3s ease;
 }
 
@@ -490,6 +518,7 @@
   font-size: 0.875rem;
   color: var(--text-highlight);
 }
+
 .notification-list {
   padding: 0 0.75rem;
 
@@ -547,7 +576,7 @@
 
 .achievement-title-row {
   padding: 0.25rem 0.5rem;
-  
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -719,54 +748,50 @@
 }
 
 .achievement-recent-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 0.75rem);
-  transform: translateX(-50%);
   min-width: 160px;
   max-width: 220px;
   padding: 0.5rem 0.75rem;
+
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  left: 0;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: var(--text);
-  color: var(--bg);
+  color: var(--text);
   font-size: 0.875rem;
   line-height: 1.4;
 
+  box-shadow: 0 0.5rem 1rem var(--shadow-2);
+
+  z-index: 50;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  z-index: 50;
+  transform: translateX(-60%) translateY(1rem);
+
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
 .achievement-recent-card:hover .achievement-recent-tooltip {
   opacity: 1;
   visibility: visible;
+  transform: translateX(-60%) translateY(0rem);
 }
 
 .achievement-recent-tooltip-arrow {
+  width: 0.5rem;
+  height: 0.5rem;
+
   position: absolute;
-  left: 50%;
-  top: calc(100% - 5px);
-  width: 0.75rem;
-  height: 0.75rem;
-  background: var(--text);
-  transform: translateX(-50%) rotate(45deg);
-}
+  left: calc(80%);
+  top: calc(98%);
 
-.achievement-recent-card:last-child .achievement-recent-tooltip {
-  left: auto;
-  right: 0;
-  transform: translateX(0) translateY(6px);
-}
+  background: var(--bg);
 
-.achievement-recent-card:last-child:hover .achievement-recent-tooltip {
-  transform: translateX(0) translateY(0);
-}
-
-.achievement-recent-card:last-child .achievement-recent-tooltip-arrow {
-  left: auto;
-  right: 18px;
-  transform: rotate(45deg);
+  transform: translateX(-50%);
+  rotate: 45deg;
 }
 
 .achievement-recent-img {
@@ -797,7 +822,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
 
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -807,42 +831,49 @@
   overflow: visible;
 }
 
-.achievement-grid-tooltip-arrow {
-  position: absolute;
-  left: calc(80%);
-  top: calc(98%);
-  transform: translateX(-50%);
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--bg);
-  rotate: 45deg;
-}
-
 .achievement-grid-card-tooltip {
+  min-width: 180px;
+  max-width: 240px;
+  padding: 0.5rem 0.75rem;
+
   position: absolute;
   left: 10%;
   top: calc(0% - 3rem);
-  transform: translateX(-50%) translateY(0.5rem);
-  min-width: 180px;
-  max-width: 240px;
-  padding: 0.5rem 0.8rem;
+
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: var(--bg);
   color: var(--text);
   font-size: 0.875rem;
   line-height: 1.45;
   text-align: center;
   white-space: normal;
-  word-break: keep-all;
   overflow-wrap: break-word;
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
+
+  z-index: 10001;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transform: translateX(-50%) translateY(0.5rem);
+
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-  z-index: 10001;
 }
+
+.achievement-grid-tooltip-arrow {
+  width: 0.5rem;
+  height: 0.5rem;
+
+  position: absolute;
+  left: calc(80%);
+  top: calc(98%);
+
+  background: var(--bg);
+
+  transform: translateX(-50%);
+  rotate: 45deg;
+}
+
 
 .achievement-grid-card:hover .achievement-grid-card-tooltip {
   opacity: 1;
@@ -885,7 +916,7 @@
 
 .achievement-grid-name {
   width: 100%;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.5;
   color: var(--text);
@@ -923,7 +954,7 @@
   height: auto;
   box-sizing: border-box;
   aspect-ratio: 1;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -932,7 +963,7 @@
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   filter: saturate(0);
-  
+
   transition: all 0.3s ease;
 }
 
@@ -946,28 +977,30 @@
 .achievement-trigger-item:hover .achievement-mini-icon {
   background-color: var(--box-bg);
   filter: saturate(1);
-  
+
   transform: scale(1.08);
 }
 
 .achievement-speech-bubble {
   width: 220px;
-  padding: 1rem;
+  padding: 0.5rem 0.75rem;
 
   position: absolute;
-  bottom: 120%;
+  bottom: calc(100% + 0.75rem);
   right: -5px;
-  background: var(--bg-trans2);
-  border-radius: 0.8rem;
-  box-shadow: 0 0.5rem 1rem var(--shadow-2);
-  transform: translateY(0.75rem);
-  z-index: 10000;
+
+  background: var(--bg);
   border: 1px solid var(--border);
-  visibility: hidden;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1rem var(--shadow-2);
+
+  z-index: 10000;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transform: translateY(0.75rem);
+
   transition: opacity 0.3s ease, transform 0.3s ease;
-  backdrop-filter: blur(5px);
 }
 
 .achievement-trigger-item:hover .achievement-speech-bubble {
@@ -978,13 +1011,17 @@
 }
 
 .bubble-arrow {
+  width: 0.5rem;
+  height: 0.5rem;
+
   position: absolute;
-  top: 100%;
-  right: 15px;
-  transform: rotate(45deg);
-  width: 15px;
-  height: 15px;
-  overflow: hidden;
+  left: calc(88%);
+  top: calc(98%);
+
+  background: var(--bg);
+
+  transform: translateX(-50%);
+  rotate: 45deg;
 }
 
 .bubble-arrow::after {
@@ -993,33 +1030,24 @@
   width: 0.5rem;
   height: 0.5rem;
   background: var(--bg);
+  overflow: auto;
 }
 
 .bubble-content {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
 }
 
 .bubble-name {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text);
-  margin: 0;
 }
 
 .bubble-desc {
   font-size: 0.875rem;
   color: var(--text-highlight);
   line-height: 1.4;
-}
-
-.achievement-progress-body {
-  min-width: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
 }
 
 .profile-title-badge {
@@ -1049,7 +1077,7 @@
   width: 100%;
   padding: 0.5rem 0 0;
   overflow: visible;
-  
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1084,7 +1112,7 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 1.5rem;
-  
+
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
   z-index: 10000;
 }
@@ -1256,7 +1284,6 @@
 }
 
 .title-item-desc {
-  margin: 0;
   font-size: 0.875rem;
   color: var(--text);
   line-height: 1.45;
@@ -1274,9 +1301,9 @@
   color: var(--primary);
   font-size: 0.875rem;
   font-weight: 600;
-  
+
   cursor: pointer;
-  
+
   transition: all 0.3s ease;
 }
 
@@ -1299,26 +1326,23 @@
   border: none;
   font-weight: 500;
   font-size: 1rem;
-  margin-left: 4px;
   display: inline-block;
   vertical-align: baseline;
 }
 
 .clickable-points {
   color: var(--text) !important;
-  font-size: 1.65rem !important;
+  font-size: 1.5rem !important;
   text-decoration: none;
-  padding-bottom: 2px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: inline-block;
   vertical-align: baseline;
+  transition: all 0.3s ease;
 }
 
 .clickable-points:hover {
   color: var(--primary) !important;
-  border-bottom-color: var(--primary-70);
 }
 
 .clickable-points span {
@@ -1341,7 +1365,7 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.5rem;
-  
+
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -1432,13 +1456,13 @@
 }
 
 .point-history-filter-btn:first-child {
- border-top-left-radius: 0.75rem; 
- border-bottom-left-radius: 0.75rem; 
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
 }
 
 .point-history-filter-btn:last-child {
- border-top-right-radius: 0.75rem; 
- border-bottom-right-radius: 0.75rem; 
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
 }
 
 .point-history-filter-btn:hover {
@@ -1531,7 +1555,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   background: var(--text-trans);
   backdrop-filter: blur(0.5rem);
   z-index: 12000;
@@ -1552,6 +1576,7 @@
     opacity: 0;
     transform: translateY(0.875rem);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1568,7 +1593,6 @@
 }
 
 .profile-investment-modal-header h2 {
-  margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text);
@@ -1662,20 +1686,22 @@
 }
 
 .profile-investment-section-body {
-  padding: 0.75rem;
-  
-  display: flex;
-  flex-direction: column;
-}
-
-.profile-side-stock-item {
-  padding: 0;
-  
+  padding: 0 0 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
 
-  border-bottom: 1px solid var(--border);
+.profile-side-stock-item {
+  padding: 0 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-side-stock-item:first-child {
+  padding: 0.5rem 0.5rem 0;
 }
 
 .profile-side-stock-item:last-child {
@@ -1753,6 +1779,7 @@
 }
 
 @media (max-width: 420px) {
+
   .profile-side-stock-top,
   .profile-side-stock-mid {
     flex-direction: column;
@@ -1795,7 +1822,7 @@
 
 .profile-trade-badge {
   padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  border-radius: 0.75rem;
   font-size: 0.74rem;
   font-weight: 600;
 }
@@ -1825,16 +1852,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.5rem 0.5rem 1rem;
+  padding: 1rem 1rem 0.5rem;
 }
 
 .profile-investment-pie {
   width: 180px;
   height: 180px;
-  border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border-radius: 50%;
+  will-change: background;
+  transition: background 0.3s linear;
 }
 
 .profile-investment-pie-hole {
@@ -1874,7 +1905,8 @@
 
 .profile-investment-legend-item {
   padding: 0.5rem 0.75rem;
-  
+  margin: 0 0.5rem;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1890,6 +1922,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .profile-investment-legend-color {
@@ -1915,13 +1950,14 @@
 
 .profile-investment-legend-right strong {
   font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--text);
+  font-weight: 500;
+  color: var(--text-highlight);
 }
 
 .profile-investment-legend-right span {
-  font-size: 0.875rem;
-  color: var(--text-highlight);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
 }
 
 @media (max-width: 768px) {

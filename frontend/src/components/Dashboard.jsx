@@ -592,7 +592,7 @@ const Dashboard = () => {
           </ul>
         </div>
 
-        <div className='dash-rank'>
+        <div className='tool-box'>
           <span>{rankingTitle}</span>
           <div className='rank-box'>
             <ul className='rank-league'>
@@ -674,7 +674,13 @@ const Dashboard = () => {
                   >
                     <p>{stock.stockName || stock.stockCode}</p>
                     <p className='numbers'>{formatNumber(stock.price)}pt</p>
-                    <p className='numbers'>{formatSignedNumber(stock.change)}pt({formatSignedPercent(stock.changeRate)})</p>
+                    <p className={`numbers 
+                        ${Number(stock.changeRate || stock.changeRate || 0) >= 0
+                        ? 'gain'
+                        : 'loss'
+                      }`}>
+                      {formatSignedNumber(stock.change)}pt({formatSignedPercent(stock.changeRate)})
+                      </p>
                   </li>
                 ))
               )}
@@ -703,7 +709,11 @@ const Dashboard = () => {
                     <p>{stock.stockName || stock.stockCode}</p>
                     <p className='numbers'>{stock.quantity}</p>
                     <p className='numbers'>{formatNumber(stock.principal)}pt</p>
-                    <p className='numbers '>
+                    <p className={`numbers 
+                        ${Number(stock.myChangeRate || stock.myChangeRate || 0) >= 0
+                        ? 'gain'
+                        : 'loss'
+                      }`}>
                       {formatSignedNumber(stock.changeAmount)}pt({formatSignedPercent(stock.myChangeRate)})
                     </p>
                   </li>

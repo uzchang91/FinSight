@@ -52,6 +52,7 @@ const Education = () => {
   const [searchText, setSearchText] = useState('')
   const [openLessonId, setOpenLessonId] = useState(null)
   const [showAllLessons, setShowAllLessons] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(5)
 
   const [countdown, setCountdown] = useState(0)
 
@@ -221,14 +222,27 @@ const Education = () => {
   }, [searchText, selectedStatusFilter, selectedDifficultyFilter, educationLessons])
 
   const displayedLessons = useMemo(() => {
-    return showAllLessons ? filteredLessons : filteredLessons.slice(0, 5)
-  }, [filteredLessons, showAllLessons])
+    return filteredLessons.slice(0, visibleCount)
+  }, [filteredLessons, visibleCount])
 
+  // 🟢 수정 3: 검색이나 필터를 바꾸면 다시 초기 5개로 리셋
   useEffect(() => {
-    setShowAllLessons(false)
+    setVisibleCount(5)
     setOpenLessonId(null)
     setCountdown(0)
   }, [searchText, selectedStatusFilter, selectedDifficultyFilter])
+
+  // 🟢 추가: 더보기 / 접기 버튼 동작 함수
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 10) // 10개씩 추가
+  }
+
+  const handleCollapse = () => {
+    setVisibleCount((prev) => {
+      const newCount = prev - 10
+      return newCount < 5 ? 5 : newCount
+    })
+  }
 
   useEffect(() => {
     if (filteredLessons.length === 0) {
@@ -383,7 +397,13 @@ const Education = () => {
 
         <div className='education-top-meta'>
           <div className='education-meta-chip'>
-            오늘 학습 초급 {dailyCounts.beginner}/5 · 중급 {dailyCounts.intermediate}/5 · 상급 {dailyCounts.advanced}/5
+            초급 {dailyCounts.beginner}/5
+          </div>
+          <div className='education-meta-chip'>
+            중급 {dailyCounts.intermediate}/5
+          </div>
+          <div className='education-meta-chip'>
+            상급 {dailyCounts.advanced}/5
           </div>
           <div className='education-meta-chip'>누적 포인트 {totalEarnedPoints}pt</div>
         </div>
@@ -446,14 +466,23 @@ const Education = () => {
             </button>
             <button
               type='button'
-              className={`education-filter-btn education-filter-btn-premium ${selectedDifficultyFilter === 'advanced' ? 'active' : ''
-                }`}
-              onClick={() => handleDifficultyFilter('advanced')}
+              className={`education-filter-btn ${selectedDifficultyFilter === 'advanced' ? 'active' : ''}
+                education-filter-btn-premium ${membershipType !== 'premium' ? 'locked' : ''}`}
+              onClick={() => {
+                // 프리미엄 회원이 아닐 경우 아예 클릭 이벤트를 무시합니다.
+                if (membershipType !== 'premium') return;
+                handleDifficultyFilter('advanced');
+              }}
             >
               <span className='education-filter-crown' >
-                <img src={crownIcon} alt='premium crown' />
+                {membershipType !== 'premium' && <img src={crownIcon} alt='premium crown' />}
                 상급
               </span>
+              {membershipType !== 'premium' && (
+                <div className="premium-tooltip">
+                  구독 후 이용 가능합니다
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -506,13 +535,13 @@ const Education = () => {
                           )}
                         </div>
 
+                      </div>
+                    </div>
                         {isAdvancedLocked && (
                           <div className='education-lock-hover-msg'>
                             구독 후 이용할 수 있습니다
                           </div>
                         )}
-                      </div>
-                    </div>
                     <img
                       src={arrowDown}
                       alt='collapsed'
@@ -548,7 +577,7 @@ const Education = () => {
                               : processingLessonId === lesson.id
                                 ? '처리 중...'
                                 : '학습 완료'}
-                            {countdown === 0 && <img src={check} alt='check' className='icons' />}
+                            {/* {countdown === 0 && <img src={check} alt='check' className='icons' />} */}
                           </button>
                         ))}
                     </div>
@@ -558,19 +587,32 @@ const Education = () => {
             })}
 
             {filteredLessons.length > 5 && (
-              <div className='education-more-wrap'>
-                <button
-                  type='button'
-                  className='education-more-btn'
-                  onClick={() => setShowAllLessons((prev) => !prev)}
-                >
-                  <span className='education-more-btn-text'>
-                    {showAllLessons ? '학습 접기' : '학습 더보기'}
-                  </span>
-                  <span className={`education-more-btn-arrow ${showAllLessons ? 'open' : ''}`}>
-                    ▼
-                  </span>
-                </button>
+              <div className='education-more-wrap' style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+
+                {/* 5개 이상 열렸을 때만 '학습 접기' 버튼 표시 */}
+                {visibleCount > 5 && (
+                  <button
+                    type='button'
+                    className='education-more-btn'
+                    onClick={handleCollapse}
+                  >
+                    <span className='education-more-btn-text'>학습 접기 (10개)</span>
+                    <span className='education-more-btn-arrow'>▲</span>
+                  </button>
+                )}
+
+                {/* 현재 보여주는 개수가 전체 개수보다 작을 때만 '학습 더보기' 버튼 표시 */}
+                {visibleCount < filteredLessons.length && (
+                  <button
+                    type='button'
+                    className='education-more-btn'
+                    onClick={handleLoadMore}
+                  >
+                    <span className='education-more-btn-text'>학습 더보기 (10개)</span>
+                    <span className='education-more-btn-arrow'>▼</span>
+                  </button>
+                )}
+
               </div>
             )}
           </>
