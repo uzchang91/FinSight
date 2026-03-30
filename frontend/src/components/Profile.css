@@ -351,7 +351,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  animation: fadeIn 0.15s ease;
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -384,7 +384,7 @@
 }
 
 .nickname-input:focus {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
+  box-shadow: 0 0 0 4px var(--primary-highlight2);
 }
 
 .nickname-error {
@@ -902,7 +902,7 @@
   z-index: 30;
   word-break: keep-all;
   white-space: normal;
-  transition: opacity 0.18s ease, visibility 0.18s ease, transform 0.18s ease;
+  transition: opacity0.3s ease, visibility0.3s ease, transform0.3s ease;
 }
 
 .achievement-grid-img {
@@ -1147,40 +1147,49 @@
 }
 
 .profile-title-text-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 15px);
-  transform: translateX(-50%);
   min-width: 180px;
   max-width: 240px;
   padding: 0.5rem 0.8rem;
+  
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 15px);
+  
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: var(--bg);
+
   color: var(--text);
   font-size: 0.875rem;
+  font-weight: 500;
   line-height: 1.45;
   text-align: left;
   white-space: normal;
-  word-break: keep-all;
   overflow-wrap: break-word;
+  
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
+  
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.18s ease, visibility 0.18s ease;
+  transform: translateX(-50%);
   z-index: 10001;
+
+  transition: opacity0.3s ease, visibility0.3s ease;
 }
 
 .profile-title-text-tooltip::before {
-  content: "";
+  content: '';
+  width: 0.75rem;
+  height: 0.75rem;
+
   position: absolute;
   left: 50%;
   bottom: -6px;
-  transform: translateX(-50%) rotate(45deg);
-  width: 0.75rem;
-  height: 0.75rem;
+  
   background: var(--bg);
+  
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .profile-title-text-hover:hover .profile-title-text-tooltip {
@@ -1568,7 +1577,7 @@
   background: var(--bg);
   border-radius: 1.5rem;
   box-shadow: 0 0.5rem 1rem var(--shadow-1);
-  animation: profileInvestmentModalUp 0.18s ease-out;
+  animation: profileInvestmentModalUp 0.3s ease-out;
 }
 
 @keyframes profileInvestmentModalUp {
