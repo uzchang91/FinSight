@@ -166,7 +166,7 @@ const Dashboard = () => {
           const changeAmount =
             Number(stock?.changeAmount ?? stock?.profitLoss ?? 0) || ((price - avgPrice) * quantity)
 
-          const changeRate = Number(stock?.changeRate ?? stock?.rate ?? 0)
+          const changeRate = Number(stock?.myChangeRate ?? stock?.rate ?? 0)
 
           return {
             ...stock,
@@ -178,7 +178,6 @@ const Dashboard = () => {
             principal,
             totalPrice,
             changeAmount,
-            myChangeRate,
             changeRate,
           }
         })
@@ -368,7 +367,7 @@ const Dashboard = () => {
   const formatSignedPercent = (value) => {
     const num = Number(value || 0)
     const prefix = num > 0 ? '+' : ''
-    return `${prefix}${num.toFixed(1)}%`
+    return `${prefix}${num.toFixed(2)}%`
   }
 
   const formatScore = (value) => {
