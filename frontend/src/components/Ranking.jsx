@@ -112,7 +112,7 @@ const Ranking = () => {
 
   return (
     <main className='ranking-container'>
-      <div className='ranking-breadcrumb'>대시보드 &gt; 랭킹</div>
+      <div className='breadcrumb'>대시보드 &gt; 랭킹</div>
 
       <section className='ranking-summary-card'>
         <h1>
