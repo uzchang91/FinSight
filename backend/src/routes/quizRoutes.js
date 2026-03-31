@@ -11,6 +11,7 @@ router.get("/ranking", quizController.getQuizRanking);
 router.get("/status/me", authMiddleware, quizController.getMyQuestStatus);
 router.get("/wrong-notes/me", authMiddleware, quizController.getWrongAnswerNotes);
 
+router.post("/check-ai", authMiddleware, quizController.checkAiAnswer);
 router.post("/check", authMiddleware, quizController.checkAnswer);
 router.post("/bonus", authMiddleware, quizController.bonusReward);
 router.post("/generate", authMiddleware, quizController.generateLLMQuiz);

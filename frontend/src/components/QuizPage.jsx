@@ -77,6 +77,8 @@ const QuizPage = () => {
 
   const [wrongNotes, setWrongNotes] = useState([])
   const [wrongNotesLoading, setWrongNotesLoading] = useState(false)
+  const [showWrongNotes, setShowWrongNotes] = useState(false)
+  const [openWrongNoteIds, setOpenWrongNoteIds] = useState({})
 
   const [llmKeywords, setLlmKeywords] = useState('')
   const [llmQuizLoading, setLlmQuizLoading] = useState(false)
@@ -124,13 +126,28 @@ const QuizPage = () => {
     try {
       const res = await api.get('/api/quiz/wrong-notes/me')
       const data = res?.data?.data ?? res?.data ?? []
-      setWrongNotes(Array.isArray(data) ? data : [])
+      const nextWrongNotes = Array.isArray(data) ? data : []
+      setWrongNotes(nextWrongNotes)
+
+      const initialOpenState = {}
+      nextWrongNotes.slice(0, 5).forEach((item, index) => {
+        initialOpenState[item.history_id] = index === 0
+      })
+      setOpenWrongNoteIds(initialOpenState)
     } catch (err) {
       console.error('오답노트 로딩 실패', err)
       setWrongNotes([])
+      setOpenWrongNoteIds({})
     } finally {
       setWrongNotesLoading(false)
     }
+  }
+
+  const toggleWrongNoteItem = (historyId) => {
+    setOpenWrongNoteIds((prev) => ({
+      ...prev,
+      [historyId]: !prev[historyId],
+    }))
   }
 
   const handleOpenOxModal = async () => {
@@ -250,6 +267,7 @@ const QuizPage = () => {
     setCorrectCount(0)
     setTotalPoints(0)
     setSessionLog([])
+    setShowWrongNotes(false)
 
     try {
       const response = await api.get('/api/quiz/all')
@@ -322,6 +340,7 @@ const QuizPage = () => {
       setTotalPoints(0)
       setSessionLog([])
       setAllQuizzes([aiQuiz])
+      setShowWrongNotes(false)
 
       const options = [
         { originalNum: 1, text: aiQuiz.option_1 },
@@ -354,24 +373,29 @@ const QuizPage = () => {
         String(currentQuiz?.quiz_id).startsWith('ai-') || currentQuiz?.source === 'ai'
 
       if (isAiQuiz) {
-        const correct = Number(currentQuiz.answer) === Number(userAnswer)
-        const pts =
-          POINT_TABLE[difficulty]?.[correct ? 'correct' : 'wrong'] ??
-          (correct ? 100 : 0)
+        const aiDifficulty = difficulty === 'AI' ? '하' : difficulty
+
+        const res = await api.post('/api/quiz/check-ai', {
+          question: currentQuiz.question,
+          answer: userAnswer,
+          correctAnswer: currentQuiz.answer,
+          explanation: currentQuiz.explanation,
+          difficulty: aiDifficulty,
+        })
+
+        const payload = res?.data?.data ?? res?.data ?? {}
+        const correct = Boolean(payload.isCorrect)
+        const pts = Number(
+          payload.rewardPoints ??
+          POINT_TABLE[aiDifficulty]?.[correct ? 'correct' : 'wrong'] ??
+          0
+        )
 
         const newCorrectCount = correctCount + (correct ? 1 : 0)
         const newTotalPoints = totalPoints + pts
 
         setIsCorrect(correct)
-        setResultData({
-          isCorrect: correct,
-          correctAnswer: currentQuiz.answer,
-          explanation: currentQuiz.explanation,
-          llmExplanation: correct ? '' : currentQuiz.explanation,
-          rewardPoints: pts,
-          historySaved: false,
-          member: null,
-        })
+        setResultData(payload)
         setCorrectCount(newCorrectCount)
         setTotalPoints(newTotalPoints)
         setSessionLog((prev) => [
@@ -383,6 +407,8 @@ const QuizPage = () => {
             source: 'ai',
           },
         ])
+
+        window.dispatchEvent(new Event('pointsUpdated'))
         setStep('RESULT')
         return
       }
@@ -471,6 +497,7 @@ const QuizPage = () => {
     setSessionLog([])
     setAllQuizzes([])
     setLlmKeywords('')
+    setShowWrongNotes(false)
     fetchWrongNotes()
   }
 
@@ -554,18 +581,73 @@ const QuizPage = () => {
         {wrongNotesLoading ? (
           <div className='qr-empty'>오답노트 불러오는 중...</div>
         ) : wrongNotes.length > 0 ? (
-          wrongNotes.slice(0, 5).map((item) => (
-            <div className='qr-item' key={item.history_id}>
-              <div className='qr-item-left' style={{ display: 'block', width: '100%' }}>
-                <div className='qr-nickname' style={{ marginBottom: 6 }}>
-                  [{item.difficulty}] {item.question}
-                </div>
-                <div style={{ fontSize: 13, color: '#666' }}>
-                  내 답: {item.selected_answer}번 / 정답: {item.correct_answer}번
+          wrongNotes.slice(0, 5).map((item) => {
+            const isOpen = Boolean(openWrongNoteIds[item.history_id])
+
+            return (
+              <div
+                className={`wrong-note-card ${isOpen ? 'open' : ''}`}
+                key={item.history_id}
+              >
+                <button
+                  type='button'
+                  className='wrong-note-toggle'
+                  onClick={() => toggleWrongNoteItem(item.history_id)}
+                >
+                  <div className='wrong-note-toggle-left'>
+                    <div className='wrong-note-question'>
+                      [{item.difficulty}] {item.question}
+                    </div>
+                    <div className='wrong-note-answer-meta'>
+                      내 답: {item.selected_answer}번 / 정답: {item.correct_answer}번
+                    </div>
+                  </div>
+
+                  <span className={`wrong-note-arrow ${isOpen ? 'open' : ''}`}>
+                    ▼
+                  </span>
+                </button>
+
+                <div className={`wrong-note-body ${isOpen ? 'open' : ''}`}>
+                  <div className='wrong-note-options'>
+                    {[1, 2, 3, 4].map((num) => {
+                      const optionText = item[`option_${num}`]
+                      const isMyAnswer = Number(item.selected_answer) === num
+                      const isCorrectAnswer = Number(item.correct_answer) === num
+
+                      return (
+                        <div
+                          key={num}
+                          className={`wrong-note-option ${
+                            isCorrectAnswer
+                              ? 'correct'
+                              : isMyAnswer
+                              ? 'my-answer'
+                              : ''
+                          }`}
+                        >
+                          <strong className='wrong-note-option-num'>{num}번</strong>
+                          <span>{optionText}</span>
+
+                          {isMyAnswer && (
+                            <span className='wrong-note-badge my-answer'>
+                              (내 선택)
+                            </span>
+                          )}
+
+                          {isCorrectAnswer && (
+                            <span className='wrong-note-badge correct'>
+                              (정답)
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            )
+          })
         ) : (
           <div className='qr-empty'>오답노트가 없습니다.</div>
         )}
@@ -719,7 +801,7 @@ const QuizPage = () => {
                   ) : (
                     <div className='ox-loading'>
                       <div className='spinner'></div>
-                      <p>OX 퀴즈를 준비 중입니다...</p>
+                      <p>OX 퀴즈를 준비 중입니다.</p>
                     </div>
                   )}
                 </div>
@@ -881,6 +963,18 @@ const QuizPage = () => {
             </li>
           ))}
         </ul>
+
+        <div className='result-actions'>
+          <button
+            className='btn btn-secondary'
+            onClick={() => setShowWrongNotes((prev) => !prev)}
+          >
+            {showWrongNotes ? '퀴즈 오답노트 숨기기' : '퀴즈 오답노트 보기'}
+          </button>
+        </div>
+
+        {showWrongNotes && renderWrongNotes()}
+
         <div className='result-actions'>
           <button className='btn btn-primary' onClick={() => startSession(difficulty)}>같은 난이도 다시 도전</button>
           <button className='btn btn-secondary' onClick={resetAll}>난이도 다시 선택</button>

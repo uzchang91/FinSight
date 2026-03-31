@@ -941,6 +941,118 @@
   color: var(--primary);
 }
 
+/* =========================================
+   📝 오답노트 아코디언 스타일 (추가된 부분)
+   ========================================= */
+
+.wrong-note-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg) 96%, var(--text) 4%);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wrong-note-card.open {
+  border-color: var(--border-prim);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.wrong-note-toggle {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 👉 여기 중요 (지금 UI 맞춤) */
+  gap: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wrong-note-toggle-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.wrong-note-question {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 0.25rem;
+}
+
+.wrong-note-answer-meta {
+  font-size: 0.85rem;
+  color: var(--text-highlight);
+}
+
+.wrong-note-arrow {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: var(--text-highlight);
+  transition: transform 0.25s ease;
+}
+
+.wrong-note-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* 🔥 핵심 애니메이션 */
+.wrong-note-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.wrong-note-body.open {
+  max-height: 500px; /* 충분히 크게 */
+}
+
+.wrong-note-options {
+  padding: 0 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wrong-note-option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 14px;
+}
+
+.wrong-note-option.correct {
+  border-color: var(--secondary);
+  background: var(--secondary-highlight);
+}
+
+.wrong-note-option.my-answer {
+  border-color: var(--danger);
+  background: var(--danger-highlight);
+}
+
+.wrong-note-badge {
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.wrong-note-badge.correct {
+  color: var(--secondary);
+}
+
+.wrong-note-badge.my-answer {
+  color: var(--danger);
+}
+
+.wrong-note-badge.correct {
+  color: #22c55e;
+}
+
 @media (max-width: 1024px) {
   .difficulty-buttons {
     flex-direction: column;
@@ -967,6 +1079,14 @@
   .summary-points,
   .ox-btn-group {
     flex-direction: column;
+  }
+
+  .wrong-note-toggle {
+    padding: 0.95rem 0.95rem;
+  }
+
+  .wrong-note-options {
+    padding: 0 0.95rem 0.95rem;
   }
 }
 

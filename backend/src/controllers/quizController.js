@@ -140,7 +140,7 @@ exports.getQuizById = async (req, res) => {
 };
 
 /* =========================
-  정답 체크 + 포인트 + 업적 + 오답일 때만 LLM 해설
+  일반 DB 퀴즈 정답 체크
 ========================= */
 
 exports.checkAnswer = async (req, res) => {
@@ -250,6 +250,68 @@ exports.checkAnswer = async (req, res) => {
     });
   } catch (err) {
     return fail(res, "정답 확인 실패", err.message);
+  }
+};
+
+/* =========================
+  AI 퀴즈 정답 체크
+========================= */
+
+exports.checkAiAnswer = async (req, res) => {
+  try {
+    const memberId = extractMemberId(req);
+    const {
+      question,
+      answer,
+      correctAnswer,
+      explanation,
+      difficulty = "하",
+    } = req.body;
+
+    if (!memberId) {
+      return fail(res, "사용자 인증 필요", null, 401);
+    }
+
+    const selectedAnswer = Number(answer);
+    const actualCorrectAnswer = Number(correctAnswer);
+    const isCorrect = selectedAnswer === actualCorrectAnswer;
+
+    const pts =
+      POINT_TABLE[difficulty]?.[isCorrect ? "correct" : "wrong"] ??
+      (isCorrect ? 100 : 0);
+
+    await db.promise().query(
+      `UPDATE members SET points = points + ? WHERE member_id = ?`,
+      [pts, memberId]
+    );
+
+    await db.promise().query(
+      `
+      INSERT INTO point_history (member_id, change_amount, reason)
+      VALUES (?, ?, ?)
+      `,
+      [memberId, pts, `quiz_${difficulty}_${isCorrect ? "correct" : "wrong"}`]
+    );
+
+    await refreshMemberAchievements(memberId);
+
+    const [memberRows] = await db.promise().query(
+      `SELECT member_id, nickname, points FROM members WHERE member_id = ?`,
+      [memberId]
+    );
+
+    return success(res, "AI 퀴즈 정답 확인 완료", {
+      isCorrect,
+      correctAnswer: actualCorrectAnswer,
+      explanation: explanation || "",
+      llmExplanation: isCorrect ? "" : explanation || "",
+      rewardPoints: pts,
+      historySaved: false,
+      member: memberRows[0] || null,
+      question: question || "",
+    });
+  } catch (err) {
+    return fail(res, "AI 퀴즈 정답 확인 실패", err.message);
   }
 };
 
@@ -405,8 +467,6 @@ exports.getMyQuestStatus = async (req, res) => {
 
 /* =========================
   LLM 객관식 퀴즈 생성
-  - 일반 AI 버튼에서도 사용
-  - 혼합형 세션에서도 사용
 ========================= */
 
 exports.generateLLMQuiz = async (req, res) => {
@@ -440,8 +500,6 @@ exports.generateLLMQuiz = async (req, res) => {
 
 /* ==========================================
   혼합형 OX 퀴즈
-  - market: 기존 느낌 유지
-  - concept: LLM 생성 개념 문제
 ========================================== */
 
 const activeOxQuizzes = new Map();
@@ -553,7 +611,9 @@ async function generateMarketOxQuiz() {
     throw new Error("시장형 OX용 주가 데이터를 가져오지 못했습니다.");
   }
 
-  const changeRate = Number((((currentPrice - pastPrice) / pastPrice) * 100).toFixed(2));
+  const changeRate = Number(
+    ((((currentPrice - pastPrice) / pastPrice) * 100).toFixed(2))
+  );
   const askUp = Math.random() > 0.5;
   const shownDirection = askUp ? "상승" : "하락";
   const truth = askUp ? changeRate > 0 : changeRate < 0;

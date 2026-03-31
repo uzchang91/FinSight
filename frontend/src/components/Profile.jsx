@@ -828,9 +828,10 @@ const Profile = ({ collapsed, setCollapsed }) => {
       ? investmentSummary.totalProfit
       : Number(member?.pnl_amount || 0)
 
+  // 수정: 총손익 / 원금 * 100 으로 계산해야 정상 수익률
   const totalProfitRate =
     Number(displayTotalInvested) > 0
-      ? (Number(displayTotalProfit) / Number(displayTotalInvested) - 1)
+      ? (Number(displayTotalProfit) / Number(displayTotalInvested)) * 100
       : 0
 
   const obtainedAchievements = useMemo(
@@ -1270,7 +1271,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                       {notifications.length === 0 ? (
                         <div className='notification-empty'>알림이 없습니다.</div>
                       ) : (
-                        notifications.slice(0, 5).map((item) => (
+                        notifications.map((item) => (
                           <div className='notification-item' key={item.history_id}>
                             <div className='notification-item-left'>
                               <div className='notification-name'>{item.type}</div>
@@ -1514,7 +1515,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                     <p
                       className={`description-slave ${Number(totalProfitRate) >= 0 ? 'gain' : 'loss'}`}
                     >
-                      {formatSignedPercent(Number(totalProfitRate).toFixed(2))}
+                      {formatSignedPercent(totalProfitRate)}
                       <span>%</span>
                     </p>
                   </div>
@@ -1611,7 +1612,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                     className={`profile-investment-summary-value ${Number(totalProfitRate) >= 0 ? 'gain' : 'loss'
                       }`}
                   >
-                    {formatSignedPercent(Number(totalProfitRate).toFixed(2))}
+                    {formatSignedPercent(totalProfitRate)}
                     <span>%</span>
                   </strong>
                 </div>
