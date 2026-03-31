@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import './Profile.css'
 import notification from '../assets/icons/notification.svg'
 import edit from '../assets/icons/edit.svg'
+import account from '../assets/icons/account.svg'
 import logout from '../assets/icons/logout.svg'
 import spread from '../assets/icons/spread.svg'
 import defaultProfile from '../assets/chicken running machine.png'
@@ -165,8 +166,8 @@ const buildAnimatedPortfolioSegments = (chartData, progress = 1) => {
   const gradient =
     animatedSegments.length > 0
       ? `conic-gradient(${animatedSegments
-          .map((item) => `${item.color} ${item.animatedStartDeg}deg ${item.animatedEndDeg}deg`)
-          .join(', ')})`
+        .map((item) => `${item.color} ${item.animatedStartDeg}deg ${item.animatedEndDeg}deg`)
+        .join(', ')})`
       : '#e5e7eb'
 
   return {
@@ -210,7 +211,6 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const [pointHistoryRange, setPointHistoryRange] = useState('7d')
 
   const [achievementLoading, setAchievementLoading] = useState(false)
-  // const [rankingPoint, setRankingPoint] = useState(0)
   const [displayTier, setDisplayTier] = useState('브론즈')
   const [tierRank, setTierRank] = useState(null)
 
@@ -830,7 +830,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   const totalProfitRate =
     Number(displayTotalInvested) > 0
-      ? (Number(displayTotalProfit) / Number(displayTotalInvested) - 1)
+      ? (Number(displayTotalProfit / displayTotalInvested) - 1)
       : 0
 
   const obtainedAchievements = useMemo(
@@ -1182,7 +1182,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                     </div>
 
                     <div className='achievement-speech-bubble'>
-                      <div className='bubble-arrow'/>
+                      <div className='bubble-arrow' />
                       <div className='bubble-content'>
                         <strong className='bubble-name'>{item.name}</strong>
                         <p className='bubble-desc'>
@@ -1206,7 +1206,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   return (
     <>
-      <div className={`profile ${collapsed ? 'profile--collapsed' : ''}`}>
+      <div className={`profile ${collapsed ? 'collapsed' : ''}`}>
         <div className='profile-content'>
           <div className='profile-set'>
 
@@ -1221,19 +1221,15 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 alt={isProfileCollapsed ? 'expand profile' : 'collapse profile'}
                 className={`icons profile-toggle-icon ${isProfileCollapsed ? 'profile-toggle-icon--collapsed' : ''}`}
               />
+              <img src={account} alt='account' className='icons profile-account-icon' />
             </button>
-            {!isProfileCollapsed && (
-              <>
+            <div className={`profile-set-extra${isProfileCollapsed ? ' profile-set-extra--hidden' : ''}`}>
                 <div className='notification-wrap' ref={notificationRef}>
                   <button
                     type='button'
                     className={`icon-container set-icons ${isNotificationOpen ? 'set-icons--active' : ''}`}
                     onClick={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect()
-                      setNotificationPosition({
-                        top: rect.bottom + 8,
-                        right: window.innerWidth - rect.right,
-                      })
                       setIsNotificationOpen((prev) => {
                         const next = !prev
                         if (next) setHasUnreadNotification(false)
@@ -1247,13 +1243,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   </button>
 
                   {isNotificationOpen && (
-                    <div
-                      className='notification-dropdown notification-dropdown--fixed'
-                      style={{
-                        top: `${notificationPosition.top}px`,
-                        right: `${notificationPosition.right}px`,
-                      }}
-                    >
+                    <div className='notification-dropdown notification-dropdown--fixed'>
                       <div className='notification-dropdown-header'>
                         <div className='notification-dropdown-title'>최근 알림 목록</div>
                         <button
@@ -1309,8 +1299,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 >
                   <img src={logout} alt='logout' className='icons' />
                 </button>
-              </>
-            )}
+            </div>
           </div>
 
           {!isProfileCollapsed && (

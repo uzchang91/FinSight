@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../config/api'
 import './QuizPage.css'
+import close from '../assets/icons/close.svg'
 
 const POINT_TABLE = {
   하: { correct: 1000, wrong: 0 },
@@ -397,8 +398,8 @@ const QuizPage = () => {
       const correct = Boolean(payload.isCorrect)
       const pts = Number(
         payload.rewardPoints ??
-          POINT_TABLE[difficulty]?.[correct ? 'correct' : 'wrong'] ??
-          0
+        POINT_TABLE[difficulty]?.[correct ? 'correct' : 'wrong'] ??
+        0
       )
 
       const newCorrectCount = correctCount + (correct ? 1 : 0)
@@ -475,8 +476,8 @@ const QuizPage = () => {
   }
 
   const getOxTypeLabel = (type) => {
-    if (type === 'market') return '📊 시장 기반'
-    if (type === 'concept') return '🤖 AI 개념'
+    if (type === 'market') return '시장 기반'
+    if (type === 'concept') return 'AI 개념'
     return 'OX 퀴즈'
   }
 
@@ -631,7 +632,7 @@ const QuizPage = () => {
                     <h2>FinSight 일일 O/X 퀴즈</h2>
                   </div>
                   <button className='ox-modal-close' onClick={() => setIsOxModalOpen(false)}>
-                    ✕
+                    <img src={close} alt="닫기" />
                   </button>
                 </div>
 
@@ -641,57 +642,33 @@ const QuizPage = () => {
                   </p>
 
                   {oxType && !oxResult && (
-                    <div
-                      style={{
-                        marginBottom: 12,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 6,
-                        padding: '6px 12px',
-                        borderRadius: 999,
-                        background: '#f4f7ff',
-                        color: '#315efb',
-                        fontSize: 13,
-                        fontWeight: 700,
-                      }}
-                    >
+                    <div>
                       {getOxTypeLabel(oxType)}
                     </div>
                   )}
 
                   {oxTodayCount >= 1 && !oxResult ? (
-                    <div className='ox-status-box finished'>
+                    <div className='ox-status-box'>
                       <h3>오늘의 퀴즈 완료!</h3>
                       <p>내일 새로운 주가 퀴즈로 만나요</p>
-                      <button className='btn btn-primary' onClick={() => setIsOxModalOpen(false)}>
+                      <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
                         닫기
                       </button>
                     </div>
                   ) : oxResult ? (
                     <div className={`ox-status-box result ${oxResult.isCorrect ? 'correct' : 'wrong'}`}>
-                      <div
-                        style={{
-                          marginBottom: 10,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          padding: '6px 12px',
-                          borderRadius: 999,
-                          background: '#f4f7ff',
-                          color: '#315efb',
-                          fontSize: 13,
-                          fontWeight: 700,
-                        }}
-                      >
+                      <div className={``}>
                         {getOxTypeLabel(oxResult.type)}
                       </div>
-                      <h3>{oxResult.isCorrect ? '정답입니다!' : '아쉬워요!'}</h3>
-                      <p className='ox-reward'><span>{oxResult.rewardPoints}pt</span> 지급 완료</p>
+                      <div className='ox-reward-title'>
+                        <h3>{oxResult.isCorrect ? '정답입니다!' : '아쉬워요!'}</h3>
+                        <p className='ox-reward'><span>{oxResult.rewardPoints}pt</span> 지급 완료</p>
+                      </div>
                       <div className='ox-explanation-card'>
                         <div className='exp-answer'>정답: <strong>{oxResult.correctAnswer}</strong></div>
                         <p className='exp-text'>{oxResult.explanation}</p>
                       </div>
-                      <button className='btn btn-primary' onClick={() => setIsOxModalOpen(false)}>
+                      <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
                         돌아가기
                       </button>
                     </div>

@@ -142,22 +142,19 @@ const Ranking = () => {
                   <div className='league-emblem-wrap'>
                     <img
                       src={league.badge}
-                      alt={`${league.title} 티어`}
+                      alt={`${league.title} 리그`}
                       className='league-emblem-badge'
                     />
+                    <span>{league.title} 라그</span>
                   </div>
 
                   <ul className='league-user-list'>
-                    {/* 🟢 기존의 복잡했던 pinnedMyRow와 normalRows를 하나로 합쳐서 깔끔하게 출력합니다 */}
                     {displayRows.map((row) => {
                       const isMe = row.memberId === currentUserId;
-
                       return (
-                        // 내 프로필일 경우 기존에 쓰시던 pinned-my-row 클래스를 붙여서 색상 하이라이트 유지!
                         <li className={`league-user-item ${isMe ? 'pinned-my-row' : ''}`} key={row.memberId}>
-                          <span className='league-rank'>{row.leagueRank}</span>
-
                           <div className='league-user-main'>
+                            <span className='league-rank'>{row.leagueRank}</span>
                             <img
                               src={row.profileImage || defaultProfile}
                               alt={`${row.nickname} 프로필`}
@@ -167,7 +164,7 @@ const Ranking = () => {
                           </div>
 
                           <span className='league-score'>
-                            {Number(row.rankingPoint || 0).toFixed(1)}
+                            {Number(row.points || 0).toLocaleString('ko-KR')}pt
                           </span>
                         </li>
                       )
@@ -189,10 +186,10 @@ const Ranking = () => {
                   FinSight의 랭킹 점수는 유저가 획득한 <span className='guide-highlight-blue'>총 포인트</span>를 기준으로 산정됩니다.
                   현재 전체 1등 유저의 포인트를 <span className='guide-highlight-blue'>100점(만점) 기준</span>으로 두고, 내 포인트가 1등 대비 어느 정도인지 상대적으로 계산합니다.
                 </p>
-                <p className='ranking-guide-formula'>
-                  내 랭킹 점수 = <span>(내 포인트 ÷ 현재 1등 포인트) × 100</span>
-                </p>
                 <ul className="guide-examples-list">
+                  <p className='ranking-guide-formula'>
+                    내 랭킹 점수 = <span>(내 포인트 ÷ 현재 1등 포인트) × 100</span>
+                  </p>
                   <li><strong>상황 A :</strong> 내가 현재 전체 1등(100,000pt)이라면 → 랭킹 점수 <span className='highlight-value'>100.0점</span> 배정</li>
                   <li><strong>상황 B :</strong> 내 포인트가 50,000pt이고 1등이 100,000pt라면 → 랭킹 점수 <span className='highlight-value'>50.0점</span> 배정</li>
                   <li><strong>상황 C :</strong> 내 포인트는 그대로인데 1등이 200,000pt로 오르면 → 랭킹 점수 <span className='highlight-value'>25.0점</span>으로 하락</li>
@@ -209,10 +206,22 @@ const Ranking = () => {
                   산정된 랭킹 점수(상대 점수) 커트라인에 따라 4개의 리그 중 하나에 자동으로 배정됩니다.
                 </p>
                 <ul className="guide-tier-list">
-                  <li><img src={bronze} alt="Bronze badge" className="guide-league-badge"/><span className="tier-name"></span> 랭킹 하위권 및 신규 가입 유저</li>
-                  <li><img src={silver} alt="Silver badge" className="guide-league-badge"/><span className="tier-name"></span> 랭킹 중위권 유저</li>
-                  <li><img src={gold} alt="Gold badge" className="guide-league-badge"/><span className="tier-name"></span> 랭킹 상위권 유저</li>
-                  <li><img src={diamond} alt="Diamond badge" className="guide-league-badge"/><span className="tier-name"></span> 랭킹 최상위권 (Top 랭커)</li>
+                  <li>
+                    <img src={bronze} alt="Bronze badge" className="guide-league-badge" />
+                    <span className="tier-name">랭킹 하위권 및 신규 가입 유저</span>
+                  </li>
+                  <li>
+                    <img src={silver} alt="Silver badge" className="guide-league-badge" />
+                    <span className="tier-name">랭킹 중위권 유저</span>
+                    </li>
+                  <li>
+                    <img src={gold} alt="Gold badge" className="guide-league-badge" />
+                    <span className="tier-name">랭킹 상위권 유저</span>
+                    </li>
+                  <li>
+                    <img src={diamond} alt="Diamond badge" className="guide-league-badge" />
+                    <span className="tier-name">랭킹 최상위권 (Top 랭커)</span>
+                    </li>
                 </ul>
               </article>
 

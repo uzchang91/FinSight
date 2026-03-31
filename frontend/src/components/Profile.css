@@ -1,3 +1,4 @@
+/* ─── Profile shell ──────────────────────────── */
 .profile {
   height: auto;
   min-height: 100vh;
@@ -18,18 +19,13 @@
   transition: width 0.3s ease;
 }
 
-.profile--collapsed {
-  padding: 0 0.35rem;
-  overflow: hidden;
-
+.profile.collapsed {
+  width: 5.5rem;
+  padding: 1rem;
   transition: all 0.3s ease;
 }
 
-.profile--collapsed .profile-set {
-  justify-content: center;
-  gap: 0;
-}
-
+/* ─── Profile content ────────────────────────── */
 .profile-content {
   width: 100%;
   min-height: auto;
@@ -45,14 +41,17 @@
 }
 
 .profile-set {
-  position: relative;
-  z-index: 200;
   padding: 0.5rem;
+
+  position: relative;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+
+  z-index: 200;
 }
 
+/* ─── Icons ──────────────────────────────────── */
 .icon-container {
   display: inline-flex;
   align-items: center;
@@ -84,19 +83,16 @@
   width: 1.35rem;
   height: 1.35rem;
   object-fit: contain;
-
   display: block;
   pointer-events: none;
 }
 
-.set-icons:hover {
-  box-shadow: 0 0.25rem 0 var(--primary);
-}
-
+.set-icons:hover,
 .set-icons--active {
   box-shadow: 0 0.25rem 0 var(--primary);
 }
 
+/* ─── Profile master (avatar area) ──────────── */
 .profile-master {
   padding: 0.5rem 1rem;
 
@@ -185,8 +181,7 @@
   object-fit: cover;
 }
 
-.profile-membership,
-.profile-premium {
+.profile-membership {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -217,12 +212,6 @@
   color: var(--text-highlight);
 }
 
-.profile-premium {
-  text-align: center;
-  background-color: var(--warning-highlight);
-  border: 2px solid var(--warning);
-}
-
 .avatar-edit-overlay {
   position: absolute;
   inset: 0;
@@ -247,6 +236,7 @@
   text-align: center;
 }
 
+/* ─── Stats ──────────────────────────────────── */
 .profile-stats {
   padding: 0.5rem 0;
   display: flex;
@@ -271,6 +261,12 @@
   color: var(--primary);
 }
 
+.description-top {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-highlight);
+}
+
 .total-description {
   padding: 0.5rem;
 
@@ -291,7 +287,6 @@
 .description-slave {
   padding: 0 0.5rem;
   text-align: end;
-
   cursor: default;
 }
 
@@ -308,6 +303,7 @@
   color: var(--primary);
 }
 
+/* ─── Stock card ─────────────────────────────── */
 .profile-stock {
   width: 100%;
   height: fit-content;
@@ -332,7 +328,7 @@
   font-weight: 600;
 }
 
-.stock-list {
+.profile-stock-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -344,6 +340,7 @@
   flex-direction: column;
 }
 
+/* ─── Nickname edit ──────────────────────────── */
 .nickname-edit-wrap {
   width: 100%;
   box-sizing: border-box;
@@ -422,7 +419,6 @@
   background: var(--box-bg);
   color: var(--text);
   border: 1px solid var(--border);
-
   transition: all 0.3s ease;
 }
 
@@ -435,7 +431,6 @@
   background: var(--primary-highlight);
   color: var(--primary);
   border: 1px solid var(--border-prim);
-
   transition: all 0.3s ease;
 }
 
@@ -445,6 +440,7 @@
   border: 1px solid var(--primary);
 }
 
+/* ─── Notification ───────────────────────────── */
 .notification-wrap {
   position: relative;
   z-index: 9999;
@@ -464,7 +460,7 @@
 }
 
 .notification-dropdown {
-  width: 280px;
+  min-width: 280px;
   max-height: fit-content;
   overflow-y: auto;
   overflow-x: hidden;
@@ -484,8 +480,8 @@
 
 .notification-dropdown--fixed {
   position: fixed;
-  top: 5.5rem;
-  right: calc(0% + 10%);
+  top: 4.5rem;
+  right: calc(0% + 16rem);
   z-index: 10000;
 }
 
@@ -506,22 +502,11 @@
   color: var(--text);
 }
 
-.notification-dropdown-sub {
-  font-size: 0.875rem;
-  color: var(--text-highlight);
-}
-
 .notification-empty {
   padding: 1rem 0;
   text-align: center;
-
   font-size: 0.875rem;
   color: var(--text-highlight);
-}
-
-.notification-list {
-  padding: 0 0.75rem;
-
 }
 
 .notification-item {
@@ -556,7 +541,6 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-highlight);
-
   overflow: hidden;
 }
 
@@ -574,6 +558,7 @@
   color: var(--danger);
 }
 
+/* ─── Achievement shared ─────────────────────── */
 .achievement-title-row {
   padding: 0.25rem 0.5rem;
 
@@ -597,58 +582,6 @@
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
-}
-
-.achievement-name-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-.achievement-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-.achievement-meta {
-  font-size: 0.8rem;
-  color: var(--text-highlight)
-}
-
-.achievement-desc {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text);
-  line-height: 1.45;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-}
-
-.achievement-date {
-  font-size: 0.875rem;
-  color: var(--text-highlight)
-}
-
-.achievement-state {
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.achievement-state--done {
-  color: var(--secondary);
-  background: var(--secondary-highlight);
-}
-
-.achievement-state--pending {
-  color: var(--danger);
-  background: var(--danger-highlight);
 }
 
 .achievement-page-top {
@@ -681,33 +614,6 @@
   color: var(--text);
 }
 
-.achievement-progress-text--single {
-  justify-content: space-between;
-  align-items: center;
-}
-
-.achievement-progress-bar {
-  width: 100%;
-  height: 0.75rem;
-  background: #e5e7eb;
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.achievement-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
-  border-radius: 999px;
-  transition: width 0.3s ease;
-}
-
-.achievement-progress-percent {
-  text-align: right;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--primary);
-}
-
 .achievement-count {
   font-size: 0.875rem;
   font-weight: 600;
@@ -722,6 +628,7 @@
   color: var(--text-highlight);
 }
 
+/* ─── Achievement recent grid (main profile) ─── */
 .achievement-recent-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -735,7 +642,6 @@
   padding: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: var(--);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -789,7 +695,6 @@
   top: calc(98%);
 
   background: var(--bg);
-
   transform: translateX(-50%);
   rotate: 45deg;
 }
@@ -807,6 +712,7 @@
   color: var(--text);
 }
 
+/* ─── Achievement full grid (achievements page) ─ */
 .achievement-grid-full {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -869,40 +775,14 @@
   top: calc(98%);
 
   background: var(--bg);
-
   transform: translateX(-50%);
   rotate: 45deg;
 }
-
 
 .achievement-grid-card:hover .achievement-grid-card-tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(-0.5rem);
-}
-
-.achievement-grid-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 0.75rem);
-  transform: translateX(-50%);
-  min-width: 180px;
-  max-width: 240px;
-  border: 1px solid var(--border);
-  background: var(--text);
-  color: var(--bg);
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 0.75rem 0.75rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.5rem 1rem var(--shadow-1);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  z-index: 30;
-  word-break: keep-all;
-  white-space: normal;
-  transition: opacity0.3s ease, visibility0.3s ease, transform0.3s ease;
 }
 
 .achievement-grid-img {
@@ -929,9 +809,10 @@
   color: var(--text-highlight);
 }
 
+/* ─── In-progress achievement mini icons ─────── */
 .achievement-progress-tooltip-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
   gap: 0.5rem;
   width: 100%;
   box-sizing: border-box;
@@ -977,7 +858,6 @@
 .achievement-trigger-item:hover .achievement-mini-icon {
   background-color: var(--box-bg);
   filter: saturate(1);
-
   transform: scale(1.08);
 }
 
@@ -1019,18 +899,8 @@
   top: calc(98%);
 
   background: var(--bg);
-
   transform: translateX(-50%);
   rotate: 45deg;
-}
-
-.bubble-arrow::after {
-  content: "";
-  left: 0;
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--bg);
-  overflow: auto;
 }
 
 .bubble-content {
@@ -1050,6 +920,7 @@
   line-height: 1.4;
 }
 
+/* ─── Title badge & dropdown ─────────────────── */
 .profile-title-badge {
   max-width: 100%;
   padding: 0.5rem 0.75rem;
@@ -1073,15 +944,8 @@
   transition: all 0.3s ease;
 }
 
-.profile-title-dropdown-wrap {
-  width: 100%;
-  padding: 0.5rem 0 0;
-  overflow: visible;
-
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.profile-title-badge>span {
+  white-space: nowrap;
 }
 
 .profile-title-badge--button {
@@ -1094,6 +958,17 @@
   background: var(--primary);
   border: 1px solid transparent;
   color: var(--bg);
+}
+
+.profile-title-dropdown-wrap {
+  width: 100%;
+  padding: 0.5rem 0 0;
+  overflow: visible;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-title-dropdown {
@@ -1115,6 +990,7 @@
 
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
   z-index: 10000;
+  overflow-y: auto;
 }
 
 .profile-title-dropdown-header {
@@ -1150,11 +1026,11 @@
   min-width: 180px;
   max-width: 240px;
   padding: 0.5rem 0.8rem;
-  
+
   position: absolute;
   left: 50%;
   bottom: calc(100% + 15px);
-  
+
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -1166,16 +1042,16 @@
   text-align: left;
   white-space: normal;
   overflow-wrap: break-word;
-  
+
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
-  
+
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transform: translateX(-50%);
   z-index: 10001;
 
-  transition: opacity0.3s ease, visibility0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .profile-title-text-tooltip::before {
@@ -1186,9 +1062,8 @@
   position: absolute;
   left: 50%;
   bottom: -6px;
-  
+
   background: var(--bg);
-  
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -1197,10 +1072,7 @@
   visibility: visible;
 }
 
-.profile-title-badge>span {
-  white-space: nowrap;
-}
-
+/* ─── Title list (achievements page) ────────── */
 .title-list {
   display: flex;
   flex-direction: column;
@@ -1262,6 +1134,12 @@
   transform: rotate(45deg);
 }
 
+.title-item:hover .title-item-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
 .title-item-left {
   min-width: 0;
   flex: 1;
@@ -1271,12 +1149,6 @@
   overflow: visible;
 }
 
-.title-item:hover .title-item-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0)
-}
-
 .title-item-name {
   display: inline-block;
   min-width: 0;
@@ -1284,18 +1156,6 @@
   font-weight: 600;
   color: var(--text);
   line-height: 1.35;
-  word-break: keep-all;
-}
-
-.title-item-meta {
-  font-size: 0.875rem;
-  color: var(--text-highlight)
-}
-
-.title-item-desc {
-  font-size: 0.875rem;
-  color: var(--text);
-  line-height: 1.45;
   word-break: keep-all;
 }
 
@@ -1312,7 +1172,6 @@
   font-weight: 600;
 
   cursor: pointer;
-
   transition: all 0.3s ease;
 }
 
@@ -1329,6 +1188,7 @@
   color: var(--bg);
 }
 
+/* ─── Points ─────────────────────────────────── */
 .point-unit {
   color: var(--text) !important;
   text-decoration: none;
@@ -1354,8 +1214,53 @@
   color: var(--primary) !important;
 }
 
-.clickable-points span {
-  color: var(--primary) !important;
+/* ─── Point history page ─────────────────────── */
+.point-history-filter-wrap {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.point-history-filter-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
+
+  border: 1px solid var(--border-prim);
+  background: var(--primary-highlight);
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.point-history-filter-btn:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
+.point-history-filter-btn:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+.point-history-filter-btn:hover {
+  background-color: var(--primary-highlight2);
+  border-color: var(--primary);
+}
+
+.point-history-filter-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--bg);
+}
+
+.point-history-range-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-highlight);
 }
 
 .point-history-list {
@@ -1380,133 +1285,12 @@
   border-radius: 0.75rem;
 }
 
-.profile-content,
-.profile-stock,
-.title-list,
-.title-item,
-.title-item-left,
-.title-item-name-row {
-  overflow: visible !important;
-}
-
-@media (max-width: 420px) {
-  .achievement-grid-full {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
-  .achievement-recent-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .point-history-item {
-    padding: 0.75rem 0.875rem;
-  }
-
-  .isr-tooltip-text {
-    right: -6px;
-    min-width: 160px;
-    max-width: 210px;
-  }
-
-  .title-item {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .title-equip-btn {
-    width: 100%;
-    min-width: 76px;
-    padding: 0.5rem 0.7rem;
-  }
-
-  .achievement-progress-tooltip-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-  }
-
-  .achievement-speech-bubble {
-    display: none !important;
-  }
-
-  .profile-title-text-tooltip,
-  .title-item-tooltip {
-    right: 50%;
-    left: auto;
-    transform: translateX(50%);
-    max-width: min(240px, calc(100vw - 2rem));
-  }
-
-  .title-item-tooltip::before {
-    right: calc(50% - 6px);
-  }
-}
-
-.point-history-filter-wrap {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.point-history-filter-btn {
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  box-sizing: border-box;
-
-  border: 1px solid var(--border-prim);
-  background: var(--primary-highlight);
-
-  color: var(--primary);
-  font-size: 0.875rem;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-}
-
-.point-history-filter-btn:first-child {
-  border-top-left-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
-}
-
-.point-history-filter-btn:last-child {
-  border-top-right-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-}
-
-.point-history-filter-btn:hover {
-  background-color: var(--primary-highlight2);
-  border-color: var(--primary);
-}
-
-.point-history-filter-btn.active {
-  padding: 0.5rem 0.75rem;
-
-  background: var(--primary);
-  border-color: var(--primary);
-
-  color: var(--bg);
-  font-size: 0.875rem;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-}
-
-.point-history-range-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-highlight)
-}
-
 .point-history-right {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-
   flex-shrink: 0;
 }
 
@@ -1521,15 +1305,6 @@
 
 .point-history-hide-btn:hover {
   color: var(--danger);
-}
-
-.profile-toggle-icon {
-  transition: transform 0.3s ease;
-  transform: rotate(180deg);
-}
-
-.profile-toggle-icon--collapsed {
-  transform: rotate(0deg);
 }
 
 .point-history-more-row {
@@ -1551,13 +1326,38 @@
   text-align: center;
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--text-highlight)
+  color: var(--text-highlight);
 }
 
 .point-history-more-placeholder {
   min-width: 70px;
 }
 
+/* ─── Profile toggle icon ────────────────────── */
+.profile-toggle-icon {
+  transition: transform 0.3s ease;
+  transform: rotate(180deg);
+}
+
+.profile-toggle-icon--collapsed {
+  transform: rotate(0deg);
+}
+
+/* account icon inside toggle button — hidden by default, shown via media query */
+.profile-account-icon {
+  display: none;
+}
+
+/* ─── Overflow overrides ─────────────────────── */
+/* .profile-content,
+.profile-stock,
+.title-list,
+.title-item,
+.title-item-left {
+  overflow: visible !important;
+} */
+
+/* ─── Investment modal ───────────────────────── */
 .profile-investment-modal-overlay {
   position: fixed;
   inset: 0;
@@ -1703,7 +1503,6 @@
 
 .profile-side-stock-item {
   padding: 0 0.5rem;
-
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1734,8 +1533,6 @@
 
 .profile-side-stock-top p:last-child {
   flex-shrink: 0;
-  font-size: 1rem;
-  font-weight: 600;
 }
 
 .profile-side-stock-mid span:first-child {
@@ -1746,11 +1543,8 @@
 
 .profile-side-stock-mid span:last-child {
   min-width: 0;
-  font-size: 0.875rem;
-}
-
-.profile-side-stock-mid span:last-child {
   flex-shrink: 0;
+  font-size: 0.875rem;
   font-weight: 600;
 }
 
@@ -1768,95 +1562,7 @@
   font-size: 1rem;
 }
 
-@media (max-width: 768px) {
-  .profile-investment-summary-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-investment-sections {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-investment-modal {
-    width: 100%;
-    max-height: calc(100vh - 1rem);
-  }
-
-  .profile-investment-modal-body {
-    padding: 0.9rem;
-  }
-}
-
-@media (max-width: 420px) {
-
-  .profile-side-stock-top,
-  .profile-side-stock-mid {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-.profile-trade-amount {
-  font-weight: 600 !important;
-  color: var(--primary) !important;
-}
-
-.profile-trade-item {
-  gap: 0.5rem;
-}
-
-.profile-trade-date {
-  font-size: 0.8rem !important;
-  font-weight: 500 !important;
-  color: var(--text-highlight) !important;
-}
-
-.profile-trade-profit-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.profile-trade-profit-label {
-  font-size: 0.82rem;
-  color: var(--text-highlight);
-}
-
-.profile-trade-price {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--text);
-}
-
-.profile-trade-badge {
-  padding: 0.2rem 0.55rem;
-  border-radius: 0.75rem;
-  font-size: 0.74rem;
-  font-weight: 600;
-}
-
-.profile-trade-badge--buy {
-  background: rgba(34, 197, 94, 0.12);
-  color: #16a34a;
-}
-
-.profile-trade-badge--sell {
-  background: rgba(239, 68, 68, 0.12);
-  color: #dc2626;
-}
-
-.profile-investment-chart-card {
-  border: 1px solid var(--border);
-  border-radius: 1.1rem;
-  background: var(--bg);
-  overflow: hidden;
-}
-
-.profile-investment-section-title-row--chart {
-  border-bottom: 1px solid var(--border);
-}
-
+/* ─── Portfolio pie chart ────────────────────── */
 .profile-investment-pie-wrap {
   display: flex;
   justify-content: center;
@@ -1943,13 +1649,6 @@
   flex-shrink: 0;
 }
 
-.profile-investment-legend-name {
-  min-width: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
 .profile-investment-legend-right {
   flex-shrink: 0;
   display: flex;
@@ -1969,10 +1668,170 @@
   color: var(--text);
 }
 
+/* ─── profile-set-extra: hidden when desktop sidebar is collapsed ─── */
+.profile-set-extra--hidden {
+  display: none;
+}
+
+.profile-set-extra {
+  display: contents;
+}
+
+/* ─── Responsive: max-width 1280px ───────────── */
+@media (max-width: 1280px) {
+
+  /* Fixed top bar — same shell for both states */
+  .profile {
+    width: calc(100% - 2rem);
+    min-height: fit-content;
+    max-height: calc(100% - 2rem);
+    padding: 0.5rem;
+    box-sizing: border-box;
+
+    position: fixed;
+    top: calc(0% + 1rem);
+    left: calc(0% + 1rem);
+
+    background-color: var(--bg-trans);
+    border: 1px solid transparent;
+    border-radius: 1.5rem;
+
+    backdrop-filter: blur(0.5rem);
+    box-shadow: 0 0.5rem 1rem var(--shadow-1);
+
+    z-index: 10001;
+  }
+
+  .profile.collapsed {
+    width: calc(100% - 2rem);
+    min-height: 5rem;
+    padding: 0.5rem;
+    box-sizing: border-box;
+
+    position: fixed;
+    top: calc(0% + 1rem);
+    left: calc(0% + 1rem);
+
+    background-color: var(--bg-trans);
+    border: 1px solid transparent;
+    border-radius: 1.5rem;
+
+    backdrop-filter: blur(0.5rem);
+    box-shadow: 0 0.5rem 1rem var(--shadow-1);
+
+    z-index: 10001;
+  }
+
+  /* profile-content is the anchor for the dropdown panel */
+  .profile .profile-content {
+    max-height: calc(100vh - 4rem);
+    /* padding-top: 2rem; */
+    overflow-y: scroll;
+
+    align-items: center;
+    position: relative;
+  }
+
+  .profile .profile-set {
+    width: calc(100% - 4rem);
+
+    position: fixed;
+    top: 0.5rem;
+
+    z-index: 1000;
+  }
+
+  .notification-dropdown--fixed {
+    right: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    max-width: 400px;
+  }
+
+  /* Always show all 4 icons — override desktop hidden state */
+  .profile-set-extra--hidden {
+    display: contents !important;
+  }
+
+  /* Hide everything in profile-content except profile-set */
+  .profile-content>*:not(.profile-set) {
+    display: none !important;
+  }
+
+  /* When open (not collapsed): drop profile info down as a panel */
+  .profile:not(.collapsed) .profile-content>*:not(.profile-set) {
+    display: flex !important;
+    padding: 4rem 0.5rem 0;
+
+    max-height: calc(100% - 4rem);
+    width: 100%;
+
+    box-sizing: border-box;
+
+    z-index: 100;
+
+    animation: profileDropDown 0.3s ease;
+  }
+
+  .profile:not(.collapsed) .profile-content>*:not(.profile-set, .profile-master) {
+    padding: 0.5rem;
+
+    height: fit-content;
+    max-height: calc(100vh - 4rem);
+
+    z-index: 100;
+
+    animation: profileDropDown 0.3s ease;
+  }
+
+  @keyframes profileDropDown {
+    from {
+      opacity: 0;
+      transform: translateY(-0.4rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Toggle button: hide spread icon, show account icon */
+  .profile-set .icon-container .profile-toggle-icon {
+    display: none !important;
+  }
+
+  .profile-set .icon-container .profile-account-icon {
+    display: block !important;
+  }
+
+  .achievement-recent-tooltip {
+    left: 50%;
+  }
+
+  .achievement-grid-full {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow-y: scroll;
+  }
+}
+
+/* ─── Responsive: max-width 768px ───────────── */
 @media (max-width: 768px) {
-  .profile-investment-chart-layout {
+  .profile-investment-summary-grid {
     grid-template-columns: 1fr;
-    justify-items: center;
+  }
+
+  .profile-investment-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-investment-modal {
+    width: 100%;
+    max-height: calc(100vh - 1rem);
+  }
+
+  .profile-investment-modal-body {
+    padding: 0.9rem;
   }
 
   .profile-investment-legend {
@@ -1982,5 +1841,68 @@
   .profile-investment-pie {
     width: 200px;
     height: 200px;
+  }
+
+  .achievement-grid-full {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .achievement-grid-full {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ─── Responsive: max-width 468px ───────────── */
+@media (max-width: 468px) {
+  .achievement-grid-full {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .achievement-recent-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .point-history-item {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .title-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .title-equip-btn {
+    width: 100%;
+    min-width: 76px;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .achievement-progress-tooltip-grid {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .achievement-speech-bubble {
+    display: none !important;
+  }
+
+  .profile-title-text-tooltip,
+  .title-item-tooltip {
+    right: 50%;
+    left: auto;
+    transform: translateX(50%);
+    max-width: min(240px, calc(100vw - 2rem));
+  }
+
+  .title-item-tooltip::before {
+    right: calc(50% - 6px);
+  }
+
+  .profile-side-stock-top,
+  .profile-side-stock-mid {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

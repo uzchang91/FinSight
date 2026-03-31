@@ -679,7 +679,7 @@ const Dashboard = () => {
                         ? 'gain'
                         : 'loss'
                       }`}>
-                      {formatSignedNumber(stock.change)}pt({formatSignedPercent(stock.changeRate)})
+                      {formatSignedNumber(stock.change)}pt
                       </p>
                   </li>
                 ))

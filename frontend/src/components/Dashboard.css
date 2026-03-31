@@ -192,6 +192,8 @@
   border-color: var(--primary);
   
   filter: saturate(100%);
+
+  transform: translateY(0);
 }
 
 .league-badge {
@@ -201,8 +203,9 @@
 }
 
 .rank-list {
+  list-style-type: none;
   height: fit-content;
-  max-height: 360px;
+  max-height: 350px;
   padding: 0.75rem 0rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -323,7 +326,7 @@
 }
 
 .liked-grid {
-  grid-template-columns: 1.5fr 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .owned-grid {
@@ -640,13 +643,11 @@
     min-width: 0;
     max-width: none;
   }
-}
-
-@media (max-width: 1200px) {
   .dash-thread {
     grid-template-columns: 1fr;
   }
 }
+
 
 @media (max-width: 900px) {
   .dash-tool {
@@ -655,13 +656,5 @@
 
   .liked-grid {
     grid-template-columns: minmax(90px, 1.7fr) minmax(72px, 1fr) minmax(72px, 1fr);
-  }
-
-  .owned-grid {
-    grid-template-columns:
-      minmax(130px, 1.8fr)
-      minmax(80px, 1fr)
-      minmax(120px, 1.1fr)
-      minmax(90px, 0.9fr);
   }
 }

@@ -6,6 +6,7 @@
   box-sizing: border-box;
   
   display: flex;
+  justify-content: space-between;
   align-items: center; /* 세로 중앙 정렬 */
   gap: 1rem;
 
@@ -25,8 +26,8 @@
 
 /* 뉴스 콘텐츠 영역 */
 .news-content {
-  width: 100%;
   white-space: nowrap;
+  overflow-x: hidden;
 
   display: flex;
   align-items: center;
