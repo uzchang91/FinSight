@@ -51,6 +51,10 @@
   z-index: 200;
 }
 
+.profile.collapsed .profile-set {
+  padding: 0;
+}
+
 /* ─── Icons ──────────────────────────────────── */
 .icon-container {
   display: inline-flex;
@@ -721,7 +725,7 @@
 
 .achievement-grid-card {
   min-width: 0;
-  min-height: 110px;
+  min-height: 140px;
   position: relative;
 
   display: flex;
@@ -858,11 +862,10 @@
 .achievement-trigger-item:hover .achievement-mini-icon {
   background-color: var(--box-bg);
   filter: saturate(1);
-  transform: scale(1.08);
 }
 
 .achievement-speech-bubble {
-  width: 220px;
+  width: 240px;
   padding: 0.5rem 0.75rem;
 
   position: absolute;
@@ -897,6 +900,40 @@
   position: absolute;
   left: calc(88%);
   top: calc(98%);
+
+  background: var(--bg);
+
+  transform: translateX(-50%);
+  rotate: 45deg;
+}
+
+.achievement-speech-bubble2 {
+  width: calc(100% - 1.75rem);
+  padding: 0.5rem 0.75rem;
+
+  position: absolute;
+  bottom: calc(0% - 4rem);
+  left: 0;
+
+  background: var(--box-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.bubble-arrow2 {
+  width: 0.5rem;
+  height: 0.5rem;
+
+  position: absolute;
+  left: calc(50%);
+  top: calc(50%);
 
   background: var(--bg);
   transform: translateX(-50%);
@@ -1264,7 +1301,6 @@
 }
 
 .point-history-list {
-  height: 41rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1678,8 +1714,12 @@
   display: contents;
 }
 
-/* ─── Responsive: max-width 1280px ───────────── */
-@media (max-width: 1280px) {
+/* ─── Responsive: max-width 1024px ───────────── */
+@media (max-width: 1024px) {
+  .profile.collapsed .profile-set {
+    padding: 0.5rem;
+  }
+  
   .point-history-item {
     gap: 0.25rem;
   }
@@ -1808,13 +1848,61 @@
     display: block !important;
   }
 
+  .achievement-grid-card-tooltip {
+    min-width: 100px;
+    max-width: 150px;
+    background: var(--bg-trans2);
+    backdrop-filter: blur(0.2rem);
+    left: auto;
+    top: calc(0rem);
+    transform: translateY(50%);
+  }
+
+  .achievement-grid-tooltip-arrow {
+    left: calc(50%);
+    top: calc(50%);
+
+    background: transparent;
+  }
+
+  .achievement-grid-tooltip-arrow {
+    left: 50%;
+  }
+
+  .achievement-grid-card:hover .achievement-grid-card-tooltip {
+    transform: translateX(0);
+  }
+
+  .achievement-trigger-item:hover .achievement-speech-bubble {
+    visibility: hidden;
+  }
+
+  .achievement-trigger-item:hover+.achievement-speech-bubble2 {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .achievement-recent-tooltip {
     left: 50%;
   }
 
   .achievement-grid-full {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    overflow-y: scroll;
+    height: 8.5rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .achievement-progress-tooltip-grid {
+    height: 6rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  }
+
+  .point-history-list {
+    height: 41rem;
   }
 }
 
@@ -1851,14 +1939,8 @@
   }
 }
 
-@media (max-width: 768px) {
-  .achievement-grid-full {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 /* ─── Responsive: max-width 468px ───────────── */
-@media (max-width: 468px) {
+@media (max-width: 480px) {
   .achievement-grid-full {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1871,24 +1953,14 @@
     padding: 0.75rem 0.875rem;
   }
 
-  .title-item {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
   .title-equip-btn {
-    width: 100%;
     min-width: 76px;
-    padding: 0.5rem 0.7rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .achievement-progress-tooltip-grid {
-    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
     gap: 0.5rem;
-  }
-
-  .achievement-speech-bubble {
-    display: none !important;
   }
 
   .profile-title-text-tooltip,

@@ -236,16 +236,18 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   // Auto-collapse when ≤1280px, restore when wider
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 1280px)')
+    const mq = window.matchMedia('(max-width: 1024px)')
 
     const handleMq = (e) => {
       if (e.matches) {
-        // entering narrow — force collapsed
+        // entering narrow — force collapsed and close sub-panels
         setCollapsed(true)
+        setShowAllAchievements(false)
+        setShowPointHistory(false)
       } else {
         // leaving narrow — restore from localStorage
         const saved = localStorage.getItem('profile_collapsed')
-        setCollapsed(saved === 'true')
+        setCollapsed(saved === 'false')
       }
     }
 
@@ -852,7 +854,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   const totalProfitRate =
     Number(displayTotalInvested) > 0
-      ? (Number(displayTotalProfit / displayTotalInvested) - 1)
+      ? (Number(displayTotalProfit) / Number(displayTotalInvested)) * 100
       : 0
 
   const obtainedAchievements = useMemo(
@@ -1193,18 +1195,29 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 <div className='achievement-empty-block'>불러오는 중...</div>
               ) : inProgressAchievements.length > 0 ? (
                 inProgressAchievements.map((item) => (
-                  <div className='achievement-trigger-item' key={item.ach_id}>
+                  <>
+                    <div className='achievement-trigger-item' key={item.ach_id}>
 
-                    <div className='achievement-mini-icon'>
-                      <img
-                        src={getAchievementIcon(item.ach_id)}
-                        alt={item.name}
-                        className='achievement-mini-icon-img'
-                      />
+                      <div className='achievement-mini-icon'>
+                        <img
+                          src={getAchievementIcon(item.ach_id)}
+                          alt={item.name}
+                          className='achievement-mini-icon-img'
+                        />
+                      </div>
+                      <div className='achievement-speech-bubble'>
+                        <div className='bubble-arrow' />
+                        <div className='bubble-content'>
+                          <strong className='bubble-name'>{item.name}</strong>
+                          <p className='bubble-desc'>
+                            {getTooltipText(item, '업적 설명이 없습니다.')}
+                          </p>
+                        </div>
+                      </div>
+
                     </div>
-
-                    <div className='achievement-speech-bubble'>
-                      <div className='bubble-arrow' />
+                    <div className='achievement-speech-bubble2'>
+                      <div className='bubble-arrow2' />
                       <div className='bubble-content'>
                         <strong className='bubble-name'>{item.name}</strong>
                         <p className='bubble-desc'>
@@ -1212,7 +1225,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </>
                 ))
               ) : (
                 <div className='achievement-empty-block'>진행 중인 업적이 없습니다.</div>
@@ -1246,81 +1259,81 @@ const Profile = ({ collapsed, setCollapsed }) => {
               <img src={account} alt='account' className='icons profile-account-icon' />
             </button>
             <div className={`profile-set-extra${isProfileCollapsed ? ' profile-set-extra--hidden' : ''}`}>
-                <div className='notification-wrap' ref={notificationRef}>
-                  <button
-                    type='button'
-                    className={`icon-container set-icons ${isNotificationOpen ? 'set-icons--active' : ''}`}
-                    onClick={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect()
-                      setIsNotificationOpen((prev) => {
-                        const next = !prev
-                        if (next) setHasUnreadNotification(false)
-                        return next
-                      })
-                    }}
-                    title='최근 포인트 변동 알림'
-                  >
-                    <img src={notification} alt='notification' className='icons' />
-                    {hasUnreadNotification && <span className='notification-dot' />}
-                  </button>
+              <div className='notification-wrap' ref={notificationRef}>
+                <button
+                  type='button'
+                  className={`icon-container set-icons ${isNotificationOpen ? 'set-icons--active' : ''}`}
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect()
+                    setIsNotificationOpen((prev) => {
+                      const next = !prev
+                      if (next) setHasUnreadNotification(false)
+                      return next
+                    })
+                  }}
+                  title='최근 포인트 변동 알림'
+                >
+                  <img src={notification} alt='notification' className='icons' />
+                  {hasUnreadNotification && <span className='notification-dot' />}
+                </button>
 
-                  {isNotificationOpen && (
-                    <div className='notification-dropdown notification-dropdown--fixed'>
-                      <div className='notification-dropdown-header'>
-                        <div className='notification-dropdown-title'>최근 알림 목록</div>
-                        <button
-                          className='achievement-more-btn'
-                          onClick={() => {
-                            setIsNotificationOpen(false)
-                            setShowPointHistory(true)
-                          }}
-                        >
-                          더보기
-                        </button>
-                      </div>
+                {isNotificationOpen && (
+                  <div className='notification-dropdown notification-dropdown--fixed'>
+                    <div className='notification-dropdown-header'>
+                      <div className='notification-dropdown-title'>최근 알림 목록</div>
+                      <button
+                        className='achievement-more-btn'
+                        onClick={() => {
+                          setIsNotificationOpen(false)
+                          setShowPointHistory(true)
+                        }}
+                      >
+                        더보기
+                      </button>
+                    </div>
 
-                      {notifications.length === 0 ? (
-                        <div className='notification-empty'>알림이 없습니다.</div>
-                      ) : (
-                        notifications.slice(0, 5).map((item) => (
-                          <div className='notification-item' key={item.history_id}>
-                            <div className='notification-item-left'>
-                              <div className='notification-name'>{item.type}</div>
-                              <div
-                                className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'}`}
-                              >
-                                {Number(item.changeAmount) >= 0 ? '+' : ''}
-                                {Number(item.changeAmount).toLocaleString('ko-KR')}pt
-                              </div>
-                            </div>
-
-                            <div className='notification-date'>
-                              {formatNoticeDate(item.createdAt)}
+                    {notifications.length === 0 ? (
+                      <div className='notification-empty'>알림이 없습니다.</div>
+                    ) : (
+                      notifications.slice(0, 5).map((item) => (
+                        <div className='notification-item' key={item.history_id}>
+                          <div className='notification-item-left'>
+                            <div className='notification-name'>{item.type}</div>
+                            <div
+                              className={`notification-amount ${Number(item.changeAmount) >= 0 ? 'positive' : 'negative'}`}
+                            >
+                              {Number(item.changeAmount) >= 0 ? '+' : ''}
+                              {Number(item.changeAmount).toLocaleString('ko-KR')}pt
                             </div>
                           </div>
-                        ))
-                      )}
-                    </div>
-                  )}
-                </div>
 
-                <button
-                  type='button'
-                  className={`icon-container set-icons ${editMode ? 'set-icons--active' : ''}`}
-                  onClick={editMode ? closeEdit : openEdit}
-                  title={editMode ? '편집 취소' : '프로필 편집'}
-                >
-                  <img src={edit} alt='edit' className='icons' />
-                </button>
+                          <div className='notification-date'>
+                            {formatNoticeDate(item.createdAt)}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
 
-                <button
-                  type='button'
-                  className='icon-container set-icons'
-                  onClick={handleLogout}
-                  title='로그아웃'
-                >
-                  <img src={logout} alt='logout' className='icons' />
-                </button>
+              <button
+                type='button'
+                className={`icon-container set-icons ${editMode ? 'set-icons--active' : ''}`}
+                onClick={editMode ? closeEdit : openEdit}
+                title={editMode ? '편집 취소' : '프로필 편집'}
+              >
+                <img src={edit} alt='edit' className='icons' />
+              </button>
+
+              <button
+                type='button'
+                className='icon-container set-icons'
+                onClick={handleLogout}
+                title='로그아웃'
+              >
+                <img src={logout} alt='logout' className='icons' />
+              </button>
             </div>
           </div>
 

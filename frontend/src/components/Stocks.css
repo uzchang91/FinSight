@@ -431,6 +431,13 @@
   color: var(--text);
 }
 
+.side-stock-top p:first-child {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
 .side-stock-description {
   text-align: end;
 }

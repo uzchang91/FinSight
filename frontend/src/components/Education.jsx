@@ -587,7 +587,7 @@ const Education = () => {
             })}
 
             {filteredLessons.length > 5 && (
-              <div className='education-more-wrap' style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <div className='education-more-wrap'>
 
                 {/* 5개 이상 열렸을 때만 '학습 접기' 버튼 표시 */}
                 {visibleCount > 5 && (

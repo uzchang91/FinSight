@@ -33,7 +33,7 @@ body {
    Tablet
    - 프로필을 가장 위로
 ========================= */
-@media (max-width: 1280px) {
+@media (max-width: 1024px) {
   .main-body {
     width: 100%;
     overflow-x: hidden;

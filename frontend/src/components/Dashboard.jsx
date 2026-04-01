@@ -1,5 +1,3 @@
-// src/components/Dashboard.jsx
-
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import profile from '../assets/chicken running machine.gif'
 import './Dashboard.css'
@@ -643,7 +641,7 @@ const Dashboard = () => {
                       </div>
 
                       <div className='rank-point'>
-                        {formatRankingPoint(rankMember.rankingPoint)}
+                        {Number(rankMember.points || 0).toLocaleString('ko-KR')}pt
                       </div>
                     </li>
                   )

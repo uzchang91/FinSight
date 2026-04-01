@@ -348,7 +348,7 @@
 
   .league-user-list {
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .guide-tier-list {
@@ -371,10 +371,6 @@
 
   .ranking-summary-card strong {
     font-size: 1.9rem;
-  }
-
-  .ranking-guide-card {
-    padding: 1.1rem 1rem;
   }
 
   .ranking-guide-formula,

@@ -28,7 +28,7 @@
   flex-direction: column;
   justify-content: start;
   gap: 0.5rem;
-  
+
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: 1.5rem;
@@ -62,7 +62,7 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: start;
   gap: 1rem;
-  
+
   overflow: visible;
   box-sizing: border-box;
 }
@@ -87,7 +87,7 @@
   min-width: 0;
 }
 
-.dash-box > span {
+.dash-box>span {
   padding: 0 0.5rem;
   font-size: 1rem;
   font-weight: 600;
@@ -114,7 +114,7 @@
   align-self: start;
 }
 
-.tool-box > span {
+.tool-box>span {
   padding: 0 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -127,7 +127,7 @@
   min-width: 0;
 }
 
-.dash-rank > span {
+.dash-rank>span {
   padding: 0.5rem 0.5rem 0rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -174,14 +174,14 @@
   filter: saturate(24%);
 
   cursor: pointer;
-  
+
   transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .league-button:hover {
   background-color: var(--primary-highlight2);
   border-color: var(--border-prim);
-  
+
   filter: saturate(100%);
 
   transform: translateY(-4px);
@@ -190,7 +190,7 @@
 .league-button.active {
   background-color: var(--primary-highlight2);
   border-color: var(--primary);
-  
+
   filter: saturate(100%);
 
   transform: translateY(0);
@@ -252,7 +252,7 @@
   min-width: 1.5rem;
   max-width: fit-content;
   padding-left: 0.5rem;
-  
+
   text-align: end;
   font-variant-numeric: tabular-nums;
 }
@@ -267,7 +267,7 @@
   min-width: 1.5rem;
   max-width: fit-content;
   padding-right: 0.5rem;
-  
+
   text-align: end;
   font-variant-numeric: tabular-nums;
 }
@@ -292,7 +292,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  
+
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -316,11 +316,11 @@
 .stock-item {
   padding: 0rem 0.75rem;
   min-width: 0;
- 
+
   display: grid;
   align-items: center;
   column-gap: 0.5rem;
- 
+
   font-size: 1rem;
   font-weight: 500;
 }
@@ -376,7 +376,7 @@
   align-items: center;
 }
 
-.isr-header > span {
+.isr-header>span {
   font-size: 1rem;
   font-weight: 600;
 }
@@ -391,7 +391,7 @@
   line-height: 1;
 }
 
-.dash-score > span {
+.dash-score>span {
   font-size: 1.25rem;
   font-weight: 500;
 }
@@ -404,7 +404,7 @@
 
 .isr-grade-box {
   padding: 0.25rem 0.5rem 0;
-  
+
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -413,11 +413,11 @@
 .isr-grade-code {
   min-width: 52px;
   height: 52px;
-  
+
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   background-color: var(--primary-highlight);
   border: 1px solid var(--primary);
   border-radius: 50%;
@@ -507,11 +507,11 @@
   min-width: 240px;
   max-width: 320px;
   padding: 0.5rem 0.8rem;
-  
+
   position: absolute;
   left: 50%;
   bottom: calc(100% + 15px);
-  
+
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -525,7 +525,7 @@
   overflow-wrap: break-word;
 
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
-  
+
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -543,9 +543,9 @@
   position: absolute;
   left: 50%;
   bottom: -6px;
-  
+
   background: var(--bg);
-  
+
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -583,7 +583,7 @@
 
 .dash-summary {
   padding: 0.5rem 0.75rem;
-  
+
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -620,12 +620,12 @@
   background-color: var(--bg);
 }
 
-.quest-item > span {
+.quest-item>span {
   font-size: 0.875rem !important;
   font-weight: 500 !important;
 }
 
-.quest-item > strong {
+.quest-item>strong {
   text-align: end;
 
   font-size: 1rem;
@@ -638,11 +638,45 @@
     grid-template-columns: 1fr;
   }
 
+  .isr-header .isr-tooltip-text {
+    left: 0%;
+    transform: translateX(-88%);
+  }
+
+  .isr-header .isr-tooltip-text::before {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+
+    position: absolute;
+    left: 88%;
+    bottom: -6px;
+
+    background: var(--bg);
+  }
+  .isr-tooltip-text {
+    left: 0%;
+    transform: translateX(-12%);
+  }
+
+  .isr-tooltip-text::before {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+
+    position: absolute;
+    left: 12%;
+    bottom: -6px;
+
+    background: var(--bg);
+  }
+
   .dash-rank {
     width: 100%;
     min-width: 0;
     max-width: none;
   }
+
   .dash-thread {
     grid-template-columns: 1fr;
   }
