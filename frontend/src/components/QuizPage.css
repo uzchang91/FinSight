@@ -1,5 +1,4 @@
 .quiz-container {
-  margin-bottom: 1.5rem;
   box-sizing: border-box;
 
   display: flex;
@@ -74,7 +73,7 @@
 /* ─── AI keyword tools ───────────────────────── */
 .quiz-top-tools {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -91,16 +90,21 @@
   font-size: 1rem;
 }
 
+*:focus {
+  outline: 1px solid var(--primary);
+}
+
 .quiz-ai-generate-btn {
+  color: var(--primary);
   max-width: 150px;
   height: 3rem;
 }
 
 /* ─── Difficulty step ────────────────────────── */
 .difficulty-buttons {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
 }
 
 .diff-btn-wrapper {
@@ -111,15 +115,15 @@
 }
 
 .btn-difficulty {
+  height: 3rem;
   width: 100%;
-  padding: 1.25rem 0;
 
   background-color: var(--primary-highlight);
   border: 1px solid var(--border-prim);
   border-radius: 0.75rem;
 
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 500;
   color: var(--primary);
 }
 
@@ -128,7 +132,6 @@
   color: var(--primary);
 }
 
-/* 잠긴 버튼 디자인 */
 .diff-btn-wrapper.locked .btn-difficulty {
   background-color: var(--border);
   color: var(--text-highlight);
@@ -138,11 +141,9 @@
 }
 
 .lock-icon {
-  margin-left: 0.5rem;
   font-size: 1.1rem;
 }
 
-/* 툴팁 */
 .premium-tooltip {
   position: absolute;
   bottom: calc(100% + 5px);
@@ -216,9 +217,9 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  
+
   font-size: 1rem;
-  
+
   transition: all 0.3s ease;
 }
 
@@ -262,7 +263,7 @@
   font-weight: 500;
   color: var(--primary);
 
-  background: var(--primary-highlight2);
+  background: var(--primary-highlight);
   border: 1px solid var(--border-prim);
   border-radius: 0.75rem;
 
@@ -277,11 +278,10 @@
 
 /* ─── Result step ────────────────────────────── */
 .result-banner {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  text-align: center;
-  padding: 1.5rem;
-  border-radius: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -304,12 +304,15 @@
   font-weight: 700;
   font-size: 1.125rem;
   color: var(--secondary);
-  margin: 0;
 }
 
 .result-pts {
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.transparent {
+  display: none;
 }
 
 .explanation-card {
@@ -324,14 +327,12 @@
 
 .explanation-title {
   font-size: 1rem;
-  font-weight: 700;
-  margin: 0;
+  font-weight: 600;
 }
 
 .explanation-text {
   font-size: 1rem;
-  line-height: 1.7;
-  margin: 0;
+  line-height: 1.5;
   color: var(--text);
 }
 
@@ -355,7 +356,6 @@
 
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text);
 }
 
 .btn-primary:hover {
@@ -403,13 +403,13 @@
 }
 
 .progress-correct {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--secondary);
 }
 
 .progress-bar {
   width: 100%;
-  height: 0.5rem;
+  height: 0.25rem;
   background: var(--border);
   border-radius: 999px;
   overflow: hidden;
@@ -417,9 +417,9 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--primary, #007BFF);
+  background: var(--primary);
   border-radius: 999px;
-  transition: width 0.4s ease;
+  transition: width 0.3s ease;
 }
 
 /* ─── Point guide ────────────────────────────── */
@@ -582,30 +582,30 @@
 
 /* ─── Utility colors ─────────────────────────── */
 .plus {
-  color: #28a745;
+  color: var(--secondary);
 }
 
 .minus {
-  color: #dc3545;
+  color: var(--danger);
 }
 
 /* ─── 일일 O/X 퀴즈 전용 스타일 ────────────────── */
 .ox-floating-btn {
   flex: 1;
+  height: 3rem;
   min-width: 180px;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 500;
   background: var(--btn-gd);
   color: var(--bg);
   border: none;
   border-radius: 0.75rem;
-  box-shadow: 0 0rem 0rem var(--shadow-2);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 .ox-floating-btn:hover {
-  box-shadow: 0 0.25rem 0.75rem var(--shadow-2);
+  background: var(--btn-gd2);
 }
 
 .ox-modal-overlay {
@@ -618,14 +618,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: 998;
   backdrop-filter: blur(5px);
 }
 
 .ox-modal-content {
   width: 90%;
   max-width: 500px;
-  background: var(--box-bg);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow: hidden;
@@ -650,7 +650,6 @@
 .ox-header-title h2 {
   font-size: 1.25rem;
   color: var(--text);
-  margin: 0;
 }
 
 .ox-modal-close {
@@ -660,26 +659,50 @@
 }
 
 .ox-modal-body {
-  padding: 1rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+/* OX type badge classes (replaces QuizPage2 inline styles) */
+.market {
+  padding: 0.5rem 0.75rem;
+  background: var(--ps2);
+  border: 1px solid var(--ps);
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.concept {
+  padding: 0.5rem 0.75rem;
+  background: var(--pd2);
+  border: 1px solid var(--pd);
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .ox-quiz-play {
-  width: 100%;
+  width: calc(100% - 1rem);
+  padding: 0 0.5rem 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .ox-guide-text {
+  padding-top: 0.5rem;
   font-size: 1rem;
   color: var(--text-highlight);
 }
 
 .ox-reference-date {
+  text-align: center;
   color: var(--text-highlight);
   font-size: 0.875rem;
   font-weight: 500;
@@ -740,10 +763,6 @@
   color: var(--bg);
 }
 
-.btn-o .ox-char {
-  /* color: var(--secondary); */
-}
-
 .btn-x {
   border-color: var(--danger);
   background: var(--danger-highlight);
@@ -756,8 +775,8 @@
   color: var(--bg);
 }
 
-
 .ox-status-box {
+  width: 100%;
   padding: 1rem;
 
   display: flex;
@@ -766,6 +785,12 @@
   gap: 1rem;
 
   border-radius: 0.75rem;
+}
+
+/* "오늘의 퀴즈 완료" state (QuizPage2 had .finished, base had no class) */
+.ox-status-box.finished {
+  border: 1px solid var(--border);
+  background: var(--box-bg, var(--bg));
 }
 
 .ox-status-box.correct {
@@ -780,38 +805,59 @@
 
 .ox-reward-title {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.25rem;
 }
+
 .ox-reward {
   font-size: 1rem;
 }
 
-.ox-reward span {
+.ox-reward span:first-child {
   color: var(--warning);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.ox-reward span:last-child {
+  color: var(--warning);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .ox-explanation-card {
   padding: 1rem;
-  
+
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 
   background: var(--bg-trans2);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: 0.75rem;
   font-size: 1rem;
   color: var(--text);
 }
 
+.ox-status-box.wrong .ox-explanation-card {
+  border-color: var(--danger);
+}
+
+.ox-status-box.correct .ox-explanation-card {
+  border-color: var(--secondary);
+}
+
 .exp-answer {
-  font-size: 0.875rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.exp-answer strong {
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
-/* OX 로딩 스피너 */
+/* OX loading spinner */
 .ox-loading {
   display: flex;
   flex-direction: column;
@@ -837,7 +883,7 @@
 }
 
 /* =========================================
-   🏆 퀴즈 명예의 전당 (하단 랭킹) 스타일
+   🏆 퀴즈 명예의 전당
    ========================================= */
 .quiz-ranking-container {
   padding: 1rem;
@@ -918,66 +964,67 @@
   padding: 3rem 0;
   color: var(--text-highlight);
   font-size: 0.875rem;
-  background: color-mix(in srgb, var(--border) 10%, transparent);
-  border-radius: 12px;
+  background: var(--box-bg);
+  border-radius: 0.75rem;
 }
 
 .qr-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 1.2rem;
-  background: color-mix(in srgb, var(--bg) 95%, var(--text) 5%);
-  border-radius: 12px;
-  transition: transform 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .qr-item:hover {
-  transform: translateX(4px);
+  transform: translateY(-2px);
   background: var(--primary-highlight);
+  border-color: var(--border-prim);
 }
 
 .qr-item-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .qr-rank {
   width: 24px;
   text-align: center;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 1rem;
   color: var(--text-highlight);
 }
 
-/* 금, 은, 동메달 색상 */
 .qr-rank.num-1 {
-  color: #f59e0b;
-  font-size: 1.2rem;
+  color: var(--warning);
+  font-size: 1.25rem;
 }
 
 .qr-rank.num-2 {
-  color: #94a3b8;
-  font-size: 1.1rem;
+  color: var(--text-highlight);
+  font-size: 1.125rem;
 }
 
 .qr-rank.num-3 {
-  color: #b45309;
-  font-size: 1.05rem;
+  color: var(--danger);
+  font-size: 1rem;
 }
 
 .qr-profile-placeholder {
-  width: 36px;
-  height: 36px;
+  width: 2rem;
+  height: 2rem;
   background: var(--text);
   color: var(--bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 1rem;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -989,32 +1036,145 @@
 }
 
 .qr-nickname {
-  font-weight: 700;
+  font-weight: 500;
   font-size: 1rem;
   color: var(--text);
 }
 
 .qr-score {
-  font-weight: 800;
-  font-size: 1.05rem;
+  font-weight: 600;
+  font-size: 1rem;
   color: var(--primary);
+}
+
+/* =========================================
+   📝 오답노트 아코디언 (from QuizPage2)
+   ========================================= */
+
+.wrong-note-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.wrong-note-card.open {
+  border-color: var(--border-prim);
+  background: var(--primary-highlight);
+}
+
+.wrong-note-toggle {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wrong-note-toggle-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.wrong-note-question {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.wrong-note-answer-meta {
+  font-size: 0.85rem;
+  color: var(--text-highlight);
+}
+
+.wrong-note-arrow {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: var(--text-highlight);
+  transition: transform 0.25s ease;
+}
+
+.wrong-note-arrow.open {
+  transform: rotate(180deg);
+}
+
+.wrong-note-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.wrong-note-body.open {
+  max-height: 500px;
+}
+
+.wrong-note-options {
+  padding: 0 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wrong-note-option {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 1rem;
+}
+
+.wrong-note-option.correct {
+  border-color: var(--secondary);
+  background: var(--secondary-highlight);
+}
+
+.wrong-note-option.my-answer {
+  border-color: var(--danger);
+  background: var(--danger-highlight);
+}
+
+.wrong-note-option-num {
+  font-weight: 500;
+}
+
+.wrong-note-badge {
+  font-weight: 600;
+}
+
+.wrong-note-badge.correct {
+  color: var(--secondary);
+}
+
+.wrong-note-badge.my-answer {
+  color: var(--danger);
 }
 
 /* ─── Responsive ─────────────────────────────── */
 @media (max-width: 1024px) {
   .difficulty-buttons {
-    flex-direction: column;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .diff-btn-wrapper,
   .ox-floating-btn {
+    flex: none;
+    height: 3rem;
     min-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .quiz-top-tools {
-    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .quiz-keyword-input,
@@ -1022,10 +1182,11 @@
     width: 100%;
   }
 
-  .result-banner,
-  .result-actions,
-  .summary-points,
-  .ox-btn-group {
-    flex-direction: column;
+  .wrong-note-toggle {
+    padding: 0.95rem;
+  }
+
+  .wrong-note-options {
+    padding: 0 0.95rem 0.95rem;
   }
 }

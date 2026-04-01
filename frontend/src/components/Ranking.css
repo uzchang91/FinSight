@@ -336,7 +336,7 @@
   font-weight: 700;
 }
 
-@media (max-width: 1600px) {
+@media (max-width: 1280px) {
   .league-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -352,7 +352,7 @@
   }
 
   .guide-tier-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

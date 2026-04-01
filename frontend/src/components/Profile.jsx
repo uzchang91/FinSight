@@ -234,6 +234,28 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const isProfileCollapsed = collapsed
   const setIsProfileCollapsed = setCollapsed
 
+  // Auto-collapse when ≤1280px, restore when wider
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1280px)')
+
+    const handleMq = (e) => {
+      if (e.matches) {
+        // entering narrow — force collapsed
+        setCollapsed(true)
+      } else {
+        // leaving narrow — restore from localStorage
+        const saved = localStorage.getItem('profile_collapsed')
+        setCollapsed(saved === 'true')
+      }
+    }
+
+    // Run immediately for the current viewport
+    handleMq(mq)
+
+    mq.addEventListener('change', handleMq)
+    return () => mq.removeEventListener('change', handleMq)
+  }, [])
+
   useEffect(() => {
     if (showPointHistory) {
       setVisibleHistoryCount(10)

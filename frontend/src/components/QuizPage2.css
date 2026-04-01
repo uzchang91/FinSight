@@ -22,12 +22,12 @@
 
 .quiz-title {
   height: fit-content;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
 
   display: flex;
   flex-direction: column;
   justify-content: start;
-  gap: 0.5rem;
+  gap: 1rem;
 
   background-color: var(--bg);
   border: 1px solid var(--border);
@@ -36,12 +36,12 @@
 }
 
 .quiz-title h1 {
-  font-size: 2.125rem;
+  font-size: 2.25rem;
   font-weight: 700;
 }
 
 .quiz-title strong {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 800;
 }
 
@@ -62,26 +62,51 @@
   font-size: 1rem;
 }
 
-.quiz-badge {
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.25rem 0.75rem;
-  background: var(--btn-prim);
-  border: 1px solid var(--border);
-  border-radius: 999px;
+/* 상단 입력 + AI 버튼 */
+.quiz-top-tools {
+  margin-top: 16px;
+  margin-bottom: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quiz-keyword-input {
+  flex: 1 1 280px;
+  min-width: 240px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #d9d9d9;
+  padding: 0 14px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.quiz-ai-generate-btn {
+  min-width: 150px;
+  height: 44px;
 }
 
 /* ─── Difficulty step ────────────────────────── */
 .difficulty-buttons {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.diff-btn-wrapper {
+  flex: 1;
+  min-width: 180px;
+  position: relative;
+  display: flex;
 }
 
 .btn-difficulty {
+  width: 100%;
   border: 1px solid var(--border-prim);
   background-color: var(--primary-highlight);
   border-radius: 0.75rem;
-  flex: 1;
   padding: 1.25rem 0;
   font-size: 1.25rem;
   font-weight: 600;
@@ -89,6 +114,55 @@
 
 .btn-difficulty:hover {
   box-shadow: 0 0.25rem 0.75rem var(--shadow-2);
+}
+
+.diff-btn-wrapper.locked .btn-difficulty {
+  background-color: var(--border);
+  color: var(--text-highlight);
+  border: 1px solid var(--border);
+  cursor: default;
+  box-shadow: none;
+}
+
+.lock-icon {
+  margin-left: 8px;
+  font-size: 1.1rem;
+}
+
+.premium-tooltip {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.premium-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--bg);
+}
+
+.diff-btn-wrapper.locked:hover .premium-tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 12px);
 }
 
 /* ─── Quiz card ──────────────────────────────── */
@@ -190,6 +264,9 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .result-banner.correct {
@@ -210,6 +287,11 @@
   font-size: 1.125rem;
   color: #28a745;
   margin: 0;
+}
+
+.result-pts {
+  font-size: 1.25rem;
+  font-weight: 800;
 }
 
 .explanation-card {
@@ -324,18 +406,6 @@
   transition: width 0.4s ease;
 }
 
-/* ─── Result banner (points inline) ─────────── */
-.result-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.result-pts {
-  font-size: 1.25rem;
-  font-weight: 800;
-}
-
 /* ─── Point guide ────────────────────────────── */
 .point-guide {
   padding: 1.5rem;
@@ -372,11 +442,6 @@
   color: var(--text-highlight);
 }
 
-.bonus-note {
-  font-size: 0.875rem;
-  color: var(--text);
-}
-
 /* ─── Summary step ───────────────────────────── */
 .summary-section {
   gap: 1.25rem;
@@ -407,7 +472,6 @@
 }
 
 .summary-label {
-  /* margin: 0.5rem 0 0; */
   color: var(--text-highlight);
   font-size: 1rem;
 }
@@ -416,7 +480,7 @@
   padding: 1rem;
   text-align: center;
 
-  background: linear-gradient(135deg, var(--bg)8e1, var(--bg)3cd);
+  background: linear-gradient(135deg, #fff8d6, #fff2b8);
   border: 2px solid var(--warning);
   border-radius: 1rem;
 
@@ -505,32 +569,24 @@
 }
 
 /* ─── 일일 O/X 퀴즈 전용 스타일 ────────────────── */
-
-/* 플로팅 버튼 */
 .ox-floating-btn {
   flex: 1;
-  /* 버튼 안쪽 여백을 늘려 크기 확대 */
+  min-width: 180px;
   font-size: 1.25rem;
-  /* 글자 크기 확대 */
   font-weight: 500;
-  /* 글자를 더 두껍게 */
-
   background: var(--btn-gd);
   color: var(--bg);
   border: none;
   border-radius: 0.75rem;
-  /* 버튼이 커진 만큼 둥글게 조정 */
   box-shadow: 0 0rem 0rem var(--shadow-2);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* 마우스 올렸을 때 효과도 살짝 키워줍니다 */
 .ox-floating-btn:hover {
   box-shadow: 0 0.25rem 0.75rem var(--shadow-2);
 }
 
-/* 모달 오버레이 */
 .ox-modal-overlay {
   position: fixed;
   top: 0;
@@ -538,7 +594,6 @@
   width: 100%;
   height: 100%;
   background: var(--shadow-1);
-  /* 더 어둡게 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -546,19 +601,16 @@
   backdrop-filter: blur(5px);
 }
 
-/* 모달 본체 (다크 테마 대시보드 스타일) */
 .ox-modal-content {
   width: 90%;
   max-width: 500px;
   background: var(--box-bg);
-  /* 이미지 2의 다크 배경색 */
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 0.75rem 1rem var(--shadow-1);
 }
 
-/* 모달 헤더 */
 .ox-modal-header {
   padding: 20px 25px;
   background: var(--bg);
@@ -588,7 +640,6 @@
   cursor: pointer;
 }
 
-/* 모달 바디 */
 .ox-modal-body {
   padding: 30px;
   text-align: center;
@@ -608,7 +659,6 @@
   font-weight: 500;
 }
 
-/* 문제 카드 영역 */
 .ox-question-card {
   background: #232a35;
   padding: 25px;
@@ -624,7 +674,6 @@
   word-break: keep-all;
 }
 
-/* O/X 버튼 그룹 */
 .ox-btn-group {
   display: flex;
   gap: 20px;
@@ -653,7 +702,6 @@
   color: #8a94a6;
 }
 
-/* O/X 버튼 각각의 색상 */
 .btn-o:hover {
   border-color: #48bb78;
   background: rgba(72, 187, 120, 0.1);
@@ -672,7 +720,6 @@
   color: #f56565;
 }
 
-/* 결과 및 완료 박스 */
 .ox-status-box {
   padding: 1rem;
 
@@ -715,6 +762,24 @@
 .exp-answer {
   margin-bottom: 8px;
   color: #a0aec0;
+}
+
+.ox-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-highlight);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--border) 85%, white 15%);
+  border-top-color: var(--primary);
+  animation: spin 0.8s linear infinite;
 }
 
 /* =========================================
@@ -828,25 +893,20 @@
   color: var(--text-highlight);
 }
 
-/* 금, 은, 동메달 색상 하이라이트 */
 .qr-rank.num-1 {
   color: #f59e0b;
   font-size: 1.2rem;
 }
 
-/* 금 */
 .qr-rank.num-2 {
   color: #94a3b8;
   font-size: 1.1rem;
 }
 
-/* 은 */
 .qr-rank.num-3 {
   color: #b45309;
   font-size: 1.05rem;
 }
-
-/* 동 */
 
 .qr-profile-placeholder {
   width: 36px;
@@ -881,66 +941,157 @@
   color: var(--primary);
 }
 
-.diff-btn-wrapper {
-  flex: 1;
-  position: relative;
-  display: flex;
-}
+/* =========================================
+   📝 오답노트 아코디언 스타일 (추가된 부분)
+   ========================================= */
 
-/* 잠긴 버튼 디자인 (클릭 불가 느낌) */
-.diff-btn-wrapper.locked .btn-difficulty {
-  background-color: var(--border);
-  color: var(--text-highlight);
+.wrong-note-card {
   border: 1px solid var(--border);
-  cursor: default;
-  box-shadow: none;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg) 96%, var(--text) 4%);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.lock-icon {
-  margin-left: 8px;
-  font-size: 1.1rem;
+.wrong-note-card.open {
+  border-color: var(--border-prim);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
 }
 
-/* 툴팁 (말풍선) 기본 숨김 세팅 */
-.premium-tooltip {
-  position: absolute;
-  bottom: calc(100% + 5px);
-  /* 버튼 살짝 위 */
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg);
+.wrong-note-toggle {
+  width: 100%;
+  padding: 1rem 1.1rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 👉 여기 중요 (지금 UI 맞춤) */
+  gap: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wrong-note-toggle-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.wrong-note-question {
+  font-weight: 700;
+  font-size: 1rem;
   color: var(--text);
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  white-space: nowrap;
-
-  /* 부드럽게 나타나게 하기 위한 세팅 */
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s ease;
-  pointer-events: none;
-  /* 툴팁에 마우스가 걸리지 않게 */
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  line-height: 1.5;
+  margin-bottom: 0.25rem;
 }
 
-/* 말풍선 꼬리 (아래쪽 세모) */
-.premium-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: var(--bg);
+.wrong-note-answer-meta {
+  font-size: 0.85rem;
+  color: var(--text-highlight);
 }
 
-/* 마우스를 올렸을 때 툴팁 나타나게 하기 */
-.diff-btn-wrapper.locked:hover .premium-tooltip {
-  opacity: 1;
-  visibility: visible;
-  bottom: calc(100% + 12px);
-  /* 스르륵 위로 올라오는 효과 */
+.wrong-note-arrow {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: var(--text-highlight);
+  transition: transform 0.25s ease;
+}
+
+.wrong-note-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* 🔥 핵심 애니메이션 */
+.wrong-note-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.wrong-note-body.open {
+  max-height: 500px; /* 충분히 크게 */
+}
+
+.wrong-note-options {
+  padding: 0 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wrong-note-option {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 14px;
+}
+
+.wrong-note-option.correct {
+  border-color: var(--secondary);
+  background: var(--secondary-highlight);
+}
+
+.wrong-note-option.my-answer {
+  border-color: var(--danger);
+  background: var(--danger-highlight);
+}
+
+.wrong-note-badge {
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.wrong-note-badge.correct {
+  color: var(--secondary);
+}
+
+.wrong-note-badge.my-answer {
+  color: var(--danger);
+}
+
+.wrong-note-badge.correct {
+  color: #22c55e;
+}
+
+@media (max-width: 1024px) {
+  .difficulty-buttons {
+    flex-direction: column;
+  }
+
+  .diff-btn-wrapper,
+  .ox-floating-btn {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .quiz-top-tools {
+    flex-direction: column;
+  }
+
+  .quiz-keyword-input,
+  .quiz-ai-generate-btn {
+    width: 100%;
+  }
+
+  .result-banner,
+  .result-actions,
+  .summary-points,
+  .ox-btn-group {
+    flex-direction: column;
+  }
+
+  .wrong-note-toggle {
+    padding: 0.95rem 0.95rem;
+  }
+
+  .wrong-note-options {
+    padding: 0 0.95rem 0.95rem;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

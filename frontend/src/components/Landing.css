@@ -482,7 +482,7 @@ body {
 
 .landing-faq-question-row {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem;
 
   display: flex;
   justify-content: space-between;
@@ -852,13 +852,17 @@ body {
     font-size: 0.875rem;
   }
 
+  .landing-navigation-menu > p {
+    display: none;
+  }
+
   .floating-nav {
     /* flex-direction: column; */
     width: 100%;
   }
 
   .landing-logo2 {
-    height: 2.5rem;
+    height: 1.5rem;
 
     display: flex;
   }
@@ -866,7 +870,7 @@ body {
   .kakao_btn,
   .google_btn {
     justify-content: center;
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .kakao_btn>span,

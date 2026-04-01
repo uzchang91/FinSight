@@ -1264,11 +1264,12 @@
 }
 
 .point-history-list {
+  height: 41rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  overflow: visible !important;
-  max-height: none !important;
+  overflow-x: hidden;
+  overflow-y: auto !important;
 }
 
 .point-history-item {
@@ -1679,12 +1680,15 @@
 
 /* ─── Responsive: max-width 1280px ───────────── */
 @media (max-width: 1280px) {
+  .point-history-item {
+    gap: 0.25rem;
+  }
 
   /* Fixed top bar — same shell for both states */
   .profile {
     width: calc(100% - 2rem);
-    min-height: fit-content;
-    max-height: calc(100% - 2rem);
+    min-height: calc(100% - 7rem);
+    max-height: calc(100% - 8rem);
     padding: 0.5rem;
     box-sizing: border-box;
 
@@ -1699,7 +1703,7 @@
     backdrop-filter: blur(0.5rem);
     box-shadow: 0 0.5rem 1rem var(--shadow-1);
 
-    z-index: 10001;
+    z-index: 9999;
   }
 
   .profile.collapsed {
@@ -1719,14 +1723,12 @@
     backdrop-filter: blur(0.5rem);
     box-shadow: 0 0.5rem 1rem var(--shadow-1);
 
-    z-index: 10001;
+    z-index: 9999;
   }
 
   /* profile-content is the anchor for the dropdown panel */
   .profile .profile-content {
     max-height: calc(100vh - 4rem);
-    /* padding-top: 2rem; */
-    overflow-y: scroll;
 
     align-items: center;
     position: relative;
@@ -1742,10 +1744,11 @@
   }
 
   .notification-dropdown--fixed {
-    right: 50%;
-    transform: translateX(-50%);
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
     min-width: 300px;
-    max-width: 400px;
+    max-width: min(400px, calc(100vw - 2rem));
   }
 
   /* Always show all 4 icons — override desktop hidden state */

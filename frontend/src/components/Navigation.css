@@ -91,8 +91,6 @@
   justify-content: space-between;
   gap: 1.5rem;
   list-style-type: none;
-  padding: 0;
-  margin: 0;
 }
 
 .nav-menu {
@@ -228,7 +226,7 @@
 }
 
 .navigation.collapsed .nav-wrapper {
-  width: fit-content;
+  /* width: fit-content; */
   height: fit-content;
   box-sizing: border-box;
 }
@@ -342,7 +340,12 @@
     backdrop-filter: blur(0.5rem);
     box-shadow: 0 0.5rem 1rem var(--shadow-1);
 
-    z-index: 10000;
+    z-index: 9999;
+  }
+
+  .navigation.collapsed .nav-content {
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    flex-direction: row;
   }
 
   .nav-content {
@@ -362,6 +365,11 @@
   }
 
   .nav-wrapper {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .navigation.collapsed .nav-wrapper {
     flex-direction: row;
     gap: 1rem;
   }
