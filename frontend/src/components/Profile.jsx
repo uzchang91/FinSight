@@ -1414,7 +1414,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                       <div className='profile-title-dropdown-wrap' ref={titleDropdownRef}>
                         <button
                           type='button'
-                          className={`profile-title-badge profile-title-badge--button ${isTitleDropdownOpen ? 'profile-title-open' : ''}`}
+                          className={`profile-title-badge ${isTitleDropdownOpen ? 'profile-title-open' : ''}`}
                           onClick={handleToggleTitleDropdown}
                         >
                           <span className='profile-title-text-hover'>

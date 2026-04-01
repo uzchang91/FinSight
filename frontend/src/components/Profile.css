@@ -21,7 +21,7 @@
 
 .profile.collapsed {
   width: 5.5rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   transition: all 0.3s ease;
 }
 
@@ -53,6 +53,11 @@
 
 .profile.collapsed .profile-set {
   padding: 0;
+  padding-top: 0.5rem;
+}
+
+.profile.collapsed .profile-set .profile-set-extra:nth-child(2) {
+  display: none;
 }
 
 /* ─── Icons ──────────────────────────────────── */
@@ -977,6 +982,7 @@
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
+  cursor: pointer;
 
   transition: all 0.3s ease;
 }
@@ -985,16 +991,11 @@
   white-space: nowrap;
 }
 
-.profile-title-badge--button {
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
 .profile-title-badge.profile-title-open {
   background: var(--primary);
   border: 1px solid transparent;
   color: var(--bg);
+  z-index: 10000;
 }
 
 .profile-title-dropdown-wrap {
@@ -1011,7 +1012,7 @@
 .profile-title-dropdown {
   max-height: 320px;
   width: min(220px, calc(100vw - 2rem));
-  padding: 0.5rem 0.75rem 0.75rem;
+  padding: 0.5rem 0.75rem;
 
   position: absolute;
   top: calc(100% + 0.75rem);
@@ -1027,7 +1028,6 @@
 
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
   z-index: 10000;
-  overflow-y: auto;
 }
 
 .profile-title-dropdown-header {
@@ -1408,7 +1408,7 @@
 }
 
 .profile-investment-modal {
-  width: min(920px, 100%);
+  width: min(920px, calc(100vw - 2rem));
   max-height: calc(100vh - 2rem);
   overflow: hidden;
   background: var(--bg);
@@ -1563,6 +1563,7 @@
 
 .profile-side-stock-top p {
   min-width: 0;
+  overflow-x: hidden;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
@@ -1608,8 +1609,8 @@
 }
 
 .profile-investment-pie {
-  width: 180px;
-  height: 180px;
+  min-width: 180px;
+  min-height: 180px;
 
   display: flex;
   align-items: center;
@@ -1674,6 +1675,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow-x: hidden;
 
   font-size: 1rem;
   font-weight: 600;
@@ -1719,7 +1721,7 @@
   .profile.collapsed .profile-set {
     padding: 0.5rem;
   }
-  
+
   .point-history-item {
     gap: 0.25rem;
   }
@@ -1727,8 +1729,7 @@
   /* Fixed top bar — same shell for both states */
   .profile {
     width: calc(100% - 2rem);
-    min-height: calc(100% - 7rem);
-    max-height: calc(100% - 8rem);
+    min-height: calc(100% - 1.5rem);
     padding: 0.5rem;
     box-sizing: border-box;
 
@@ -1736,7 +1737,7 @@
     top: calc(0% + 1rem);
     left: calc(0% + 1rem);
 
-    background-color: var(--bg-trans);
+    background-color: var(--bg-trans2);
     border: 1px solid transparent;
     border-radius: 1.5rem;
 
@@ -1748,7 +1749,7 @@
 
   .profile.collapsed {
     width: calc(100% - 2rem);
-    min-height: 5rem;
+    min-height: 4.5rem;
     padding: 0.5rem;
     box-sizing: border-box;
 
@@ -1778,9 +1779,9 @@
     width: calc(100% - 4rem);
 
     position: fixed;
-    top: 0.5rem;
+    top: 0.25rem;
 
-    z-index: 1000;
+    z-index: 10000;
   }
 
   .notification-dropdown--fixed {
@@ -1811,7 +1812,7 @@
 
     box-sizing: border-box;
 
-    z-index: 100;
+    z-index: 1000;
 
     animation: profileDropDown 0.3s ease;
   }
@@ -1908,16 +1909,12 @@
 
 /* ─── Responsive: max-width 768px ───────────── */
 @media (max-width: 768px) {
-  .profile-investment-summary-grid {
-    grid-template-columns: 1fr;
-  }
 
   .profile-investment-sections {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .profile-investment-modal {
-    width: 100%;
     max-height: calc(100vh - 1rem);
   }
 
@@ -1929,17 +1926,12 @@
     width: 100%;
   }
 
-  .profile-investment-pie {
-    width: 200px;
-    height: 200px;
-  }
-
   .achievement-grid-full {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-/* ─── Responsive: max-width 468px ───────────── */
+/* ─── Responsive: max-width 480px ───────────── */
 @media (max-width: 480px) {
   .achievement-grid-full {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1975,9 +1967,15 @@
     right: calc(50% - 6px);
   }
 
-  .profile-side-stock-top,
-  .profile-side-stock-mid {
-    flex-direction: column;
-    align-items: flex-start;
+  .profile-investment-sections {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .profile-investment-summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .profile-investment-summary-grid> :last-child {
+    grid-column: 1/3;
   }
 }

@@ -26,7 +26,10 @@ body {
 .content-area,
 .profile-area {
   min-width: 0;
-  /* overflow-x: hidden; */
+}
+
+.content-area {
+  padding-bottom: 1.5rem;
 }
 
 /* =========================
@@ -70,6 +73,4 @@ body {
    Mobile
    - 프로필 최상단 유지
 ========================= */
-@media (max-width: 768px) {
-
-}
+@media (max-width: 768px) {}

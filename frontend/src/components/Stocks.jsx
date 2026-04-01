@@ -75,7 +75,7 @@ const Stocks = () => {
     type: '',
     stock: null,
   });
-  const [tradeQuantity, setTradeQuantity] = useState(1);
+  const [tradeQuantity, setTradeQuantity] = useState(0);
   const [tradeLoading, setTradeLoading] = useState(false);
 
   const [tradeHistory, setTradeHistory] = useState([]);
@@ -279,13 +279,13 @@ const Stocks = () => {
       type,
       stock: toTradeStock(stock),
     });
-    setTradeQuantity(1);
+    setTradeQuantity(0); // 0으로 변경
   };
 
   const closeTradeModal = () => {
     if (tradeLoading) return;
     setTradeModal({ isOpen: false, type: '', stock: null });
-    setTradeQuantity(1);
+    setTradeQuantity(0); // 0으로 변경
   };
 
   const isLiked = (stockCode) => likedCodeSet.has(String(stockCode).padStart(6, '0'));
@@ -840,32 +840,40 @@ const Stocks = () => {
 
                 <div className='trade-quantity-control'>
                   <span>수량</span>
-                  <div className='quantity-buttons'>
+                    <div className='quantity-buttons'>
                     <button
                       type='button'
-                      onClick={() => setTradeQuantity((prev) => Math.max(1, prev - 1))}
+                      onClick={() => setTradeQuantity((prev) => Math.max(0, Number(prev) - 1))}
                       disabled={tradeLoading}
                     >
-                      <img src={minusD} alt="닫기" />
+                      <img src={minusD} alt="빼기" />
                     </button>
                     <input
                       type='number'
-                      min='1'
-                      value={tradeQuantity}
+                      min='0'
+                      placeholder='0'
+                      value={tradeQuantity === 0 ? '' : tradeQuantity} /* 0일 땐 빈칸으로 둬서 바로 입력되게 함 */
+                      onFocus={(e) => (e.target.placeholder = '')} /* 🟢 마우스로 클릭하면 회색 '0' 삭제 */
+                      onBlur={(e) => (e.target.placeholder = '0')} /* 🟢 다른 곳을 누르면 다시 회색 '0' 복구 */
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        setTradeQuantity(
-                          Number.isFinite(value) && value > 0 ? Math.floor(value) : 1
-                        );
-                      }}
-                      disabled={tradeLoading}
+                        const val = e.target.value;
+                        if (val === '') {
+                          setTradeQuantity(0);
+                        } else {
+                          const num = Number(val);
+                          if (Number.isFinite(num) && num >= 0) {
+                            setTradeQuantity(Math.floor(num));
+                          }
+                        }
+                    }}
+                    disabled={tradeLoading}
                     />
                     <button
                       type='button'
-                      onClick={() => setTradeQuantity((prev) => prev + 1)}
+                      onClick={() => setTradeQuantity((prev) => Number(prev) + 1)}
                       disabled={tradeLoading}
                     >
-                      <img src={plusD} alt="닫기" />
+                      <img src={plusD} alt="더하기" />
                     </button>
                   </div>
                 </div>

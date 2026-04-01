@@ -205,7 +205,7 @@
 .rank-list {
   list-style-type: none;
   height: fit-content;
-  max-height: 350px;
+  max-height: 395px;
   padding: 0.75rem 0rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -601,7 +601,7 @@
 .quest-list {
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.5rem;
   margin: 0;
   padding: 0;
@@ -635,7 +635,15 @@
 
 @media (max-width: 1280px) {
   .dash-master {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-master > :first-child {
+    grid-column: 1/3;
+  }
+
+  .quest-list {
+    grid-template-columns: 1fr 1fr;
   }
 
   .isr-header .isr-tooltip-text {

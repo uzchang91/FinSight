@@ -537,11 +537,11 @@ const Education = () => {
 
                       </div>
                     </div>
-                        {isAdvancedLocked && (
-                          <div className='education-lock-hover-msg'>
-                            구독 후 이용할 수 있습니다
-                          </div>
-                        )}
+                    {isAdvancedLocked && (
+                      <div className='education-lock-hover-msg'>
+                        구독 후 이용할 수 있습니다
+                      </div>
+                    )}
                     <img
                       src={arrowDown}
                       alt='collapsed'
@@ -563,7 +563,7 @@ const Education = () => {
                       {!lesson.isCompleted &&
                         (isQuotaFull ? (
                           <button type='button' className='education-xp-btn quota-full' disabled>
-                            오늘은 교육할당량이 충분합니다. 내일 교육해주세요.
+                            오늘의 정해진 {lesson.level} 교육 할당량을 모두 달성했습니다.
                           </button>
                         ) : (
                           <button
@@ -577,7 +577,6 @@ const Education = () => {
                               : processingLessonId === lesson.id
                                 ? '처리 중...'
                                 : '학습 완료'}
-                            {/* {countdown === 0 && <img src={check} alt='check' className='icons' />} */}
                           </button>
                         ))}
                     </div>

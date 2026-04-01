@@ -94,7 +94,7 @@
 .education-search-box {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .education-search-input {
@@ -203,25 +203,30 @@
 .education-accordion-item {
   height: fit-content;
   padding: 0.75rem;
+  padding-right: 1.25rem;
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
   gap: 1rem;
 
-  background: var(--bg-trans);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 1.5rem;
 
   transition: all 0.3s ease;
 }
 
+.education-accordion-item:hover {
+  background: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
+
+}
+
 .education-accordion-item.open {
   height: fit-content;
-  background: var(--bg-trans);
+  background: var(--primary-highlight);
   border-color: var(--border-prim);
-
-  box-shadow: 0 0.5rem 1rem var(--shadow-1);
 }
 
 .education-accordion-item.open .arrow {
@@ -244,7 +249,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.education-accordion-item.locked > .education-accordion-header {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 
   background: transparent;
   border: none;
@@ -267,7 +286,7 @@
   justify-content: center;
 
   background: var(--btn-prim);
-  border-radius: 50%;
+  border-radius: 0.75rem;
 }
 
 .education-header-text {
@@ -326,6 +345,7 @@
 }
 
 .education-lock-hover-msg {
+  text-align: start;
   font-size: 0.875rem;
   color: var(--text-highlight);
   opacity: 0;
@@ -354,7 +374,7 @@
   flex-direction: column;
   gap: 0.5rem;
 
-  background: var(--primary-highlight);
+  background: var(--bg);
   border: 1px solid var(--border-prim);
   border-radius: 0.75rem;
 
@@ -379,13 +399,14 @@
   align-self: flex-end;
   gap: 0.5rem;
 
-  background: var(--primary-highlight);
-  border: 1px solid var(--border-prim);
+  background: var(--primary);
+  border: 1px solid transparent;
   border-radius: 0.75rem;
 
-  color: var(--primary);
+  color: var(--bg);
   font-size: 0.875rem;
   font-weight: 500;
+  letter-spacing: 1px;
   cursor: pointer;
 
   transition: all 0.3s ease;
@@ -401,8 +422,8 @@
 }
 
 .education-xp-btn.quota-full {
-  opacity: 0.6;
-  color: var(--text-highlight);
+  background: var(--primary-highlight2);
+  color: var(--primary);
 }
 
 .education-xp-btn.counting {
@@ -413,7 +434,7 @@
 .education-xp-btn:not(.counting):not(.quota-full):hover {
   background: var(--primary-highlight2);
   border: 1px solid var(--primary);
-  transform: none;
+  color: var(--primary);
 }
 
 .education-xp-btn.counting:hover,

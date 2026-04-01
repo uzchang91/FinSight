@@ -332,7 +332,7 @@
     bottom: calc(0% + 1rem);
     left: calc(0% + 1rem);
 
-    background-color: var(--bg-trans);
+    background-color: var(--bg-trans2);
     border-right: none;
     border-bottom: 1px solid var(--border);
     border-radius: 1.5rem;
@@ -376,7 +376,7 @@
 
   .nav-list {
     flex-direction: row;
-    gap: 1rem;
+    gap: 0rem;
   }
 
   .nav-line span {
@@ -418,10 +418,6 @@
 
   .icon-btn {
     padding: 0.75rem;
-  }
-
-  .arrow {
-    padding: 0 0.75rem;
   }
 
   .billing-nav-button span {
