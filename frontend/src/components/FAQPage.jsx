@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import './FAQPage.css'
 import minus from '../assets/icons/minus.svg'
 import plus from '../assets/icons/plus.svg'
-import close from '../assets/icons/close.svg'
 
 const API = 'http://localhost:5000/api/faq'
 

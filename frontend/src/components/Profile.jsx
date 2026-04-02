@@ -785,7 +785,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
       if (fileInputRef.current?.files[0]) {
         const formData = new FormData()
         formData.append('profile_image', fileInputRef.current.files[0])
-        await fetch(`http://localhost:5000/api/auth/me/image`, {
+        await fetch(`http://localhost:5000/api/auth/me/image`||`https://localhost:5000/api/auth/me/image`, {
           method: 'PATCH',
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: formData, // multipart — do NOT set Content-Type manually
@@ -815,7 +815,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
     localStorage.removeItem('nickname')
     sessionStorage.clear()
 
-    alert('안전하게 로그아웃 되었습니다!')
+    alert('정상적으로 로그아웃 되었습니다.')
     window.location.href = '/'
   }
 
