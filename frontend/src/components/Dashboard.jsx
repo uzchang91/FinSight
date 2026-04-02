@@ -452,7 +452,8 @@ const Dashboard = () => {
   }
 
   const handleLeagueClick = (leagueKey) => {
-    setSelectedLeague((prev) => (prev === leagueKey ? null : leagueKey))
+    if (selectedLeague === leagueKey) return   // ← bail early, no re-render
+    setSelectedLeague(leagueKey)
   }
 
   const selectedLeagueLabel = useMemo(() => {
@@ -678,7 +679,7 @@ const Dashboard = () => {
                         : 'loss'
                       }`}>
                       {formatSignedNumber(stock.change)}pt
-                      </p>
+                    </p>
                   </li>
                 ))
               )}
