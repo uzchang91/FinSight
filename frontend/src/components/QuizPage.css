@@ -91,7 +91,7 @@
 }
 
 *:focus {
-  outline: 1px solid var(--primary);
+  outline: none;
 }
 
 .quiz-ai-generate-btn {
@@ -109,7 +109,6 @@
 
 .diff-btn-wrapper {
   flex: 1;
-  min-width: 180px;
   position: relative;
   display: flex;
 }
@@ -591,9 +590,7 @@
 
 /* ─── 일일 O/X 퀴즈 전용 스타일 ────────────────── */
 .ox-floating-btn {
-  flex: 1;
   height: 3rem;
-  min-width: 180px;
   font-size: 1.125rem;
   font-weight: 500;
   background: var(--btn-gd);
@@ -624,10 +621,10 @@
 
 .ox-modal-content {
   width: 90%;
-  max-width: 500px;
+  max-width: 440px;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 1.5rem;
   overflow: hidden;
   box-shadow: 0 0.75rem 1rem var(--shadow-1);
 }
@@ -776,7 +773,7 @@
 }
 
 .ox-status-box {
-  width: 100%;
+  flex: 1;
   padding: 1rem;
 
   display: flex;
@@ -1160,9 +1157,6 @@
 
 /* ─── Responsive ─────────────────────────────── */
 @media (max-width: 1024px) {
-  .difficulty-buttons {
-    grid-template-columns: repeat(2, 1fr);
-  }
 
   .diff-btn-wrapper,
   .ox-floating-btn {
@@ -1173,6 +1167,11 @@
 }
 
 @media (max-width: 768px) {
+  
+  .difficulty-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .quiz-top-tools {
     gap: 0.5rem;
   }

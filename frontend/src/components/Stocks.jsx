@@ -69,6 +69,8 @@ const Stocks = () => {
   const [expandedSymbol, setExpandedSymbol] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [selectedRangeLabel, setSelectedRangeLabel] = useState('일');
+  const chartContainerRef = React.useRef(null);
+  const chartInstanceRef = React.useRef(null);
 
   const [tradeModal, setTradeModal] = useState({
     isOpen: false,
@@ -372,6 +374,23 @@ const Stocks = () => {
     }
   };
 
+  // Resize the Chart.js canvas whenever the container width changes.
+  // This fires after nav/profile collapse transitions complete so the
+  // canvas repaints at the correct column width instead of overflowing.
+  useEffect(() => {
+    const container = chartContainerRef.current;
+    if (!container || !expandedSymbol) return;
+
+    const ro = new ResizeObserver(() => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.resize();
+      }
+    });
+
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [expandedSymbol, chartData]);
+
   let timeUnit = 'month';
   let xFormat = 'MM/dd';
   let tipFormat = 'yyyy-MM-dd';
@@ -458,10 +477,10 @@ const Stocks = () => {
             const point = context.raw;
             if (!point) return '';
             return [
-              `시가: ${Number(point.o).toLocaleString()}원`,
-              `고가: ${Number(point.h).toLocaleString()}원`,
-              `저가: ${Number(point.l).toLocaleString()}원`,
-              `종가: ${Number(point.c).toLocaleString()}원`,
+              `시가: ${Number(point.o).toLocaleString()}pt`,
+              `고가: ${Number(point.h).toLocaleString()}pt`,
+              `저가: ${Number(point.l).toLocaleString()}pt`,
+              `종가: ${Number(point.c).toLocaleString()}pt`,
             ];
           },
         },
@@ -629,10 +648,11 @@ const Stocks = () => {
                             </div>
                           </div>
 
-                          <div className='chart-render-area'>
+                          <div className='chart-render-area' ref={chartContainerRef}>
                             {chartData ? (
                               <Chart
                                 key={`${expandedSymbol}-${selectedRangeLabel}`}
+                                ref={chartInstanceRef}
                                 type='candlestick' data={chartData}
                                 options={chartOptions} />
                             ) : (

@@ -5,7 +5,7 @@ body {
 .main-body {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 240px 1fr 280px;
+  grid-template-columns: 240px minmax(0, 1fr) 280px;
   gap: 1.5rem;
   transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -32,10 +32,6 @@ body {
   padding-bottom: 1.5rem;
 }
 
-/* =========================
-   Tablet
-   - 프로필을 가장 위로
-========================= */
 @media (max-width: 1024px) {
   .main-body {
     width: 100%;
@@ -65,12 +61,5 @@ body {
 
   .content-area {
     padding: 0 1rem;
-    /* order: 2; */
   }
 }
-
-/* =========================
-   Mobile
-   - 프로필 최상단 유지
-========================= */
-@media (max-width: 768px) {}

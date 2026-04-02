@@ -151,8 +151,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.875rem;
-
-  transition: all 0.3s ease-out;
 }
 
 .billing-nav-button {
@@ -180,7 +178,7 @@
 }
 
 .billing-action-wrap:not(.premium):hover {
-  transform: translateY(-0.2rem);
+  transform: translateY(-2px);
   box-shadow: 0 0.25rem 0.5rem var(--shadow-1);
 }
 
@@ -294,26 +292,14 @@
 /* Billing collapses smoothly */
 .billing-action-wrap {
   overflow: hidden;
-  max-height: 300px;
-  opacity: 1;
+  max-width: 300px;
   transition:
-    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.25s ease;
+    max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
 }
 
 .navigation.collapsed .billing-action-wrap {
-  max-height: 3.5rem;
   max-width: 3.5rem;
-  opacity: 1;
-}
-
-/* Icon padding tightens */
-.icon-btn {
-  transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.navigation.collapsed .icon-btn {
-  padding: 0.75rem;
 }
 
 

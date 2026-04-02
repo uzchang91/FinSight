@@ -203,7 +203,6 @@
 .education-accordion-item {
   height: fit-content;
   padding: 0.75rem;
-  padding-right: 1.25rem;
   overflow: hidden;
 
   display: flex;
@@ -227,6 +226,11 @@
   height: fit-content;
   background: var(--primary-highlight);
   border-color: var(--border-prim);
+}
+
+.arrow {
+  padding: 0 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .education-accordion-item.open .arrow {

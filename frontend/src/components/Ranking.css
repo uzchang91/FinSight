@@ -336,9 +336,17 @@
   font-weight: 700;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1600px) {
+
   .league-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1280px) {
+  
+  .league-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 
   .league-card {
@@ -356,13 +364,13 @@
   }
 }
 
-@media (max-width: 900px) {
-  .ranking-container {
-    padding: 16px;
-  }
+@media (max-width: 1024px) {
 
   .league-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ranking-container {
+    padding: 16px;
   }
 
   .ranking-summary-card h1 {
@@ -376,5 +384,13 @@
   .ranking-guide-formula,
   .ranking-guide-example {
     padding: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+
+  .league-grid {
+    grid-template-columns: 1fr;
   }
 }

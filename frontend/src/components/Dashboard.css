@@ -204,8 +204,7 @@
 
 .rank-list {
   list-style-type: none;
-  height: fit-content;
-  max-height: 395px;
+  height: 385px;
   padding: 0.75rem 0rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -692,10 +691,13 @@
 }
 
 
-@media (max-width: 900px) {
-  .league-badge {
-    width: 2rem;
-    height: 2rem;
+@media (max-width: 768px) {
+  .dash-master {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .dash-master> :first-child {
+    grid-column: 1/2;
   }
 
   .dash-tool {

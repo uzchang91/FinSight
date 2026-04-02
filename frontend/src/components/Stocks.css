@@ -11,7 +11,7 @@
 .stocks-layout {
   position: relative;
   display: grid;
-  grid-template-columns: 2.2fr 1fr;
+  grid-template-columns: minmax(40vw, 2fr) minmax(10vw, 1fr);
   gap: 1rem;
   align-items: start;
 }
@@ -551,27 +551,39 @@
 
 .chart-range-group {
   display: flex;
-  background: var(--box-bg);
-  padding: 2px;
+  background: var(--primary-highlight);
   border-radius: 0.75rem;
 }
 
 .chart-range-btn {
-  padding: 4px 12px;
-  border: none;
-  background: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-prim);
+  background: transparent;
   cursor: pointer;
   font-size: 0.875rem;
-  border-radius: 4px;
+  font-weight: 500;
+}
+
+.chart-range-btn:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+.chart-range-btn:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
 }
 
 .chart-range-btn.active {
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--primary-highlight2);
+  border: 1px solid var(--primary);
+  /* color: var(--primary); */
 }
 
 .chart-render-area {
+  width: 100%;
+  min-width: 0;
   height: 310px;
+  overflow: hidden;
 }
 
 .chart-notice {

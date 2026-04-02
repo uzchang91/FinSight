@@ -247,7 +247,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
       } else {
         // leaving narrow — restore from localStorage
         const saved = localStorage.getItem('profile_collapsed')
-        setCollapsed(saved === 'false')
+        setCollapsed(saved === 'true')
       }
     }
 
@@ -1023,6 +1023,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   {rangeLabelMap[pointHistoryRange]} 내역이 없습니다.
                 </div>
               )}
+            </div>
               {filteredPointHistory.length > 10 && (
                 <div
                   className={`point-history-more-row ${visibleHistoryCount <= 10 ? 'single' : 'double'}`}
@@ -1074,7 +1075,6 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   )}
                 </div>
               )}
-            </div>
           </div>
         </div>
       </div>
