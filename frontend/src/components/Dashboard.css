@@ -74,8 +74,8 @@
   gap: 1rem;
 }
 
-.dash-box {
-  height: fit-content;
+.dash-box,
+.tool-box {
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
@@ -87,11 +87,15 @@
   min-width: 0;
 }
 
-.dash-box>span {
-  padding: 0 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+.dash-box {
+  height: fit-content;
 }
+
+.tool-box {
+  align-self: start;
+}
+
+
 
 .dash-tool {
   display: grid;
@@ -101,23 +105,24 @@
   min-width: 0;
 }
 
-.tool-box {
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  background-color: var(--bg);
-  border-radius: 1.5rem;
-  border: 1px solid var(--border);
-  min-width: 0;
-  box-sizing: border-box;
-  align-self: start;
+.dash-box > span,
+.tool-box > span,
+.dash-rank > span {
+  padding: 0 0.5rem;
+  font-weight: 600;
 }
 
-.tool-box>span {
-  padding: 0 0.5rem;
+.dash-box > span {
+  font-size: 1rem;
+}
+
+.tool-box > span {
   font-size: 1.1rem;
-  font-weight: 600;
+}
+
+.dash-rank > span {
+  padding-top: 0.5rem;
+  font-size: 1.1rem;
 }
 
 .dash-thread {
@@ -125,12 +130,6 @@
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: 1rem;
   min-width: 0;
-}
-
-.dash-rank>span {
-  padding: 0.5rem 0.5rem 0rem;
-  font-size: 1.1rem;
-  font-weight: 600;
 }
 
 .rank-box {
@@ -204,8 +203,7 @@
 
 .rank-list {
   list-style-type: none;
-  height: fit-content;
-  max-height: 395px;
+  height: 385px;
   padding: 0.75rem 0rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -248,28 +246,27 @@
   white-space: nowrap;
 }
 
-.rank-num {
+.rank-num,
+.rank-point {
   min-width: 1.5rem;
   max-width: fit-content;
-  padding-left: 0.5rem;
-
   text-align: end;
   font-variant-numeric: tabular-nums;
 }
+
+.rank-num {
+  padding-left: 0.5rem;
+}
+
+.rank-point {
+  padding-right: 0.5rem;
+}
+
 
 .rank-profile {
   width: 2rem;
   height: 2rem;
   border-radius: 2rem;
-}
-
-.rank-point {
-  min-width: 1.5rem;
-  max-width: fit-content;
-  padding-right: 0.5rem;
-
-  text-align: end;
-  font-variant-numeric: tabular-nums;
 }
 
 .rank-item-mine {
@@ -652,15 +649,7 @@
   }
 
   .isr-header .isr-tooltip-text::before {
-    content: '';
-    width: 0.75rem;
-    height: 0.75rem;
-
-    position: absolute;
     left: 88%;
-    bottom: -6px;
-
-    background: var(--bg);
   }
 
   .isr-tooltip-text {
@@ -669,15 +658,7 @@
   }
 
   .isr-tooltip-text::before {
-    content: '';
-    width: 0.75rem;
-    height: 0.75rem;
-
-    position: absolute;
     left: 12%;
-    bottom: -6px;
-
-    background: var(--bg);
   }
 
   .dash-rank {

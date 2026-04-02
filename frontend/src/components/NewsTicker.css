@@ -101,19 +101,12 @@
 /* 팝업창 배경 어둡게 */
 .news-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  inset: 0; /* top, left, right, bottom을 모두 0으로 묶음 */
+  z-index: 999999;
   
+  /* 내부 팝업을 상하좌우 정중앙에 고정 (Flex 없이 가능) */
   background: var(--text-trans);
   backdrop-filter: blur(0.5rem);
-  
-  z-index: 999999; /* 화면 맨 앞으로 오게 설정 */
 }
 
 /* 팝업창 본체 */
@@ -123,14 +116,11 @@
   max-width: 600px;
   max-height: 80vh;
   overflow: hidden;
-
+  margin: auto;
   display: flex;
   flex-direction: column;
-  
   border-radius: 1.5rem;
-  
   box-shadow: 0 0.5rem 1rem var(--shadow-1);
-
   animation: modalFadeIn 0.3s ease-out;
 }
 
@@ -189,8 +179,7 @@
 
 .news-modal-source {
   flex-shrink: 0;
-
-  font-size: 1;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--primary);
 }

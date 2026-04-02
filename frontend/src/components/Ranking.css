@@ -140,17 +140,19 @@
   border-radius: 0.75rem;
 }
 
-.league-rank {
-  min-width: 1.5rem;
-  max-width: fit-content;
-  padding-left: 0.5rem;
-
+.league-rank,
+.league-score {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
   text-align: end;
-
   font-variant-numeric: tabular-nums;
+}
+
+.league-rank {
+  min-width: 1.5rem;
+  max-width: fit-content;
+  padding-left: 0.5rem;
 }
 
 .league-user-main {
@@ -180,13 +182,6 @@
 
 .league-score {
   padding-right: 0.5rem;
-
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-
-  text-align: end;
-  font-variant-numeric: tabular-nums;
 }
 
 .ranking-guide-card {
@@ -211,33 +206,6 @@
   color: var(--text);
 }
 
-.guide-highlight-blue {
-  color: var(--primary);
-  font-weight: 600;
-}
-
-.ranking-guide-formula {
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  background: var(--primary-highlight);
-  border: 1px solid var(--border-prim);
-
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.ranking-guide-formula span {
-  font-weight: 700;
-}
-
-.ranking-guide-warning {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  font-weight: 500;
-  color: var(--danger);
-}
-
 /* =========================================
    📊 랭킹 가이드 보강 스타일
    ========================================= */
@@ -259,14 +227,6 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text);
-}
-
-.guide-examples-list {
-  list-style: none;
-  padding: 0 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
 
 /* 티어 리스트 스타일 */
@@ -336,45 +296,35 @@
   font-weight: 700;
 }
 
-@media (max-width: 1280px) {
-  .league-grid {
+@media (max-width: 1600px) {
+  .league-grid,
+  .guide-tier-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
   .league-card {
     min-height: 300px;
     max-height: 500px;
   }
-
   .league-user-list {
     max-height: 400px;
-    overflow-y: auto;
-  }
-
-  .guide-tier-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .ranking-container {
     padding: 16px;
   }
-
-  .league-grid {
-    grid-template-columns: 1fr;
-  }
-
   .ranking-summary-card h1 {
     font-size: 1.8rem;
   }
-
   .ranking-summary-card strong {
     font-size: 1.9rem;
   }
+}
 
-  .ranking-guide-formula,
-  .ranking-guide-example {
-    padding: 0.8rem;
+@media (max-width: 768px) {
+  .league-grid,
+  .guide-tier-list {
+    grid-template-columns: 1fr;
   }
 }

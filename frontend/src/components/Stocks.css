@@ -11,7 +11,7 @@
 .stocks-layout {
   position: relative;
   display: grid;
-  grid-template-columns: 2.2fr 1fr;
+  grid-template-columns: minmax(40vw, 2fr) minmax(10vw, 1fr);
   gap: 1rem;
   align-items: start;
 }
@@ -361,16 +361,18 @@
   color: var(--text);
 }
 
-.stocks-card-body {
+.stocks-card-body,
+.st-history-list {
   height: 100%;
   padding-bottom: 0.75rem;
-  overflow-y: scroll;
-
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-
   border-top: 1px solid var(--border);
+}
+
+.stocks-card-body {
+  overflow-y: scroll;
 }
 
 .side-stock-item {
@@ -393,19 +395,18 @@
 }
 
 .side-stock-item:first-child:hover {
-  padding: 0.75rem 0.5rem 0.5rem;
   margin: 0.5rem 0.5rem 0;
+}
 
+.side-stock-item:hover,
+.side-stock-item:first-child:hover {
+  padding: 0.75rem 0.5rem 0.5rem;
   border: 1px solid var(--border-prim);
   border-radius: 0.75rem;
 }
 
 .side-stock-item:hover {
-  padding: 0.75rem 0.5rem 0.5rem;
   margin: 0 0.5rem;
-
-  border: 1px solid var(--border-prim);
-  border-radius: 0.75rem;
 }
 
 .side-stock-item2 {
@@ -451,46 +452,23 @@
   color: var(--text-highlight);
 }
 
-.side-stock-actions {
+.side-stock-actions
+.side-liked-actions {
   max-height: 0;
-
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 0.5rem;
-
+  visibility: hidden;
   transform: translateY(-1rem);
   opacity: 0;
-  visibility: hidden;
-
+  
   transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
-.side-stock-actions.flex {
-  max-height: 40px;
-
-  transform: translateY(0rem);
-  opacity: 1;
-  visibility: visible;
-}
-
-.side-liked-actions {
-  max-height: 0;
-
-  display: flex;
-  justify-content: flex-end;
-  visibility: hidden;
-  gap: 0.5rem;
-
-  transform: translateY(-1rem);
-  opacity: 0;
-
-  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
-}
-
+.side-stock-actions.flex,
 .side-liked-actions.flex {
   max-height: 40px;
-
   transform: translateY(0rem);
   opacity: 1;
   visibility: visible;
@@ -551,27 +529,39 @@
 
 .chart-range-group {
   display: flex;
-  background: var(--box-bg);
-  padding: 2px;
+  background: var(--primary-highlight);
   border-radius: 0.75rem;
 }
 
 .chart-range-btn {
-  padding: 4px 12px;
-  border: none;
-  background: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-prim);
+  background: transparent;
   cursor: pointer;
   font-size: 0.875rem;
-  border-radius: 4px;
+  font-weight: 500;
+}
+
+.chart-range-btn:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+.chart-range-btn:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
 }
 
 .chart-range-btn.active {
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--primary-highlight2);
+  border: 1px solid var(--primary);
+  /* color: var(--primary); */
 }
 
 .chart-render-area {
+  width: 100%;
+  min-width: 0;
   height: 310px;
+  overflow: hidden;
 }
 
 .chart-notice {
@@ -776,15 +766,7 @@
 }
 
 .st-history-list {
-  height: 100%;
-  padding-bottom: 0.75rem;
   overflow-y: auto;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  border-top: 1px solid var(--border);
 }
 
 .st-history-item {
@@ -891,9 +873,5 @@
   .side-liked-actions {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .trade-btn.liked-buy {
-    width: 100%;
   }
 }

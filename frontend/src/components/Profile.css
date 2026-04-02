@@ -695,18 +695,39 @@
   transform: translateX(-60%) translateY(0rem);
 }
 
-.achievement-recent-tooltip-arrow {
+.achievement-recent-tooltip-arrow,
+.achievement-grid-tooltip-arrow,
+.bubble-arrow,
+.bubble-arrow2 {
   width: 0.5rem;
   height: 0.5rem;
-
   position: absolute;
-  left: calc(80%);
-  top: calc(98%);
-
   background: var(--bg);
   transform: translateX(-50%);
   rotate: 45deg;
 }
+
+.achievement-recent-tooltip-arrow {
+  left: 80%;
+  top: 98%;
+}
+
+.achievement-grid-tooltip-arrow {
+  left: 50%;
+  top: 50%;
+  background: transparent;
+}
+
+.bubble-arrow {
+  left: 88%;
+  top: 98%;
+}
+
+.bubble-arrow2 {
+  left: 50%;
+  top: 50%;
+}
+
 
 .achievement-recent-img {
   width: 3.5rem;
@@ -723,6 +744,8 @@
 
 /* ─── Achievement full grid (achievements page) ─ */
 .achievement-grid-full {
+  height: 12rem;
+  overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
@@ -747,15 +770,16 @@
 }
 
 .achievement-grid-card-tooltip {
-  min-width: 180px;
-  max-width: 240px;
+
+  min-width: 80px;
+  max-width: 120px;
   padding: 0.5rem 0.75rem;
 
   position: absolute;
-  left: 10%;
-  top: calc(0% - 3rem);
+  left: auto;
+  top: calc(0rem);
 
-  background: var(--bg);
+  background: var(--bg-trans2);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   color: var(--text);
@@ -764,13 +788,14 @@
   text-align: center;
   white-space: normal;
   overflow-wrap: break-word;
+  backdrop-filter: blur(0.2rem);
   box-shadow: 0 0.5rem 1rem var(--shadow-2);
 
   z-index: 10001;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateX(-50%) translateY(0.5rem);
+  transform: translateY(50%);
 
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
@@ -780,10 +805,10 @@
   height: 0.5rem;
 
   position: absolute;
-  left: calc(80%);
-  top: calc(98%);
+  left: calc(50%);
+  top: calc(50%);
 
-  background: var(--bg);
+  background: transparent;
   transform: translateX(-50%);
   rotate: 45deg;
 }
@@ -898,20 +923,6 @@
   pointer-events: auto;
 }
 
-.bubble-arrow {
-  width: 0.5rem;
-  height: 0.5rem;
-
-  position: absolute;
-  left: calc(88%);
-  top: calc(98%);
-
-  background: var(--bg);
-
-  transform: translateX(-50%);
-  rotate: 45deg;
-}
-
 .achievement-speech-bubble2 {
   width: calc(100% - 1.75rem);
   padding: 0.5rem 0.75rem;
@@ -930,19 +941,6 @@
   pointer-events: none;
 
   transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.bubble-arrow2 {
-  width: 0.5rem;
-  height: 0.5rem;
-
-  position: absolute;
-  left: calc(50%);
-  top: calc(50%);
-
-  background: var(--bg);
-  transform: translateX(-50%);
-  rotate: 45deg;
 }
 
 .bubble-content {
@@ -1748,23 +1746,8 @@
   }
 
   .profile.collapsed {
-    width: calc(100% - 2rem);
     min-height: 4.5rem;
-    padding: 0.5rem;
-    box-sizing: border-box;
-
-    position: fixed;
-    top: calc(0% + 1rem);
-    left: calc(0% + 1rem);
-
     background-color: var(--bg-trans);
-    border: 1px solid transparent;
-    border-radius: 1.5rem;
-
-    backdrop-filter: blur(0.5rem);
-    box-shadow: 0 0.5rem 1rem var(--shadow-1);
-
-    z-index: 9999;
   }
 
   /* profile-content is the anchor for the dropdown panel */
@@ -1806,26 +1789,18 @@
   .profile:not(.collapsed) .profile-content>*:not(.profile-set) {
     display: flex !important;
     padding: 4rem 0.5rem 0;
-
     max-height: calc(100% - 4rem);
     width: 100%;
-
     box-sizing: border-box;
-
     z-index: 1000;
-
     animation: profileDropDown 0.3s ease;
   }
 
   .profile:not(.collapsed) .profile-content>*:not(.profile-set, .profile-master) {
     padding: 0.5rem;
-
     height: fit-content;
     max-height: calc(100vh - 4rem);
-
     z-index: 100;
-
-    animation: profileDropDown 0.3s ease;
   }
 
   @keyframes profileDropDown {
@@ -1857,17 +1832,6 @@
     left: auto;
     top: calc(0rem);
     transform: translateY(50%);
-  }
-
-  .achievement-grid-tooltip-arrow {
-    left: calc(50%);
-    top: calc(50%);
-
-    background: transparent;
-  }
-
-  .achievement-grid-tooltip-arrow {
-    left: 50%;
   }
 
   .achievement-grid-card:hover .achievement-grid-card-tooltip {

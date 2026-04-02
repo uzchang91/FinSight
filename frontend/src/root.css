@@ -122,7 +122,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-trans);
+  background: var(--border);
   border-radius: 2rem;
 }
 
