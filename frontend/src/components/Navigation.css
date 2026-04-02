@@ -329,18 +329,6 @@
     z-index: 9999;
   }
 
-  .navigation.collapsed .nav-content {
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-    flex-direction: row;
-  }
-
-  .nav-content {
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-
-    flex-direction: row;
-    gap: 1rem;
-  }
-
   .nav-header {
     display: none;
   }
@@ -350,12 +338,14 @@
     visibility: hidden;
   }
 
-  .nav-wrapper {
+  .navigation.collapsed .nav-content,
+  .nav-content {
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
     flex-direction: row;
     gap: 1rem;
   }
 
-  .navigation.collapsed .nav-wrapper {
+  .nav-wrapper {
     flex-direction: row;
     gap: 1rem;
   }

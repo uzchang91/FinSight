@@ -60,7 +60,6 @@
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  align-items: start;
   gap: 1rem;
 
   overflow: visible;
@@ -260,6 +259,9 @@
   width: 2rem;
   height: 2rem;
   border-radius: 2rem;
+  min-width: 2rem;
+  flex-shrink: 0;
+  object-fit: cover;
 }
 
 .rank-point {

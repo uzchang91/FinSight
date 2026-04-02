@@ -632,7 +632,7 @@ const Dashboard = () => {
                             : (rankMember.overallRank || index + 1)}
                         </div>
                         <img
-                          src={rankMember.profileImage || profile}
+                          src={rankMember.profileImage2 || rankMember.profileImage || profile}
                           alt='account_image'
                           className='rank-profile'
                         />

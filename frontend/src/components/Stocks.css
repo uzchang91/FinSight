@@ -451,6 +451,7 @@
   color: var(--text-highlight);
 }
 
+.side-liked-actions,
 .side-stock-actions {
   max-height: 0;
 
@@ -466,29 +467,8 @@
   transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
+.side-liked-actions.flex,
 .side-stock-actions.flex {
-  max-height: 40px;
-
-  transform: translateY(0rem);
-  opacity: 1;
-  visibility: visible;
-}
-
-.side-liked-actions {
-  max-height: 0;
-
-  display: flex;
-  justify-content: flex-end;
-  visibility: hidden;
-  gap: 0.5rem;
-
-  transform: translateY(-1rem);
-  opacity: 0;
-
-  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
-}
-
-.side-liked-actions.flex {
   max-height: 40px;
 
   transform: translateY(0rem);
@@ -870,16 +850,13 @@
 }
 
 @media (max-width: 768px) {
-  .stocks-container {
-    padding: 1rem;
-  }
 
   .stocks-tab-group {
     flex-wrap: wrap;
   }
 
   .stocks-list-item {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: stretch;
   }
 
@@ -892,17 +869,11 @@
   }
 
   .stock-trade-btns {
-    width: 100%;
     justify-content: flex-end;
   }
 
   .chart-toolbar {
     align-items: flex-start;
-  }
-
-  .side-liked-actions {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .trade-btn.liked-buy {

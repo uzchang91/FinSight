@@ -369,9 +369,6 @@
   .league-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .ranking-container {
-    padding: 16px;
-  }
 
   .ranking-summary-card h1 {
     font-size: 1.8rem;
