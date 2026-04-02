@@ -695,18 +695,39 @@
   transform: translateX(-60%) translateY(0rem);
 }
 
-.achievement-recent-tooltip-arrow {
+.achievement-recent-tooltip-arrow,
+.achievement-grid-tooltip-arrow,
+.bubble-arrow,
+.bubble-arrow2 {
   width: 0.5rem;
   height: 0.5rem;
-
   position: absolute;
-  left: calc(80%);
-  top: calc(98%);
-
   background: var(--bg);
   transform: translateX(-50%);
   rotate: 45deg;
 }
+
+.achievement-recent-tooltip-arrow {
+  left: 80%;
+  top: 98%;
+}
+
+.achievement-grid-tooltip-arrow {
+  left: 50%;
+  top: 50%;
+  background: transparent;
+}
+
+.bubble-arrow {
+  left: 88%;
+  top: 98%;
+}
+
+.bubble-arrow2 {
+  left: 50%;
+  top: 50%;
+}
+
 
 .achievement-recent-img {
   width: 3.5rem;
@@ -795,7 +816,7 @@
 .achievement-grid-card:hover .achievement-grid-card-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(0%);
+  transform: translateX(-50%) translateY(-0.5rem);
 }
 
 .achievement-grid-img {
@@ -902,20 +923,6 @@
   pointer-events: auto;
 }
 
-.bubble-arrow {
-  width: 0.5rem;
-  height: 0.5rem;
-
-  position: absolute;
-  left: calc(88%);
-  top: calc(98%);
-
-  background: var(--bg);
-
-  transform: translateX(-50%);
-  rotate: 45deg;
-}
-
 .achievement-speech-bubble2 {
   width: calc(100% - 1.75rem);
   padding: 0.5rem 0.75rem;
@@ -934,19 +941,6 @@
   pointer-events: none;
 
   transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.bubble-arrow2 {
-  width: 0.5rem;
-  height: 0.5rem;
-
-  position: absolute;
-  left: calc(50%);
-  top: calc(50%);
-
-  background: var(--bg);
-  transform: translateX(-50%);
-  rotate: 45deg;
 }
 
 .bubble-content {
@@ -1305,7 +1299,6 @@
 }
 
 .point-history-list {
-  height: 76vh;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1763,13 +1756,6 @@
     left: calc(0% + 1rem);
 
     background-color: var(--bg-trans);
-    border: 1px solid transparent;
-    border-radius: 1.5rem;
-
-    backdrop-filter: blur(0.5rem);
-    box-shadow: 0 0.5rem 1rem var(--shadow-1);
-
-    z-index: 9999;
   }
 
   /* profile-content is the anchor for the dropdown panel */
@@ -1811,26 +1797,18 @@
   .profile:not(.collapsed) .profile-content>*:not(.profile-set) {
     display: flex !important;
     padding: 4rem 0.5rem 0;
-
     max-height: calc(100% - 4rem);
     width: 100%;
-
     box-sizing: border-box;
-
     z-index: 1000;
-
     animation: profileDropDown 0.3s ease;
   }
 
   .profile:not(.collapsed) .profile-content>*:not(.profile-set, .profile-master) {
     padding: 0.5rem;
-
     height: fit-content;
     max-height: calc(100vh - 4rem);
-
     z-index: 100;
-
-    animation: profileDropDown 0.3s ease;
   }
 
   @keyframes profileDropDown {
@@ -1862,17 +1840,6 @@
     left: auto;
     top: calc(0rem);
     transform: translateY(50%);
-  }
-
-  .achievement-grid-tooltip-arrow {
-    left: calc(50%);
-    top: calc(50%);
-
-    background: transparent;
-  }
-
-  .achievement-grid-tooltip-arrow {
-    left: 50%;
   }
 
   .achievement-grid-card:hover .achievement-grid-card-tooltip {

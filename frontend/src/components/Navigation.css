@@ -63,7 +63,9 @@
   cursor: pointer;
 }
 
-.collapse-button:hover {
+.collapse-button:hover,
+.nav-menu:hover,
+.nav-menu.active {
   box-shadow: 0 0.25rem 0 var(--primary);
 }
 
@@ -111,14 +113,6 @@
   transition: all 0.3s ease;
 }
 
-.nav-menu:hover {
-  box-shadow: 0 0.25rem 0 var(--primary);
-}
-
-.nav-menu.active {
-  box-shadow: 0 0.25rem 0 var(--primary);
-}
-
 .nav-line {
   display: flex;
   align-items: center;
@@ -151,6 +145,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.875rem;
+
+  transition: all 0.3s ease-out;
 }
 
 .billing-nav-button {
@@ -178,7 +174,7 @@
 }
 
 .billing-action-wrap:not(.premium):hover {
-  transform: translateY(-2px);
+  transform: translateY(-0.2rem);
   box-shadow: 0 0.25rem 0.5rem var(--shadow-1);
 }
 
@@ -190,20 +186,6 @@
   filter: none;
 
   transition: all 0.3s ease;
-}
-
-.billing-cancel-mini-btn {
-  font-size: 0.875rem;
-  background: transparent;
-  border: none;
-  color: var(--text-highlight);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.billing-cancel-mini-btn:hover {
-  color: var(--danger);
-  text-decoration: underline;
 }
 
 
@@ -292,14 +274,26 @@
 /* Billing collapses smoothly */
 .billing-action-wrap {
   overflow: hidden;
-  max-width: 300px;
+  max-height: 300px;
+  opacity: 1;
   transition:
-    max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s ease;
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
 }
 
 .navigation.collapsed .billing-action-wrap {
+  max-height: 3.5rem;
   max-width: 3.5rem;
+  opacity: 1;
+}
+
+/* Icon padding tightens */
+.icon-btn {
+  transition: padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navigation.collapsed .icon-btn {
+  padding: 0.75rem;
 }
 
 
@@ -307,7 +301,6 @@
    Tablet
 ========================= */
 @media (max-width: 1024px) {
-
   .navigation.collapsed,
   .navigation {
     width: calc(100% - 2rem);
@@ -338,7 +331,6 @@
     visibility: hidden;
   }
 
-  .navigation.collapsed .nav-content,
   .nav-content {
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     flex-direction: row;
@@ -374,14 +366,6 @@
    Mobile
 ========================= */
 @media (max-width: 768px) {
-
-  .nav-header {
-    display: none;
-  }
-
-  .nav-logo {
-    height: 1.9rem;
-  }
 
   .nav-line span {
     display: none;
