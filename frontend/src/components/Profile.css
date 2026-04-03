@@ -1117,6 +1117,7 @@
 
 .title-item {
   padding: 0.5rem;
+  padding-left: 1rem;
 
   position: relative;
   display: flex;
@@ -1299,6 +1300,7 @@
 }
 
 .point-history-list {
+  max-height: 44rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1382,15 +1384,6 @@
 .profile-account-icon {
   display: none;
 }
-
-/* ─── Overflow overrides ─────────────────────── */
-/* .profile-content,
-.profile-stock,
-.title-list,
-.title-item,
-.title-item-left {
-  overflow: visible !important;
-} */
 
 /* ─── Investment modal ───────────────────────── */
 .profile-investment-modal-overlay {
@@ -1861,7 +1854,6 @@
   }
 
   .achievement-grid-full {
-    height: 10rem;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     overflow-y: auto;
     overflow-x: hidden;
@@ -1877,10 +1869,22 @@
   .point-history-list {
     height: 41rem;
   }
+
+  .title-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+  }
 }
 
 /* ─── Responsive: max-width 768px ───────────── */
 @media (max-width: 768px) {
+
+  .title-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
 
   .profile-investment-sections {
     grid-template-columns: repeat(2, 1fr);

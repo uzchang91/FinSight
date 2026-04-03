@@ -9,6 +9,7 @@ import defaultProfile from '../assets/chicken running machine.png'
 import { api } from '../config/api.js'
 import { getAchievementIcon } from '../utils/achievementIconMap'
 import close from '../assets/icons/close.svg'
+import premium from '../assets/icons/premium.svg'
 
 const extractArrayData = (payload) => {
   if (Array.isArray(payload)) return payload
@@ -750,7 +751,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
     membershipType === 'premium_member' ||
     membershipType === 'paid'
 
-  const membershipLabel = isPremium ? '👑' : 'Free'
+  const membershipLabel = isPremium ? <><img src={premium} alt='구독중' /> 멤버</> : 'Free'
 
   const openEdit = () => {
     setEditNickname(member?.nickname || '')
