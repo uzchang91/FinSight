@@ -1860,7 +1860,7 @@
   }
 
   .achievement-progress-tooltip-grid {
-    height: 6rem;
+    height: 8rem;
     overflow-y: auto;
     overflow-x: hidden;
     grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
