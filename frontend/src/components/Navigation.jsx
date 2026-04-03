@@ -163,35 +163,37 @@ const Navigation = ({
                 <span>FAQ</span>
               </div>
             </li>
+            <li>
+              <div className='billing-nav'>
+                <div className='billing-action-wrap'>
+                  <button
+                    type='button'
+                    className={`billing-nav-button ${isPremium ? 'disabled' : ''}`}
+                    onClick={() => {
+                      if (isMembershipLoaded && !isPremium) {
+                        setActiveMenu('Billing')
+                      } else {
+                        handleCancel()
+                      }
+                    }}
+                  >
+                    {!isMembershipLoaded
+                      ? '확인 중...'
+                      : isPremium
+                        ? '구독 취소'
+                        : (
+                          <>
+                            <img src={card} alt='결제' className='icons' />
+                            <span>구독하기</span>
+                          </>
+                        )}
+                  </button>
+                </div>
+              </div>
+            </li>
           </ul>
         </div>
 
-        <div className='billing-nav'>
-          <div className='billing-action-wrap'>
-            <button
-              type='button'
-              className={`billing-nav-button ${isPremium ? 'disabled' : ''}`}
-              onClick={() => {
-                if (isMembershipLoaded && !isPremium) {
-                  setActiveMenu('Billing')
-                } else {
-                  handleCancel()
-                }
-              }}
-            >
-              {!isMembershipLoaded
-                ? '확인 중...'
-                : isPremium
-                  ? '구독 취소'
-                  : (
-                    <>
-                      <img src={card} alt='결제' className='icons' />
-                      <span>구독하기</span>
-                    </>
-                  )}
-            </button>
-          </div>
-        </div>
       </nav>
     </aside>
   )
