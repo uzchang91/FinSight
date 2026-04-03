@@ -204,6 +204,7 @@
   height: fit-content;
   padding: 0.75rem;
   overflow: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -213,7 +214,7 @@
   transition: all 0.3s ease;
 }
 
-.arrow { 
+.arrow {
   padding: 0 0.5rem;
   transition: all 0.3s ease;
 }
@@ -235,7 +236,7 @@
 
 .education-accordion-item.locked:hover .education-lock-hover-msg {
   opacity: 1;
-  transform: translateY(0px);
+  transform: translateY(0px) translateX(0%);
 }
 
 .education-accordion-header {
@@ -251,9 +252,10 @@
   cursor: pointer;
 }
 
-.education-accordion-item.locked > .education-accordion-header {
-  display: grid;
-  grid-template-columns: 2fr 2fr 2.5rem;
+.education-accordion-item.locked>.education-accordion-header {
+  display: flex;
+  justify-content: space-between;
+  /* grid-template-columns: 2fr 2fr 2.5rem; */
 }
 
 .education-header-main {
@@ -290,6 +292,7 @@
 }
 
 .education-lesson-title {
+  text-align: start;
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text);
@@ -331,11 +334,21 @@
 }
 
 .education-lock-hover-msg {
-  text-align: start;
+  height: 70px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+
+  border-radius: 1.5rem;
+  background: linear-gradient(90deg, transparent, var(--text-trans), transparent);
   font-size: 0.875rem;
-  color: var(--text-highlight);
+  color: var(--bg);
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(4px) translateX(0%);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -524,6 +537,12 @@
 }
 
 @media (max-width: 1024px) {
+
+  .education-lock-hover-msg {
+    height: 70px;
+    width: calc(100% - 2rem);
+    left: 1rem;
+  }
 
   .education-filter-group.right {
     justify-content: flex-start;

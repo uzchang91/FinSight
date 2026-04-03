@@ -709,7 +709,7 @@ const Dashboard = () => {
                     <p className='numbers'>{stock.quantity}</p>
                     <p className='numbers'>{formatNumber(stock.principal)}pt</p>
                     <p className={`numbers 
-                        ${Number(stock.myChangeRate || stock.myChangeRate || 0) >= 0
+                        ${Number(stock.myChangeRate || 0) >= 0
                         ? 'gain'
                         : 'loss'
                       }`}>

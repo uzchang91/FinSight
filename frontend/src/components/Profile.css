@@ -1826,7 +1826,7 @@
   }
 
   .achievement-grid-card-tooltip {
-    min-width: 100px;
+    min-width: 90px;
     max-width: 150px;
     background: var(--bg-trans2);
     backdrop-filter: blur(0.2rem);
