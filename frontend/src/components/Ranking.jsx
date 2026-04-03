@@ -6,7 +6,7 @@ import silver from '../assets/icons/ranked/silver.png'
 import gold from '../assets/icons/ranked/gold.png'
 import diamond from '../assets/icons/ranked/diamond.png'
 
-const API_BASE_URL = 'http://localhost:5000'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 const getAccessToken = () => {
   return localStorage.getItem('token') || ''
@@ -164,7 +164,7 @@ const Ranking = () => {
                           </div>
 
                           <span className='league-score'>
-                            {Number(row.points || 0).toLocaleString('ko-KR')}pt
+                            {Number(row.totalScore || 0).toLocaleString('ko-KR')}pt
                           </span>
                         </li>
                       )

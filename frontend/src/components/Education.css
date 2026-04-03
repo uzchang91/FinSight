@@ -334,7 +334,7 @@
 }
 
 .education-lock-hover-msg {
-  height: 70px;
+  height: 100%;
   width: 100%;
 
   display: flex;
@@ -344,7 +344,7 @@
   left: 0;
 
   border-radius: 1.5rem;
-  background: linear-gradient(90deg, transparent, var(--text-trans), transparent);
+  background: linear-gradient(90deg, transparent 0%, var(--text-trans) 25%, var(--text-trans) 75%, transparent 100%);
   font-size: 0.875rem;
   color: var(--bg);
   opacity: 0;
@@ -537,12 +537,6 @@
 }
 
 @media (max-width: 1024px) {
-
-  .education-lock-hover-msg {
-    height: 70px;
-    width: calc(100% - 2rem);
-    left: 1rem;
-  }
 
   .education-filter-group.right {
     justify-content: flex-start;

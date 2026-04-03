@@ -9,7 +9,10 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  
+
+  timezone: "+09:00",
+  dateStrings: true,
+
   // Keep connections alive — prevents ECONNRESET on idle connections
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
