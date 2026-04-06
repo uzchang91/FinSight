@@ -1,0 +1,192 @@
+/* 대시보드 상단에 배치될 하얀색 상자 */
+.news-ticker-container {
+  max-width: 100%;
+  height: fit-content;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  box-sizing: border-box;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 1rem;
+
+  background-color: var(--bg); /* 하얀 배경 */
+  border: 1px solid var(--border); /* 하단 경계선 */
+  border-radius: 1.5rem; /* 둥근 모서리 */
+  
+  overflow: hidden; /* 영역 밖으로 나가는 글자 숨김 */
+}
+
+/* 로딩 중 스타일 */
+.news-ticker-container.loading {
+  justify-content: center;
+  color: var(--text-highlight);
+  font-size: 0.875rem;
+}
+
+/* 뉴스 콘텐츠 영역 */
+.news-content {
+  white-space: nowrap;
+  overflow-x: hidden;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  animation: newsFadeIn 0.5s ease-out;
+}
+
+/* 애니메이션 정의 */
+@keyframes newsFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* [출처] 부분 스타일 (이미지 2번처럼 파란색 계열) */
+.news-source {
+  font-weight: 600;
+  color: var(--primary); /* 신뢰감 있는 파란색 */
+  font-size: 1rem;
+  flex-shrink: 0; /* 출처 이름이 찌그러지지 않게 방어 */
+}
+
+/* 제목 부분 스타일 (클릭 가능) */
+.news-title {
+  white-space: nowrap;
+
+  font-weight: 600;
+  color: var(--text); /* 어두운 회색 */
+  font-size: 1rem;
+  text-decoration: none; /* 밑줄 없앰 */
+  cursor: pointer;
+  
+  /* 🟢 글자가 상자보다 길면 '...'으로 줄임 처리 (한 줄 유지) */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 마우스를 올렸을 때만 밑줄 표시 */
+.news-title:hover {
+  text-decoration: underline;
+  color: var(--text);
+}
+
+/* ====================================
+   🟢 추가: 전체보기 버튼 & 모달 창 디자인
+   ==================================== */
+
+/* 전체보기 버튼 */
+.news-all-btn {
+  padding: 0.5rem 0.75rem;
+
+  flex-shrink: 0;
+
+  background: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.news-all-btn:hover {
+  background: var(--primary-highlight2);
+  color: var(--primary);
+}
+
+/* 팝업창 배경 어둡게 */
+.news-modal-overlay {
+  position: fixed;
+  inset: 0; /* top, left, right, bottom을 모두 0으로 묶음 */
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* 내부 팝업을 상하좌우 정중앙에 고정 (Flex 없이 가능) */
+  background: var(--text-trans);
+  backdrop-filter: blur(0.5rem);
+}
+
+/* 팝업창 본체 */
+.news-modal-content {
+  background: var(--bg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.5rem;
+  box-shadow: 0 0.5rem 1rem var(--shadow-1);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 팝업창 헤더 */
+.news-modal-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg);
+}
+
+.news-modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 팝업창 리스트 영역 */
+.news-modal-list {
+  padding: 1rem;
+
+  overflow-y: auto; /* 리스트가 길어지면 스크롤 생성 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.news-modal-item {
+  padding: 1rem;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+
+  text-decoration: none;
+  
+  transition: all 0.3s;
+}
+
+.news-modal-item:hover {
+  background: var(--primary-highlight);
+  border-color: var(--border-prim);
+}
+
+.news-modal-source {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.news-modal-title {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}

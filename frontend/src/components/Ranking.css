@@ -1,0 +1,353 @@
+.ranking-container {
+  min-width: 0;
+  min-height: 100vh;
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ranking-summary-card,
+.league-card,
+.ranking-guide-card {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+}
+
+.ranking-summary-card {
+  padding: 1rem 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ranking-summary-card h1 {
+  font-size: 2.125rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ranking-summary-card strong {
+  font-size: 2.25rem;
+  font-weight: 800;
+}
+
+.ranking-summary-card p {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.summary-highlight {
+  color: var(--primary);
+}
+
+.ranking-empty-box {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: var(--primary-highlight);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+}
+
+.league-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.league-card {
+  min-height: 540px;
+  max-height: 600px;
+
+  overflow: hidden;
+  border-top-left-radius: 1.75rem;
+  border-top-right-radius: 1.5rem;
+}
+
+.league-emblem-wrap {
+  width: 100%;
+  height: 3.5rem;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+
+  background-color: var(--primary-highlight);
+  border-bottom: 1px solid var(--border);
+  border-radius: 2.25rem;
+  border-top-right-radius: 1.5rem;
+  border-bottom-right-radius: 0;
+}
+
+.league-emblem-wrap>span {
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.league-emblem-badge {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: contain;
+}
+
+.league-user-list {
+  list-style: none;
+
+  height: fit-content;
+  max-height: 490px;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.league-user-item {
+  padding: 0.5rem 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  border-radius: 0.75rem;
+}
+
+.pinned-my-row {
+  padding: 0.5rem 0;
+  margin: 0 0.5rem;
+  background-color: var(--warning-highlight);
+  border: 1px solid var(--warning);
+  border-radius: 0.75rem;
+}
+
+.league-rank,
+.league-score {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.league-rank {
+  min-width: 1.5rem;
+  max-width: fit-content;
+  padding-left: 0.5rem;
+}
+
+.league-user-main {
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.league-profile {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.league-name {
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.league-score {
+  padding-right: 0.5rem;
+}
+
+.ranking-guide-card {
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ranking-guide-card>h2 {
+  padding: 1rem 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.ranking-guide-text {
+  padding-left: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* =========================================
+   📊 랭킹 가이드 보강 스타일
+   ========================================= */
+.guide-content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.guide-block {
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.guide-block h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* 티어 리스트 스타일 */
+.guide-tier-list {
+  list-style: none;
+  padding: 0 0.5rem;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.guide-tier-list li {
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.tier-name {
+  font-size: 1rem;
+  color: var(--text);
+
+}
+
+/* 포인트 획득 방법 리스트 스타일 */
+.guide-point-list {
+  list-style: none;
+  padding-left: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.guide-point-list li {
+  position: relative;
+  padding: 0.5rem 0.75rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  background: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
+  border-radius: 0.75rem;
+
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.guide-point-list li::before {
+  content: '✔';
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.guide-point-list strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+@media (max-width: 1600px) {
+
+  .league-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1280px) {
+  
+  .league-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .league-card {
+    min-height: 300px;
+    max-height: 500px;
+  }
+
+  .league-user-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .guide-tier-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+
+  .league-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ranking-summary-card h1 {
+    font-size: 1.8rem;
+  }
+
+  .ranking-summary-card strong {
+    font-size: 1.9rem;
+  }
+
+  .ranking-guide-formula,
+  .ranking-guide-example {
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+
+  .league-grid {
+    grid-template-columns: 1fr;
+  }
+}
