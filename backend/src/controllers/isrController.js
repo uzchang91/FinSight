@@ -4,7 +4,14 @@ try {
   db = require("../../config/db");
 } catch (err) {
   console.warn("[ISR] DB 모듈 로드 실패:", err.message);
-};
+}
+
+const {
+  calculateISR,
+  getISRGrade,
+  getISRSummary,
+} = require("../engines/isrEngine");
+const achievementService = require("../services/achievementService");
 
 function success(res, message, data = null, status = 200) {
   return res.status(status).json({
@@ -27,10 +34,10 @@ function extractMemberId(req) {
 
   return Number(
     req.user.member_id ||
-    req.user.id ||
-    req.user.memberId ||
-    req.user.userId ||
-    0
+      req.user.id ||
+      req.user.memberId ||
+      req.user.userId ||
+      0
   ) || null;
 }
 

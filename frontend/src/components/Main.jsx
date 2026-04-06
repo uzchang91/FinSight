@@ -9,6 +9,7 @@ import Stocks from './Stocks'
 import Ranking from './Ranking'
 import Billing from './Billing'
 import FAQPage from './FAQPage'
+import { api } from '../config/api'
 
 const Main = () => {
   const VALID_MENUS = [
@@ -110,14 +111,7 @@ const Main = () => {
       if (!currentToken) return
 
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/refresh`,
-          {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${currentToken}` },
-          }
-        )
-        const data = await res.json()
+        const data = await api.post('/api/auth/refresh', {})
         const newToken = data?.data?.token
         if (newToken) {
           localStorage.setItem('token', newToken)
@@ -128,6 +122,21 @@ const Main = () => {
     }, 45 * 60 * 1000) // 45분마다
 
     return () => clearInterval(intervalId)
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1440) {
+        setNavCollapsed(true)
+        setProfileCollapsed(true)
+      }
+      // Don't touch anything when expanding — let the user control that
+    }
+
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const fetchMembership = async (token) => {

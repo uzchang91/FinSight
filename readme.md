@@ -1,6 +1,6 @@
 # FinSight - 감이 아닌 데이터로 실력을 쌓는 투자 교육용 플랫폼
 
-FinSight는 복잡한 주식 학습을 재미있는 게임 경험으로 전환하는 차세대 에듀핀테크(EdTech + FinTech) 플랫폼입니다. 
+금융 학습과 투자 시뮬레이션을 통해 성장하는 플랫폼 FinSight 입니다. 
 
 ## 프로젝트 소개
 
@@ -42,13 +42,30 @@ FinSight만의 핵심 차별화 요소로, 운에 의한 수익이 아닌 실제
 ## 프로젝트 구조
 ```
 FinSight/
-├── frontend/           # React SPA (차트, 캔들, 대시보드 UI)
-│    ├── src/components 
-│    └── src/assets     # 메달 및 업적 아이콘 SVG
-├── backend/            # Node.js 서버
-│    ├── api/           # 인증, 주식 데이터, 퀴즈 관련 API
-│    ├── services/      # ISR 계산 로직 및 기술 지표 연산
-│    └── utils/         # Yahoo Finance & Groq API 연동 모듈
+backend
+├─ config/
+│  ├─ db.js                # MySQL DB 연결 설정
+│  └─ devUser.js           # 개발용 사용자 설정
+│
+├─ data/
+│  ├─ devRankData.js       # 랭킹 목데이터
+│  ├─ memberData.js        # 회원 목데이터
+│  └─ stockData.js         # 주식 목데이터
+│
+├─ middleware/
+│  └─ devAuth.js           # 개발용 인증 미들웨어
+│
+├─ routes/
+│  ├─ router.js               # 기본 접속 및 테스트 라우터
+│  ├─ loginRouter.js          # 로그인 / 인증 (팀원 담당)
+│  ├─ devRouter.js            # 개발용 목데이터 API
+│  ├─ educationRouter.js      # 학습 콘텐츠 API
+│  ├─ quizRouter.js           # 퀴즈 API
+│  ├─ stockRouter.js          # 주식 API
+│  ├─ achievementsRouter.js   # 업적 / 칭호 API
+│  └─ leaderBoardRouter.js    # 랭킹 API
+├─ server.js
+└─ package.json
 └── README.md
 ```
 ## 데이터 처리 구조

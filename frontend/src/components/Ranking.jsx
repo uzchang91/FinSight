@@ -5,8 +5,12 @@ import bronze from '../assets/icons/ranked/bronze.png'
 import silver from '../assets/icons/ranked/silver.png'
 import gold from '../assets/icons/ranked/gold.png'
 import diamond from '../assets/icons/ranked/diamond.png'
+import { api } from '../config/api'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const toHttpsImage = (url) => {
+  if (!url) return ''
+  return url.startsWith('http://') ? url.replace('http://', 'https://') : url
+}
 
 const getAccessToken = () => {
   return localStorage.getItem('token') || ''
@@ -43,23 +47,8 @@ const Ranking = () => {
           throw new Error('UNAUTHORIZED')
         }
 
-        const res = await fetch(`${API_BASE_URL}/api/ranking`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if (res.status === 401) {
-          throw new Error('UNAUTHORIZED')
-        }
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`)
-        }
-
-        const result = await res.json()
-        const data = result?.data || {}
+        const result = await api.get('/api/ranking')
+        const data = result?.data?.data ?? result?.data ?? result
 
         setSeasonName(data.seasonName || '포인트 랭킹')
         setCurrentUserId(data.currentUserId || null)
@@ -156,7 +145,7 @@ const Ranking = () => {
                           <div className='league-user-main'>
                             <span className='league-rank'>{row.leagueRank}</span>
                             <img
-                              src={row.profileImage || defaultProfile}
+                              src={toHttpsImage(row.profileImage) || defaultProfile}
                               alt={`${row.nickname} 프로필`}
                               className='league-profile'
                             />
@@ -164,7 +153,7 @@ const Ranking = () => {
                           </div>
 
                           <span className='league-score'>
-                            {Number(row.totalScore || 0).toLocaleString('ko-KR')}pt
+                            {Number(row.leaguePoint || 0).toLocaleString('ko-KR')}pt
                           </span>
                         </li>
                       )
