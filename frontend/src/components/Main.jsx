@@ -124,21 +124,6 @@ const Main = () => {
     return () => clearInterval(intervalId)
   }, [])
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 1376) {
-        setNavCollapsed(true)
-        setProfileCollapsed(true)
-      }
-      // Don't touch anything when expanding — let the user control that
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
   const fetchMembership = async (token) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/billing/membership`, {
@@ -206,7 +191,7 @@ const Main = () => {
 
     switch (activeMenu) {
       case 'Dashboard':
-        return <Dashboard onNavigate={handleMenuChange}/>
+        return <Dashboard onNavigate={handleMenuChange} />
       case 'Education':
         return <Education />
       case 'Quiz':
@@ -230,11 +215,7 @@ const Main = () => {
   }
 
   return (
-    <div className={`main-body
-      ${navCollapsed ? ' nav-collapsed' : ''}
-      ${profileCollapsed ? 'profile-collapsed' : ''}`
-    }>
-
+    <>
       <aside className='navigation-area'>
         <Navigation
           setActiveMenu={handleMenuChange}
@@ -245,18 +226,18 @@ const Main = () => {
           role={role}
         />
       </aside>
+      <div className={`main-body ${profileCollapsed ? 'profile-collapsed' : ''}`}>
 
-      <main className='content-area'>
         {renderContent()}
-      </main>
 
+      </div>
       <aside className='profile-area'>
         <Profile
           collapsed={profileCollapsed}
           setCollapsed={setProfileCollapsed}
         />
       </aside>
-    </div>
+    </>
   )
 }
 

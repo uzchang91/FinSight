@@ -10,7 +10,7 @@
   --warning: #FFAD14;
 
   --border-prim: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
-  --border: color-mix(in oklab, var(--text) 12%, var(--bg)88%);
+  --border: color-mix(in oklab, var(--bg)88%, var(--text) 12%);
 
   --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
@@ -39,8 +39,9 @@
   --btn-gd2: linear-gradient(135deg, color-mix(in oklab, var(--primary), transparent 0%) 100%, color-mix(in oklab, var(--danger), transparent 0%)) 0;
   --btn-prim: linear-gradient(90deg, var(--primary-70) 25%, hsla(225, 100%, 88%, 0.70) 100%);
   --btn-warn: linear-gradient(135deg, var(--warning), color-mix(in oklab, var(--warning), var(--danger) 40%));
-  --bg-grad: linear-gradient(180deg, var(--bg-trans2), var(--bg-trans));
+  --bg-grad: linear-gradient(180deg, var(--bg-trans2), var(--bg-trans3));
   --bg-trans-gd: linear-gradient(180deg, var(--bg) 50%, transparent);
+  --bg-trans-gd2: radial-gradient(ellipse 50% 200% at center, var(--bg), transparent);
 
   --shadow-1: color-mix(in oklab, var(--text) 24%, transparent);
   --shadow-2: color-mix(in oklab, var(--text) 12%, transparent);
@@ -51,12 +52,22 @@
   font-family: 'Pretendard', 'Spoqa Han Sans Neo', 'sans-serif';
   margin: 0;
   padding: 0;
+  font-variant-numeric: tabular-nums;
   word-break: keep-all;
 }
 
 body {
   margin: auto;
   background: var(--bg);
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+  padding: 1.5rem 1rem 0 1rem;
 }
 
 .icons {
@@ -151,7 +162,7 @@ input[type=number] {
     border-radius: 0;
     background: transparent
   }
-  
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;

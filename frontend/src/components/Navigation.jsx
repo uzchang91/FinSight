@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Navigation.css'
-import LongLogo  from '../assets/finsight.svg?react'
+import LongLogo from '../assets/finsight.svg?react'
 import Dashboard from '../assets/icons/dashboard.svg?react'
 import Collapse_menu from '../assets/icons/collapse_menu.svg?react'
 import Education from '../assets/icons/education.svg?react'
@@ -70,128 +70,99 @@ const Navigation = ({
   }
 
   return (
-    <aside className={`navigation${collapsed ? ' collapsed' : ''}`}>
+    <aside className='navigation'>
       <nav className='nav-content'>
-        <div className='nav-wrapper'>
-          <div className='nav-header'>
-            <button
-              type='button'
-              className='nav-logo-button'
-              onClick={() => setActiveMenu('Dashboard')}
-              aria-label='대시보드로 이동'
-            >
-              <LongLogo alt='logo' className='nav-logo' />
-            </button>
 
-            <button
-              type='button'
-              className='collapse-button'
-              onClick={() => {
-                const next = !collapsed
-                localStorage.setItem('nav_collapsed', next)
-                setCollapsed(next)
-              }}
-              aria-label={collapsed ? '메뉴 펼치기' : '메뉴 접기'}
-            >
-              <Collapse_menu alt='collapse menu' className='collapse-menu' />
-            </button>
-          </div>
+        <LongLogo alt='logo' className='nav-logo' />
+        
+        <div className='nav-wrapper'>
 
           <ul className='nav-list'>
             <li
               className={`nav-menu ${activeMenu === 'Dashboard' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Dashboard')}
-              title={collapsed ? '대시보드' : undefined}
+              title='대시보드'
             >
               <div className='nav-line'>
                 <Dashboard alt='Dashboard' className='icons icon-btn' />
-                <span>대시보드</span>
               </div>
             </li>
 
             <li
               className={`nav-menu ${activeMenu === 'Education' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Education')}
-              title={collapsed ? '교육실' : undefined}
+              title='교육실'
             >
               <div className='nav-line'>
                 <Education alt='Education' className='icons icon-btn' />
-                <span>교육실</span>
               </div>
             </li>
 
             <li
               className={`nav-menu ${activeMenu === 'Quiz' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Quiz')}
-              title={collapsed ? '퀴즈' : undefined}
+              title='퀴즈'
             >
               <div className='nav-line'>
                 <Quiz alt='퀴즈' className='icons icon-btn' />
-                <span>퀴즈</span>
               </div>
             </li>
 
             <li
               className={`nav-menu ${activeMenu === 'Stocks' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Stocks')}
-              title={collapsed ? '주식' : undefined}
+              title='주식'
             >
               <div className='nav-line'>
                 <Stocks alt='주식' className='icons icon-btn' />
-                <span>주식</span>
               </div>
             </li>
 
             <li
               className={`nav-menu ${activeMenu === 'Ranking' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Ranking')}
-              title={collapsed ? '랭킹' : undefined}
+              title='랭킹'
             >
               <div className='nav-line'>
                 <Rank alt='Ranking' className='icons icon-btn' />
-                <span>랭킹</span>
               </div>
             </li>
 
             <li
               className={`nav-menu ${activeMenu === 'FAQ' ? 'active' : ''}`}
               onClick={() => setActiveMenu('FAQ')}
-              title={collapsed ? 'FAQ' : undefined}
+              title='FAQ'
             >
               <div className='nav-line'>
                 <Faq alt='FAQ' className='icons icon-btn' />
-                <span>FAQ</span>
-              </div>
-            </li>
-            <li>
-              <div className='billing-nav'>
-                <div className='billing-action-wrap'>
-                  <button
-                    type='button'
-                    className={`billing-nav-button ${isPremium ? 'disabled' : ''}`}
-                    onClick={() => {
-                      if (isMembershipLoaded && !isPremium) {
-                        setActiveMenu('Billing')
-                      } else {
-                        handleCancel()
-                      }
-                    }}
-                  >
-                    {!isMembershipLoaded
-                      ? '확인 중...'
-                      : isPremium
-                        ? '구독 취소'
-                        : (
-                          <>
-                            <Card alt='결제' className='icons' />
-                            <span>구독하기</span>
-                          </>
-                        )}
-                  </button>
-                </div>
               </div>
             </li>
           </ul>
+        </div>
+        <div className='billing-nav'>
+          <div className='billing-action-wrap'>
+            <button
+              type='button'
+              className={`billing-nav-button ${isPremium ? 'disabled' : ''}`}
+              onClick={() => {
+                if (isMembershipLoaded && !isPremium) {
+                  setActiveMenu('Billing')
+                } else {
+                  handleCancel()
+                }
+              }}
+            >
+              {!isMembershipLoaded
+                ? '확인 중...'
+                : isPremium
+                  ? '구독 취소'
+                  : (
+                    <>
+                      <Card alt='결제' className='icons' />
+                    </>
+                  )}
+            </button>
+          </div>
         </div>
 
       </nav>

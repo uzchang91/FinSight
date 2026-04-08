@@ -1731,8 +1731,9 @@
 }
 
 /* ─── profile-set-extra: hidden when desktop sidebar is collapsed ─── */
-.profile-set-extra--hidden {
+.profile-set-extra.profile-set-extra--hidden {
   display: none;
+  visibility: hidden;
 }
 
 .profile-set-extra {

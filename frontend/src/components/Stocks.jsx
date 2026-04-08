@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import close from '../assets/icons/close.svg'
-import minusD from '../assets/icons/minus_default.svg'
-import plusD from '../assets/icons/plus_default.svg'
+import Close from '../assets/icons/close.svg?react'
+import MinusD from '../assets/icons/minus_default.svg?react'
+import PlusD from '../assets/icons/plus_default.svg?react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -850,7 +850,7 @@ const Stocks = () => {
               <div className='trade-modal-header'>
                 <h2>{tradeModal.stock.name}</h2>
                 <button className='trade-modal-close' onClick={closeTradeModal}>
-                  <img src={close} alt="닫기" />
+                  <Close alt="닫기" />
                 </button>
               </div>
 
@@ -868,7 +868,7 @@ const Stocks = () => {
                       onClick={() => setTradeQuantity((prev) => Math.max(0, Number(prev) - 1))}
                       disabled={tradeLoading}
                     >
-                      <img src={minusD} alt="빼기" />
+                      <MinusD alt="빼기" />
                     </button>
                     <input
                       type='number'
@@ -895,7 +895,7 @@ const Stocks = () => {
                       onClick={() => setTradeQuantity((prev) => Number(prev) + 1)}
                       disabled={tradeLoading}
                     >
-                      <img src={plusD} alt="더하기" />
+                      <PlusD alt="더하기" />
                     </button>
                   </div>
                 </div>

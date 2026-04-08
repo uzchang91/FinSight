@@ -1,32 +1,3 @@
-body {
-  background: linear-gradient(135deg,
-      var(--bg),
-      var(--primary-highlight2),
-      var(--warning));
-  background-size: 200% 200%;
-  animation: gradientMove 6s ease infinite;
-}
-
-@keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 0%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.white-section {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg-grad);
-}
-
 /* JOIN */
 .landing-header {
   width: 1280px;
@@ -64,6 +35,7 @@ body {
 }
 
 .landing-logo2 {
+  width: fit-content;
   height: 2rem;
 
   display: none;
@@ -96,10 +68,11 @@ body {
   gap: 0.5rem;
 
   border: none;
+  border-radius: 0.75rem;
   background-color: transparent;
   font-size: 1rem;
   font-weight: 500;
-  box-shadow: 0 0 0 var(--primary);
+  box-shadow: inset 0 0 0 var(--bg);
 
   cursor: pointer;
 
@@ -107,7 +80,8 @@ body {
 }
 
 .landing-navigation-menu:hover {
-  box-shadow: 0 0.25rem 0 var(--primary);
+  box-shadow:
+    inset 0 0 1rem var(--primary);
 }
 
 .landing-menu {
@@ -117,15 +91,22 @@ body {
   background: transparent;
 }
 
-.floating-nav {
+.floating-nav,
+.floating-nav2 {
   width: fit-content;
   box-sizing: border-box;
   display: flex;
   gap: 1rem;
 }
 
+.floating-nav2 {
+  width: 100%;
+}
+
 .kakao_btn,
-.google_btn {
+.kakao_btn2,
+.google_btn,
+.google_btn2 {
   width: 100%;
   padding: 0rem 1.5rem;
   border-radius: 0.75rem;
@@ -138,27 +119,33 @@ body {
   cursor: pointer;
 }
 
-.kakao_btn {
+.kakao_btn,
+.kakao_btn2 {
   background-color: #FEE500;
   border: none;
 }
 
-.google_btn {
-  background-color: white;
+.google_btn,
+.google_btn2 {
+  background-color: var(--bg);
   border: 1px solid var(--border);
 }
 
-.kakao_btn img,
-.google_btn img {
-  width: 1.25rem;
-  height: 1.25rem;
-  object-fit: contain;
+.kakao_btn2,
+.google_btn2 {
+  padding: 1rem 1.5rem;
+}
+
+.white-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-trans-gd2);
 }
 
 .container {
   max-width: 1280px;
   padding: 1.5rem;
-  margin: auto;
+  padding-top: 12rem;
   box-sizing: border-box;
 
   display: flex;
@@ -168,20 +155,24 @@ body {
   gap: 9rem;
 }
 
-.title {
-  margin-top: 12rem;
+.landing-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
 
+.title {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1.5rem;
-  text-align: center
+  text-align: center;
 }
 
 .hero-title {
   font-size: 4.5rem;
   letter-spacing: -2px;
-  margin-top: 20px;
 }
 
 .text-gradient {
@@ -193,8 +184,6 @@ body {
 }
 
 .title-description {
-  margin: 1.5rem 0;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -202,30 +191,8 @@ body {
 
   font-size: 1.4rem;
   font-weight: 600;
+  line-height: 1.5;
   text-align: center;
-}
-
-.title-description p {
-  line-height: 2;
-}
-
-.intro-container,
-.ad-title {
-  box-sizing: border-box;
-  background-color: var(--bg-trans3);
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(0.5rem);
-  box-shadow: 0 0.5rem 1rem var(--shadow-2);
-  line-height: 200%;
-}
-
-.intro-container {
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .ad-title {
@@ -233,72 +200,21 @@ body {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
-}
-
-.image-container {
-  width: fit-content;
-  height: auto;
-
-  position: relative;
-}
-
-.image-cover {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 64%;
-  height: 100%;
-  background-image: linear-gradient(90deg, transparent, var(--bg));
-}
-
-.landing-idk {
-  max-height: 300px;
-  display: flex;
-
-  border-radius: 1.5rem 0 0 1.5rem;
-  object-fit: cover;
-}
-
-.intro-title {
-  padding: 1.5rem;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.intro-title h2 {
-  font-size: 2rem;
 }
 
 .intro-description {
-  padding-left: 1rem;
   width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 
   font-size: 1.2rem;
   font-weight: 500;
-  line-height: 200%;
-}
-
-.intro-description ul {
-  padding-left: 1.5rem;
-}
-
-.ad-grid {
-  width: 100%;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9rem;
-}
-
-.span-first-two {
-  grid-column: 1 / 3;
-}
-
-.span-last-two {
-  grid-column: 2 / 4;
+  line-height: 1.3;
 }
 
 .ad-title h2 {
@@ -311,7 +227,7 @@ body {
   padding: 1.5rem;
 
   border-radius: 1.5rem;
-  background-color: var(--bg-trans);
+  background-color: var(--bg-trans3);
   border: 1px solid var(--border);
   box-sizing: border-box;
 
@@ -339,15 +255,6 @@ body {
 
 .landing-faq-header h2 {
   font-size: 2rem;
-}
-
-.landing-faq-top-btn {
-  border: 1px solid var(--border);
-  background: var(--bg);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .landing-faq-toolbar {
@@ -509,7 +416,7 @@ body {
 .landing-faq-question-text {
   font-size: 1rem;
   font-weight: 500;
-  line-height: 150%;
+  line-height: 1.3;
 }
 
 .landing-faq-toggle {
@@ -517,7 +424,7 @@ body {
 
   font-size: 1.5rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.3;
   flex-shrink: 0;
 }
 
@@ -527,7 +434,7 @@ body {
 }
 
 .landing-faq-answer-box p {
-  line-height: 1.5;
+  line-height: 1.3;
   color: var(--text);
 }
 
@@ -538,7 +445,7 @@ body {
 
 .landing-faq-preview-desc {
   color: var(--text-highlight);
-  line-height: 1.6;
+  line-height: 1.3;
 }
 
 .landing-faq-preview-actions {
@@ -575,176 +482,6 @@ body {
 .landing-faq-secondary-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 0.25rem 0.5rem var(--shadow-2);
-}
-
-/* 질문 폼 관련 스타일 - 현재 JSX엔 없어도 나중에 FAQ 페이지 확장용으로 유지 */
-.landing-question-divider {
-  width: 100%;
-  height: 1px;
-  background: var(--border);
-  margin: 1rem 0 0.5rem;
-}
-
-.landing-question-header h2 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.landing-question-desc {
-  margin: 0.5rem 0 0 0;
-  color: #666;
-  line-height: 1.6;
-}
-
-.landing-question-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.landing-question-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.landing-question-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.landing-question-field label {
-  font-weight: 700;
-}
-
-.landing-question-field input,
-.landing-question-field textarea,
-.landing-question-field select {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  box-sizing: border-box;
-  font-size: 0.95rem;
-  outline: none;
-  background: white;
-}
-
-.landing-question-check {
-  justify-content: flex-end;
-}
-
-.landing-question-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: 500;
-}
-
-.landing-question-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.landing-question-actions button {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.85rem 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  background: #4f73ff;
-  color: #fff;
-}
-
-.landing-question-actions .secondary {
-  background: #6b7280;
-}
-
-.landing-question-list-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.landing-question-list-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.landing-question-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.landing-question-item {
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1rem;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.landing-question-item-top,
-.landing-question-bottom {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.landing-question-category {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 52px;
-  height: 30px;
-  padding: 0 0.75rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary) 14%, white 86%);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #222;
-}
-
-.landing-question-author {
-  font-weight: 600;
-}
-
-.landing-question-title {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #222;
-}
-
-.landing-question-content {
-  line-height: 1.7;
-  color: #444;
-}
-
-.landing-question-answer {
-  border-top: 1px solid #f1f1f1;
-  padding-top: 0.8rem;
-}
-
-.landing-question-answer strong {
-  display: block;
-  margin-bottom: 0.35rem;
-}
-
-.landing-question-answer p {
-  margin: 0;
-  line-height: 1.7;
-  color: #555;
 }
 
 /* ─── FAQ Modal ──────────────────────────────── */
@@ -838,7 +575,7 @@ body {
   font-size: 1rem;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .faq-modal-close:hover {
@@ -848,11 +585,11 @@ body {
   box-shadow: 0 0.25rem 0.5rem var(--shadow-2);
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1280px) {
   .intro-description {
     padding-left: 0.5rem;
     font-size: 1.2rem;
-    line-height: 1.5;
+    line-height: 1.3;
   }
 
   .intro-title h2 {
@@ -872,14 +609,8 @@ body {
   }
 
   .landing-header {
-    width: 88%;
+    width: calc(100% - 1.5rem);
     gap: 1rem;
-  }
-
-  .header-logo,
-  .landing-navigation,
-  .floating-nav {
-    justify-content: center;
   }
 
   .landing-btn {
@@ -889,6 +620,7 @@ body {
   .container {
     gap: 6rem;
     padding: 1.5rem;
+    padding-top: 12rem;
   }
 
   .ad-grid {
@@ -933,8 +665,8 @@ body {
 
 @media (max-width: 768px) {
   .intro-description {
-    font-size: 1.125rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: 1.3;
   }
 
   .intro-title h2 {
@@ -942,7 +674,7 @@ body {
   }
 
   .intro-title {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
   }
 
   .ad-title h2 {
@@ -950,7 +682,7 @@ body {
   }
 
   .ad-title {
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
   }
 
 
@@ -974,7 +706,6 @@ body {
   }
 
   .floating-nav {
-    /* flex-direction: column; */
     width: 100%;
   }
 
@@ -988,10 +719,6 @@ body {
   .google_btn {
     justify-content: center;
     padding: 0.5rem;
-  }
-
-  .title {
-    margin-top: 16rem;
   }
 
   .hero-title {
@@ -1020,11 +747,6 @@ body {
     align-items: flex-start;
   }
 
-  .landing-question-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .landing-question-actions,
   .landing-faq-preview-actions {
     flex-direction: column;
   }

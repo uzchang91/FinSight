@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import profile from '../assets/chicken running machine.gif'
 import './Dashboard.css'
-import { api } from '../config/api'
+import Heart from '../assets/icons/heart.svg?react'
+import StocksOwned from '../assets/icons/stocks_owned.svg?react'
+import profile from '../assets/chicken running machine.gif'
 import bronze from '../assets/icons/ranked/bronze.png'
 import silver from '../assets/icons/ranked/silver.png'
 import gold from '../assets/icons/ranked/gold.png'
 import diamond from '../assets/icons/ranked/diamond.png'
 import NewsTicker from './NewsTicker'
+import { api } from '../config/api'
 
 const EMPTY_ISR = {
   accuracy: 0,
@@ -146,6 +148,7 @@ const Dashboard = ({ onNavigate }) => {
           stockName: stock?.stockName ?? stock?.name ?? '',
           price: Number(stock?.price ?? 0),
           change: Number(stock?.change ?? stock?.changeAmount ?? 0),
+          myChangeRate: Number(stock?.MyChangeRate ?? 0),
           changeRate: Number(stock?.changeRate ?? stock?.rate ?? 0),
         }))
         setLikedStocks(likedData)
@@ -265,7 +268,7 @@ const Dashboard = ({ onNavigate }) => {
       } else {
         setIsrData(EMPTY_ISR)
       }
-      
+
       if (memberRes.status === 'rejected') {
         throw memberRes.reason
       }
@@ -456,7 +459,7 @@ const Dashboard = ({ onNavigate }) => {
     : '전체 리그 순위표'
 
   if (loading) {
-    return <div className='dash-container'>대시보드 불러오는 중.</div>
+    return <div className='dash-container loading'>대시보드 불러오는 중.</div>
   }
 
   if (error) {
@@ -476,241 +479,221 @@ const Dashboard = ({ onNavigate }) => {
         <p>
           일일 퀘스트{' '}
           <span className='daily-percent'>
-            {Number(questStatus.dailyPercent || 0).toFixed(2)}% 달성했어요!
+            {Number(questStatus.dailyPercent || 0).toFixed(1)}% 달성했어요!
           </span>
         </p>
+        <ul className='quest-list'>
+          <li onClick={() => onNavigate?.('Quiz')} className='quest-item dash-clickable'>
+            <span>오늘 푼 퀴즈</span>
+            <strong>
+              {todaySolvedDisplay} / {questStatus.dailyGoal}
+            </strong>
+          </li>
+
+          <li className='quest-item'>
+            <span>오늘 정답 수</span>
+            <strong>{questStatus.todayCorrect}</strong>
+          </li>
+
+          <li className='quest-item'>
+            <span>누적 풀이 수</span>
+            <strong>
+              {questStatus.totalSolved} / {questStatus.totalCount}
+            </strong>
+          </li>
+
+          <li className='quest-item'>
+            <span>누적 정답률</span>
+            <strong>
+              {Number(questStatus.accuracy || 0).toFixed(1)}%
+            </strong>
+          </li>
+        </ul>
       </div>
 
       <div className='dash-master'>
-        <div className='tool-box'>
-          <span>퀘스트 현황</span>
-          <div className='quest-status-box'>
+        <div className='dash-thread'>
+          <div className='tool-box'>
+            <div className='isr-header'>
+              <span>ISR 지표</span>
+              <div className='isr-tooltip-wrap'>
+                <span className='isr-tooltip-icon'>ⓘ</span>
+                <span className='isr-tooltip-text'>{isrDescription}</span>
+              </div>
+            </div>
+
             <div className='dash-summary'>
-              <div className='dash-score'>
-                {Number(questStatus.dailyPercent || 0).toFixed(1)}
-                <span>%</span>
-              </div>
-              <div className='dash-summary-desc'>
-                오늘 {questStatus.dailyGoal}문제 목표 기준
+              <div className='dash-score'>{formatScore(isrData.isr)}</div>
+              <div className='isr-one-line'>
+                <strong>한 줄 분석</strong>
+                <p>{isrData?.summary || '아직 분석 결과가 없습니다.'}</p>
               </div>
             </div>
 
-            <ul className='quest-list'>
-              <li className='quest-item'>
-                <span>오늘 푼 퀴즈</span>
-                <strong>
-                  {todaySolvedDisplay} / {questStatus.dailyGoal}
-                </strong>
-              </li>
-
-              <li className='quest-item'>
-                <span>오늘 정답 수</span>
-                <strong>{questStatus.todayCorrect}</strong>
-              </li>
-
-              <li className='quest-item'>
-                <span>누적 풀이 수</span>
-                <strong>
-                  {questStatus.totalSolved} / {questStatus.totalCount}
-                </strong>
-              </li>
-
-              <li className='quest-item'>
-                <span>누적 정답률</span>
-                <strong>
-                  {Number(questStatus.accuracy || 0).toFixed(1)}%
-                </strong>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className='tool-box'>
-          <div className='isr-header'>
-            <span>ISR 지표</span>
-            <div className='isr-tooltip-wrap'>
-              <span className='isr-tooltip-icon'>ⓘ</span>
-              <span className='isr-tooltip-text'>{isrDescription}</span>
-            </div>
-          </div>
-
-          <div className='dash-summary'>
-            <div className='dash-score'>{formatScore(isrData.isr)}</div>
-            <div className='isr-one-line'>
-              <strong>한 줄 분석</strong>
-              <p>{isrData?.summary || '아직 분석 결과가 없습니다.'}</p>
-            </div>
-          </div>
-
-          <div>
-            <div className='isr-grade-box'>
-              <div className='isr-grade-code'>
-                {isrData?.grade?.code || 'D'}
-              </div>
-              <div className='isr-grade-texts'>
-                <strong>{isrData?.grade?.label || '위험형 투자자'}</strong>
-                <p>{isrData?.grade?.description || '아직 분석 결과가 없습니다.'}</p>
+            <div>
+              <div className='isr-grade-box'>
+                <div className='isr-grade-code'>
+                  {isrData?.grade?.code || 'D'}
+                </div>
+                <div className='isr-grade-texts'>
+                  <strong>{isrData?.grade?.label || '위험형 투자자'}</strong>
+                  <p>{isrData?.grade?.description || '아직 분석 결과가 없습니다.'}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <ul className='isr-list'>
-            {isrItems.map((item) => (
-              <li key={item.key} className='isr-item'>
-                <div className='isr-item-top'>
-                  <div className='isr-name'>
-                    <span>{item.label}</span>
-                    <div className='isr-tooltip-wrap'>
-                      <span className='isr-tooltip-icon'>ⓘ</span>
-                      <span className='isr-tooltip-text'>{item.description}</span>
+            <ul className='isr-list'>
+              {isrItems.map((item) => (
+                <li key={item.key} className='isr-item'>
+                  <div className='isr-item-top'>
+                    <div className='isr-name'>
+                      <span>{item.label}</span>
+                      <div className='isr-tooltip-wrap'>
+                        <span className='isr-tooltip-icon'>ⓘ</span>
+                        <span className='isr-tooltip-text'>{item.description}</span>
+                      </div>
                     </div>
+                    <p className='isr-value'>{formatScore(item.value)}</p>
                   </div>
-                  <p className='isr-value'>{formatScore(item.value)}</p>
-                </div>
-                <div className='isr-bar'>
-                  <div
-                    className='isr-bar-fill'
-                    style={{
-                      width: `${Math.max(0, Math.min(100, Number(item.value || 0)))}%`,
-                    }}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className='tool-box'>
-          <span onClick={() => onNavigate?.('Ranking')}>{rankingTitle}</span>
-          <div className='rank-box'>
-            <ul className='rank-league'>
-              {LEAGUE_META.map((league) => (
-                <li key={league.key} className='league'>
-                  <button
-                    type='button'
-                    className={`league-button ${selectedLeague === league.key ? 'active' : ''}`}
-                    onClick={() => handleLeagueClick(league.key)}
-                    title={`${league.label} 리그 보기`}
-                  >
-                    <img
-                      src={league.image}
-                      alt={league.alt}
-                      className='league-badge'
+                  <div className='isr-bar'>
+                    <div
+                      className='isr-bar-fill'
+                      style={{
+                        width: `${Math.max(0, Math.min(100, Number(item.value || 0)))}%`,
+                      }}
                     />
-                  </button>
+                  </div>
                 </li>
               ))}
             </ul>
+          </div>
 
-            <ul className='rank-list'>
-              {displayedRankingList.length === 0 ? (
-                <li className='stock-empty'>랭킹 데이터가 없습니다.</li>
-              ) : (
-                displayedRankingList.map((rankMember, index) => {
-                  const isMine = isMyRankMember(rankMember)
-
-                  return (
-                    <li
-                      key={rankMember.memberId || rankMember.member_id || index}
-                      className={`rank-item ${isMine ? 'rank-item-mine' : ''}`}
+          <div className='tool-box'>
+            <span onClick={() => onNavigate?.('Ranking')}>랭킹 순위</span>
+            <div className='rank-box'>
+              <ul className='rank-league'>
+                {LEAGUE_META.map((league) => (
+                  <li key={league.key} className='league'>
+                    <button
+                      type='button'
+                      className={`league-button ${selectedLeague === league.key ? 'active' : ''}`}
+                      onClick={() => handleLeagueClick(league.key)}
+                      title={`${league.label} 리그 보기`}
                     >
-                      <div className='item-profile'>
-                        <div className='rank-num'>
-                          {selectedLeague
-                            ? (rankMember.leagueRank || index + 1)
-                            : (rankMember.overallRank || index + 1)}
-                        </div>
-                        <img
-                          src={rankMember.profileImage2 || rankMember.profileImage || profile}
-                          alt='account_image'
-                          className='rank-profile'
-                        />
-                        <span>
-                          {rankMember.nickname || '사용자'}
-                        </span>
-                      </div>
+                      <img
+                        src={league.image}
+                        alt={league.alt}
+                        className='league-badge'
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
 
-                      <div className='rank-point'>
-                        {Number(rankMember.leaguePoint || 0).toLocaleString('ko-KR')}pt
+              <ul className='rank-list'>
+                {displayedRankingList.length === 0 ? (
+                  <li className='stock-empty'>랭킹 데이터가 없습니다.</li>
+                ) : (
+                  displayedRankingList.map((rankMember, index) => {
+                    const isMine = isMyRankMember(rankMember)
+
+                    return (
+                      <li
+                        key={rankMember.memberId || rankMember.member_id || index}
+                        className={`rank-item ${isMine ? 'rank-item-mine' : ''}`}
+                      >
+                        <div className='item-profile'>
+                          <div className='rank-num'>
+                            {selectedLeague
+                              ? (rankMember.leagueRank || index + 1)
+                              : (rankMember.overallRank || index + 1)}
+                          </div>
+                          <img
+                            src={rankMember.profileImage2 || rankMember.profileImage || profile}
+                            alt='account_image'
+                            className='rank-profile'
+                          />
+                          <span>
+                            {rankMember.nickname || '사용자'}
+                          </span>
+                        </div>
+
+                        <div className='rank-point'>
+                          {Number(rankMember.leaguePoint || 0).toLocaleString('ko-KR')}pt
+                        </div>
+                      </li>
+                    )
+                  })
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className='dash-thread'>
+          <div className='dash-box'>
+            <span onClick={() => onNavigate?.('Stocks')}><StocksOwned /> 보유 주식</span>
+            <div className='stock-box'>
+              <ul className='stock-list'>
+                {ownedStocks.length === 0 ? (
+                  <li className='stock-empty'>보유 주식이 없습니다.</li>
+                ) : (
+                  ownedStocks.map((stock) => (
+                    <li
+                      key={stock.id || stock.stockCode}
+                      className={`item-box stock-body ${Number(stock.myChangeRate || 0) >= 0 ? 'stock-rise' : 'stock-fall'}`}
+                    >
+                      <div className='liked-item'>
+                        <p>{stock.stockName || stock.stockCode}</p>
+                        <p
+                          className={`numbers ${Number(stock.myChangeRate || 0) >= 0 ? 'gain' : 'loss'}`}
+                        >
+                          {formatSignedPercent(stock.myChangeRate)}
+                        </p>
+                      </div>
+                      <div className='liked-item'>
+                        <p className='numbers stock-description'>{stock.quantity}주</p>
+                        <p className='numbers'>{formatNumber(stock.principal)}pt</p>
                       </div>
                     </li>
-                  )
-                })
-              )}
-            </ul>
+                  ))
+                )}
+              </ul>
+            </div>
           </div>
+
+          <div className='dash-box'>
+            <span onClick={() => onNavigate?.('Stocks')}><Heart />찜한 주식</span>
+            <div className='stock-box'>
+              <ul className='stock-list'>
+                {likedStocks.length === 0 ? (
+                  <li className='stock-empty'>찜한 주식이 없습니다.</li>
+                ) : (
+                  likedStocks.map((stock) => (
+                    <li
+                      key={stock.id || stock.stockCode}
+                      className='item-box stock-body'
+                    >
+                      <div className='liked-item'>
+                        <p>{stock.stockName || stock.stockCode}</p>
+                        <p
+                          className={`numbers ${Number(stock.changeRate || 0) >= 0 ? 'gain' : 'loss'
+                            }`}
+                        >
+                          {formatSignedPercent(stock.changeRate)}
+                        </p>
+                      </div>
+                      <p className='numbers'>{formatNumber(stock.price)}pt</p>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div className='dash-thread'>
-        <div className='dash-box'>
-          <span onClick={() => onNavigate?.('Stocks')}>찜한 주식</span>
-          <div className='stock-box'>
-            <ul className='stock-list'>
-              <li className='stock-item stock-head liked-grid'>
-                <p>주식</p>
-                <p className='numbers'>금액</p>
-                <p className='numbers'>변동</p>
-              </li>
-              {likedStocks.length === 0 ? (
-                <li className='stock-empty'>찜한 주식이 없습니다.</li>
-              ) : (
-                likedStocks.map((stock) => (
-                  <li
-                    key={stock.id || stock.stockCode}
-                    className='stock-item liked-grid'
-                  >
-                    <p>{stock.stockName || stock.stockCode}</p>
-                    <p className='numbers'>{formatNumber(stock.price)}pt</p>
-                    <p
-                      className={`numbers ${
-                        Number(stock.changeRate || 0) >= 0 ? 'gain' : 'loss'
-                      }`}
-                    >
-                      {formatSignedNumber(stock.change)}pt
-                    </p>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        </div>
-
-        <div className='dash-box'>
-          <span onClick={() => onNavigate?.('Stocks')}>보유 주식</span>
-          <div className='stock-box'>
-            <ul className='stock-list'>
-              <li className='stock-item stock-head owned-grid'>
-                <p>주식</p>
-                <p className='numbers'>보유</p>
-                <p className='numbers'>원금</p>
-                <p className='numbers'>변동</p>
-              </li>
-              {ownedStocks.length === 0 ? (
-                <li className='stock-empty'>보유 주식이 없습니다.</li>
-              ) : (
-                ownedStocks.map((stock) => (
-                  <li
-                    key={stock.id || stock.stockCode}
-                    className='stock-item owned-grid'
-                  >
-                    <p>{stock.stockName || stock.stockCode}</p>
-                    <p className='numbers'>{stock.quantity}</p>
-                    <p className='numbers'>{formatNumber(stock.principal)}pt</p>
-                    <p
-                      className={`numbers ${
-                        Number(stock.changeRate || 0) >= 0 ? 'gain' : 'loss'
-                      }`}
-                    >
-                      {formatSignedNumber(stock.changeAmount)}pt({formatSignedPercent(stock.changeRate)})
-                    </p>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

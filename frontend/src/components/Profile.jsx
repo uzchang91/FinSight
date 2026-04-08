@@ -1278,7 +1278,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
               />
               <Account alt='account' className='icons profile-account-icon' />
             </button>
-            <div className={`profile-set-extra${isProfileCollapsed ? ' profile-set-extra--hidden' : ''}`}>
+            <div className={`profile-set-extra ${isProfileCollapsed ? 'profile-set-extra--hidden' : ''}`}>
               <div className='notification-wrap' ref={notificationRef}>
                 <button
                   type='button'

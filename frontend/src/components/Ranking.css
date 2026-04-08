@@ -146,7 +146,6 @@
   font-weight: 600;
   color: var(--text);
   text-align: end;
-  font-variant-numeric: tabular-nums;
 }
 
 .league-rank {

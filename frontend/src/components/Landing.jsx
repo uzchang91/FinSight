@@ -202,89 +202,39 @@ const Landing = ({ setPage }) => {
       </div>
 
       <div className='container'>
-        <div>
+        <div className='landing-content'>
           <div className='title'>
             <h1 className='hero-title'>투자를 <span className='text-gradient'>게임처럼</span> 배우다</h1>
           </div>
           <div className='title-description'>
             <p>주식 차트 분석, 투자 판단, 그리고 나만의 투자 성향 분석까지.</p>
-            <p>실전 데이터를 기반으로 투자 감각을 훈련하는 금융 트레이닝 플랫폼입니다.</p>
+            <p>실전 데이터를 기반으로 투자 감각을 훈련하는 금융 트레이닝 플랫폼.</p>
+          </div>
+          <div className='ad-title'>
+            <h2>많은 사람들이 투자에 관심이 있지만,</h2>
+            <div className='intro-description'>
+              <h3>사기를 당할까 걱정...</h3>
+              <h4>돈을 다 잃을까 무섭고...</h4>
+              <h4>어디서부터 시작해야 할지 모르겠고...</h4>
+            </div>
+          </div>
+          <div className='title-description' ref={serviceRef}>
+            <p>그래서 우리는 투자를 안전하게 연습할 수 있는 공간을 만들고,</p>
+            <p>실제 시장 데이터 기반으로 투자 판단을 습득하고 자신의 투자 스타일을 분석!</p>
+          </div>
+          <div className='floating-nav2'>
+            <button className='kakao_btn2' onClick={handleKakaoLogin}>
+              <Kakao alt='카카오' />
+              <span>카카오로 시작</span>
+            </button>
+
+            <button className='google_btn2' onClick={handleGoogleLogin}>
+              <Google alt='구글' />
+              <span>구글로 시작</span>
+            </button>
           </div>
         </div>
 
-        <div className='ad-title'>
-          <h2>많은 사람들이 투자에 관심이 있지만,</h2>
-          <div className='intro-description'>
-            <p>어디서부터 시작해야 할지 모르고...</p>
-            <p>차트와 용어가 어렵고...</p>
-            <p>그래서 우리는 투자를 안전하게 연습할 수 있는 공간을 만들었습니다.</p>
-            <p>여기서는 실제 시장 데이터를 기반으로 투자 판단을 연습하고 자신의 투자 스타일을 분석할 수 있습니다.</p>
-          </div>
-        </div>
-
-        <div className='ad-grid' ref={serviceRef} >
-
-          <div className='intro-container span-first-two'>
-            <div className='image-container'>
-              <div className='image-cover' />
-              <img src={idk} alt="ikd" className='landing-idk' />
-            </div>
-            <div className='intro-title'>
-              <h2>"투자가 무서우신가요?"</h2>
-              <div className='intro-description'>
-                <p>어렵고 복잡한 차트, 잃을까 봐 두려운 내 자산. <br />
-                  FinSight는 실제 데이터를 활용한 가상 환경을 제공합니다.</p>
-                <ul>
-                  <li>포인트를 모으는 재미</li>
-                  <li>리스크 제로의 투자 연습</li>
-                  <li>실시간 랭킹 시스템</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className='ad-title span-last-two'>
-            <h2>게임처럼 성장하세요!</h2>
-            <div className='intro-description'>
-              <p>이 플랫폼은 단순한 학습 사이트가 아닙니다.</p>
-              <ul>
-                <li>포인트를 모으고,</li>
-                <li>투자 판단을 연습하고,</li>
-                <li>랭킹에 도전할 수 있습니다.</li>
-              </ul>
-              <p>목표는 단 하나, <strong>더 나은 투자 판단 능력 만들기.</strong></p>
-            </div>
-          </div>
-
-          <div className='ad-title span-first-two'>
-            <h2>실제 돈은 사용하지 않습니다!</h2>
-            <div className='intro-description'>
-              <p>이 플랫폼은 투자 연습을 위한 트레이닝 공간입니다.</p>
-              <ul>
-                <li>실제 돈 사용 없음.</li>
-                <li>위험 없는 투자 연습하기.</li>
-                <li>데이터 기반 학습하기.</li>
-              </ul>
-              <p>실수를 통해 배우고 투자 감각을 키워보세요.</p>
-            </div>
-          </div>
-
-          <div className='ad-title span-last-two'>
-            <h2>왜 우리가 이걸 만들었는가?</h2>
-            <div className='intro-description'>
-              <p>이 플랫폼은 단순한 학습 사이트가 아닙니다.</p>
-              <p>우리도 투자 초보였고, <strong>어디서부터 시작해야 할지 몰랐습니다.</strong></p>
-            </div>
-          </div>
-
-          <div className='ad-title span-first-two'>
-            <h2>당신의 투자 성향은 어떤 모습인가요?</h2>
-            <div className='intro-description'>
-              <p>지금 시작하고 나의 투자 실력을 확인해보세요.</p>
-            </div>
-          </div>
-
-        </div>
 
         <section id='faq-section' className='landing-faq-section' ref={faqRef}>
           <div className='landing-faq-header'>
