@@ -883,25 +883,22 @@
 }
 
 @media (max-width: 480px) {
+
+  .dash-master {
+    grid-template-columns: repeat(1, 1fr);
+  }
   
   .dash-portfolio {
     flex-direction: column;
   }
 
   .stock-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 424px) {
+  .stock-list {
     grid-template-columns: repeat(1, 1fr);
-  }
-
-  .rank-item {
-    flex-direction: column;
-  }
-
-  .rank-point {
-    text-align: right;
-  }
-
-  .liked-item {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
