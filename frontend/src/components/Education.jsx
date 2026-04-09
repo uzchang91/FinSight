@@ -46,7 +46,7 @@ const getDailyCountsStorageKey = (memberId) => {
   return memberId ? `educationDailyCounts_${memberId}` : 'educationDailyCounts_guest'
 }
 
-const Education = () => {
+const Education = ({ onNavigate }) => {
   const [searchText, setSearchText] = useState('')
   const [openLessonId, setOpenLessonId] = useState(null)
   const [showAllLessons, setShowAllLessons] = useState(false)

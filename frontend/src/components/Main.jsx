@@ -190,7 +190,7 @@ const Main = () => {
       case 'Dashboard':
         return <Dashboard onNavigate={handleMenuChange} />
       case 'Education':
-        return <Education />
+        return <Education onNavigate={handleMenuChange} />
       case 'Quiz':
         return loggedIn ? <Quiz /> : <Dashboard />
       case 'Stocks':

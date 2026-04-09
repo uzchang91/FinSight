@@ -24,6 +24,12 @@ body {
   right: 0;
 }
 
+.navigation-area {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
 @media (max-width: 768px) {
   .main-body {
     max-width: calc(100vw - 3rem);

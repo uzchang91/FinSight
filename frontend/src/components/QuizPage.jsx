@@ -1080,7 +1080,7 @@ const QuizPage = () => {
             onClick={generateLLMQuiz}
             disabled={llmQuizLoading}
           >
-            {llmQuizLoading ? '생성 중...' : 'AI 문제 생성'}
+            {llmQuizLoading ? '생성 중...' : '질문 생성'}
           </button>
         </div>
 
