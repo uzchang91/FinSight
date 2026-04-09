@@ -683,14 +683,14 @@ const Stocks = () => {
                 ownedStocks.map((stock) => (
                   <React.Fragment key={`owned-${stock.stockCode}`}>
                     <div
-                      className='side-stock-item'
+                      className={`side-stock-item ${openStockCode === stock.stockCode ? 'flex' : ''}`}
                       onClick={() =>
                         setOpenStockCode((prev) =>
                           prev === stock.stockCode ? null : stock.stockCode
                         )
                       }
                     >
-                      <div>
+                      <div className='side-stock-text'>
                         <div className='side-stock-top'>
                           <p>{stock.stockName}</p>
                           <p>
@@ -732,7 +732,6 @@ const Stocks = () => {
                         </button>
                       </div>
                     </div>
-                    <div className='hr' />
                   </React.Fragment>
                 ))
               ) : (
@@ -751,7 +750,7 @@ const Stocks = () => {
                   return (
                     <React.Fragment key={`liked-${stock.stockCode}`}>
                       <div
-                        className={`side-stock-item ${openLikeCode === stock.stockCode ? 'flex' : ''}`}
+                        className='side-stock-item flex'
                         onClick={() =>
                           setOpenLikeCode((prev) =>
                             prev === stock.stockCode ? null : stock.stockCode
@@ -770,7 +769,7 @@ const Stocks = () => {
                           </div>
                         </div>
 
-                        <div className={`side-liked-actions ${openLikeCode === stock.stockCode ? 'flex' : ''}`}>
+                        <div className='side-liked-actions flex'>
 
                           <button
                             type='button'
@@ -790,7 +789,6 @@ const Stocks = () => {
 
                         </div>
                       </div >
-                      <div className='hr' />
                     </React.Fragment>
                   );
                 })
@@ -800,7 +798,7 @@ const Stocks = () => {
             </div>
           </div>
 
-          <button className='stocks-card'>
+          <div className='stocks-card'>
             <h3>최근 매매 내역</h3>
             <div className='st-history-list'>
               {tradeHistory.length === 0 ? (
@@ -839,7 +837,7 @@ const Stocks = () => {
                 ))
               )}
             </div>
-          </button>
+          </div>
         </div>
       </div>
 

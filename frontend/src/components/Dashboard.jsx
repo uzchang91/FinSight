@@ -48,8 +48,149 @@ const LEAGUE_META = [
   { key: 'diamond', label: '다이아', image: diamond, alt: '다이아 티어' },
 ]
 
+const getStockPrincipal = (stock) => {
+  const directTotalPrice = Number(
+    stock?.totalPrice ??
+    stock?.principal ??
+    stock?.price ??
+    0
+  )
+
+  if (directTotalPrice > 0) return directTotalPrice
+
+  const quantity = Number(stock?.quantity || 0)
+  const avgPrice = Number(stock?.avgPrice ?? stock?.avg_price ?? 0)
+  return quantity * avgPrice
+}
+
+const getStockProfit = (stock) => {
+  return Number(
+    stock?.changeAmount ??
+    stock?.change_amount ??
+    stock?.profit ??
+    stock?.pnl_amount ??
+    0
+  )
+}
+
+const PIE_COLORS = [
+  '#3b82f6',
+  '#22c55e',
+  '#f59e0b',
+  '#ef4444',
+  '#8b5cf6',
+  '#06b6d4',
+  '#f97316',
+  '#84cc16',
+]
+
+const buildPortfolioSegments = (stocks) => {
+  const baseList = Array.isArray(stocks)
+    ? stocks
+      .map((stock, index) => {
+        const amount = getStockPrincipal(stock)
+
+        return {
+          id:
+            stock?.stockCode ??
+            stock?.stock_code ??
+            stock?.code ??
+            `${stock?.stockName ?? stock?.name ?? 'stock'}-${index}`,
+          name: stock?.stockName ?? stock?.name ?? '이름 없음',
+          amount,
+        }
+      })
+      .filter((item) => Number(item.amount) > 0)
+    : []
+
+  const total = baseList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+
+  if (total <= 0) {
+    return {
+      total: 0,
+      segments: [],
+      gradient: '#e5e7eb',
+    }
+  }
+
+  let currentDeg = 0
+
+  const segments = baseList.map((item, index) => {
+    const ratio = (Number(item.amount) / total) * 100
+    const degree = (ratio / 100) * 360
+    const color = PIE_COLORS[index % PIE_COLORS.length]
+
+    const segment = {
+      ...item,
+      ratio,
+      color,
+      startDeg: currentDeg,
+      endDeg: currentDeg + degree,
+    }
+
+    currentDeg += degree
+    return segment
+  })
+
+  const gradient = `conic-gradient(${segments
+    .map((item) => `${item.color} ${item.startDeg}deg ${item.endDeg}deg`)
+    .join(', ')})`
+
+  return {
+    total,
+    segments,
+    gradient,
+  }
+}
+
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
+
+const buildAnimatedPortfolioSegments = (chartData, progress = 1) => {
+  if (!chartData || !Array.isArray(chartData.segments) || chartData.segments.length === 0) {
+    return {
+      ...chartData,
+      total: 0,
+      gradient: '#e5e7eb',
+      segments: [],
+    }
+  }
+
+  const safeProgress = Math.max(0, Math.min(1, progress))
+  let currentDeg = 0
+
+  const animatedSegments = chartData.segments.map((item) => {
+    const fullDegree = Number(item.endDeg || 0) - Number(item.startDeg || 0)
+    const animatedDegree = fullDegree * safeProgress
+
+    const nextItem = {
+      ...item,
+      animatedStartDeg: currentDeg,
+      animatedEndDeg: currentDeg + animatedDegree,
+    }
+
+    currentDeg += animatedDegree
+    return nextItem
+  })
+
+  const gradient =
+    animatedSegments.length > 0
+      ? `conic-gradient(${animatedSegments
+        .map((item) => `${item.color} ${item.animatedStartDeg}deg ${item.animatedEndDeg}deg`)
+        .join(', ')})`
+      : '#e5e7eb'
+
+  return {
+    ...chartData,
+    total: chartData.total * safeProgress,
+    segments: animatedSegments,
+    gradient,
+  }
+}
+
 const Dashboard = ({ onNavigate }) => {
   const [member, setMember] = useState(null)
+  const [portfolioChartProgress, setPortfolioChartProgress] = useState(0)
+  const [ownedStocksLoaded, setOwnedStocksLoaded] = useState(false)
   const [likedStocks, setLikedStocks] = useState([])
   const [ownedStocks, setOwnedStocks] = useState([])
   const [rankingList, setRankingList] = useState([])
@@ -188,8 +329,10 @@ const Dashboard = ({ onNavigate }) => {
         })
 
         setOwnedStocks(ownedData)
+        setOwnedStocksLoaded(true)
       } else {
         setOwnedStocks([])
+        setOwnedStocksLoaded(true)
       }
 
       if (rankingRes.status === 'fulfilled') {
@@ -282,31 +425,6 @@ const Dashboard = ({ onNavigate }) => {
     }
   }, [])
 
-  const getStockPrincipal = (stock) => {
-    const directTotalPrice = Number(
-      stock?.totalPrice ??
-      stock?.principal ??
-      stock?.price ??
-      0
-    )
-
-    if (directTotalPrice > 0) return directTotalPrice
-
-    const quantity = Number(stock?.quantity || 0)
-    const avgPrice = Number(stock?.avgPrice ?? stock?.avg_price ?? 0)
-    return quantity * avgPrice
-  }
-
-  const getStockProfit = (stock) => {
-    return Number(
-      stock?.changeAmount ??
-      stock?.change_amount ??
-      stock?.profit ??
-      stock?.pnl_amount ??
-      0
-    )
-  }
-
   const investmentSummary = useMemo(() => {
     return ownedStocks.reduce(
       (acc, stock) => {
@@ -317,6 +435,14 @@ const Dashboard = ({ onNavigate }) => {
       { totalInvested: 0, totalProfit: 0 }
     )
   }, [ownedStocks])
+
+  const portfolioChartData = useMemo(() => {
+    return buildPortfolioSegments(ownedStocks)
+  }, [ownedStocks])
+
+  const animatedPortfolioChartData = useMemo(() => {
+    return buildAnimatedPortfolioSegments(portfolioChartData, portfolioChartProgress)
+  }, [portfolioChartData, portfolioChartProgress])
 
   const displayTotalInvested =
     Number(investmentSummary.totalInvested || 0) > 0
@@ -344,6 +470,32 @@ const Dashboard = ({ onNavigate }) => {
     return () => window.removeEventListener('pointsUpdated', handleDashboardRefresh)
   }, [loadDashboard])
 
+  // Animate pie chart once owned stocks data is ready
+  useEffect(() => {
+    if (!ownedStocksLoaded) return
+
+    let frameId = null
+    let startTime = null
+    const duration = 1200
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp
+      const elapsed = timestamp - startTime
+      const rawProgress = Math.min(elapsed / duration, 1)
+      setPortfolioChartProgress(easeOutCubic(rawProgress))
+      if (rawProgress < 1) {
+        frameId = window.requestAnimationFrame(animate)
+      }
+    }
+
+    setPortfolioChartProgress(0)
+    frameId = window.requestAnimationFrame(animate)
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId)
+    }
+  }, [ownedStocksLoaded])
+
   const formatNumber = (value) => {
     const num = Math.round(Number(value || 0))
     return num.toLocaleString('ko-KR')
@@ -358,15 +510,11 @@ const Dashboard = ({ onNavigate }) => {
   const formatSignedPercent = (value) => {
     const num = Number(value || 0)
     const prefix = num > 0 ? '+' : ''
-    return `${prefix}${num.toFixed(2)}%`
+    return `${prefix}${num.toFixed(2)}`
   }
 
   const formatScore = (value) => {
-    return Number(value || 0).toFixed(1)
-  }
-
-  const formatRankingPoint = (value) => {
-    return Number(value || 0).toFixed(1)
+    return Number(value || 0).toFixed(2)
   }
 
   const isrDescription = '수익률이 아니라 사용자의 투자 과정과 행동의 질을 평가하는 기준.'
@@ -459,7 +607,7 @@ const Dashboard = ({ onNavigate }) => {
     : '전체 리그 순위표'
 
   if (loading) {
-    return <div className='dash-container loading'>대시보드 불러오는 중.</div>
+    return <div className='dash-container loading'>대시보드를 불러오는 중...</div>
   }
 
   if (error) {
@@ -512,6 +660,149 @@ const Dashboard = ({ onNavigate }) => {
       </div>
 
       <div className='dash-master'>
+
+        <div className='dash-thread'>
+
+          <div className='dash-portfolio'>
+
+            <div className='dash-stock'>
+
+              <div className='dash-stock-list'>
+
+                <div className='stock-content'>
+                  <span className='dash-description'>
+                    총손익
+                  </span>
+                  <p className={`description-slave ${Number(displayTotalProfit) >= 0 ? 'gain' : 'loss'}`} >
+                    {formatSignedNumber(displayTotalProfit)}
+                    <span>pt</span>
+                  </p>
+                </div>
+
+                <div className='stock-content'>
+                  <span className='dash-description'>변동률</span>
+                  <p className={`description-slave ${Number(totalProfitRate) >= 0 ? 'gain' : 'loss'}`} >
+                    {formatSignedPercent(Number(totalProfitRate).toFixed(2))}
+                    <span>%</span>
+                  </p>
+                </div>
+
+              </div>
+
+              <div className='profile-investment-section'>
+                <div className='profile-investment-section-body'>
+                  {portfolioChartData.segments.length > 0 ? (
+                    <>
+                      <div className='profile-investment-pie-wrap'>
+                        <div
+                          className='profile-investment-pie'
+                          style={{ background: animatedPortfolioChartData.gradient }}
+                        >
+                          <div className='profile-investment-pie-hole'>
+                            <span className='profile-investment-pie-hole-label'>총 원금</span>
+                            <p>
+                              <strong>{formatNumber(portfolioChartData.total)}</strong>
+                              <span>pt</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className='profile-investment-legend'>
+                        {portfolioChartData.segments.map((item) => (
+                          <div className='profile-investment-legend-item' key={item.id}>
+                            <div className='profile-investment-legend-left'>
+                              <span
+                                className='profile-investment-legend-color'
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <span>{item.name}</span>
+                            </div>
+
+                            <div className='profile-investment-legend-right'>
+                              <span>{formatNumber(item.amount)}pt</span>
+                              <strong>
+                                {item.ratio.toFixed(2)}%
+                              </strong>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className='profile-investment-empty'>
+                      보유 주식이 없습니다.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className='dash-box'>
+            <span onClick={() => onNavigate?.('Stocks')}><StocksOwned /> 보유 주식</span>
+            <div className='stock-box'>
+              <ul className='stock-list'>
+                {ownedStocks.length === 0 ? (
+                  <li className='stock-empty'>보유 주식이 없습니다.</li>
+                ) : (
+                  ownedStocks.map((stock) => (
+                    <li
+                      key={stock.id || stock.stockCode}
+                      className={`item-box stock-body ${Number(stock.myChangeRate || 0) >= 0 ? 'stock-rise' : 'stock-fall'}`}
+                    >
+                      <div className='liked-item'>
+                        <p>{stock.stockName || stock.stockCode}</p>
+                        <p
+                          className={`numbers ${Number(stock.myChangeRate || 0) >= 0 ? 'gain' : 'loss'}`}
+                        >
+                          {formatSignedPercent(stock.myChangeRate)}
+                          <span>%</span>
+                        </p>
+                      </div>
+                      <div className='liked-item'>
+                        <p className='numbers stock-description'>{stock.quantity}주</p>
+                        <p className='numbers'>{formatNumber(stock.principal)}pt</p>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </div>
+
+          <div className='dash-box'>
+            <span onClick={() => onNavigate?.('Stocks')}><Heart />찜한 주식</span>
+            <div className='stock-box'>
+              <ul className='stock-list'>
+                {likedStocks.length === 0 ? (
+                  <li className='stock-empty'>찜한 주식이 없습니다.</li>
+                ) : (
+                  likedStocks.map((stock) => (
+                    <li
+                      key={stock.id || stock.stockCode}
+                      className='item-box stock-body'
+                    >
+                      <div className='liked-item'>
+                        <p>{stock.stockName || stock.stockCode}</p>
+                        <p
+                          className={`numbers ${Number(stock.changeRate || 0) >= 0 ? 'gain' : 'loss'
+                            }`}
+                        >
+                          {formatSignedPercent(stock.changeRate)}
+                          <span>%</span>
+                        </p>
+                      </div>
+                      <p className='numbers'>{formatNumber(stock.price)}pt</p>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
         <div className='dash-thread'>
           <div className='tool-box'>
             <div className='isr-header'>
@@ -569,7 +860,10 @@ const Dashboard = ({ onNavigate }) => {
           </div>
 
           <div className='tool-box'>
-            <span onClick={() => onNavigate?.('Ranking')}>랭킹 순위</span>
+            <div className='isr-header'>
+              <span>랭킹 순위</span>
+              <span onClick={() => onNavigate?.('Ranking')}>더보기</span>
+            </div>
             <div className='rank-box'>
               <ul className='rank-league'>
                 {LEAGUE_META.map((league) => (
@@ -618,9 +912,9 @@ const Dashboard = ({ onNavigate }) => {
                           </span>
                         </div>
 
-                        <div className='rank-point'>
+                        <p className='rank-point'>
                           {Number(rankMember.leaguePoint || 0).toLocaleString('ko-KR')}pt
-                        </div>
+                        </p>
                       </li>
                     )
                   })
@@ -630,68 +924,6 @@ const Dashboard = ({ onNavigate }) => {
           </div>
         </div>
 
-        <div className='dash-thread'>
-          <div className='dash-box'>
-            <span onClick={() => onNavigate?.('Stocks')}><StocksOwned /> 보유 주식</span>
-            <div className='stock-box'>
-              <ul className='stock-list'>
-                {ownedStocks.length === 0 ? (
-                  <li className='stock-empty'>보유 주식이 없습니다.</li>
-                ) : (
-                  ownedStocks.map((stock) => (
-                    <li
-                      key={stock.id || stock.stockCode}
-                      className={`item-box stock-body ${Number(stock.myChangeRate || 0) >= 0 ? 'stock-rise' : 'stock-fall'}`}
-                    >
-                      <div className='liked-item'>
-                        <p>{stock.stockName || stock.stockCode}</p>
-                        <p
-                          className={`numbers ${Number(stock.myChangeRate || 0) >= 0 ? 'gain' : 'loss'}`}
-                        >
-                          {formatSignedPercent(stock.myChangeRate)}
-                        </p>
-                      </div>
-                      <div className='liked-item'>
-                        <p className='numbers stock-description'>{stock.quantity}주</p>
-                        <p className='numbers'>{formatNumber(stock.principal)}pt</p>
-                      </div>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          </div>
-
-          <div className='dash-box'>
-            <span onClick={() => onNavigate?.('Stocks')}><Heart />찜한 주식</span>
-            <div className='stock-box'>
-              <ul className='stock-list'>
-                {likedStocks.length === 0 ? (
-                  <li className='stock-empty'>찜한 주식이 없습니다.</li>
-                ) : (
-                  likedStocks.map((stock) => (
-                    <li
-                      key={stock.id || stock.stockCode}
-                      className='item-box stock-body'
-                    >
-                      <div className='liked-item'>
-                        <p>{stock.stockName || stock.stockCode}</p>
-                        <p
-                          className={`numbers ${Number(stock.changeRate || 0) >= 0 ? 'gain' : 'loss'
-                            }`}
-                        >
-                          {formatSignedPercent(stock.changeRate)}
-                        </p>
-                      </div>
-                      <p className='numbers'>{formatNumber(stock.price)}pt</p>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          </div>
-
-        </div>
       </div>
 
     </div>

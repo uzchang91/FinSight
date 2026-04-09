@@ -1060,7 +1060,7 @@ const QuizPage = () => {
   const renderDifficulty = () => (
     <>
       <div className='quiz-section'>
-        <p className='quiz-subtitle'>먼저, 도전할 난이도를 선택해 주세요!</p>
+        <p className='quiz-subtitle'>난이도를 선택</p>
 
         <div className='quiz-top-tools'>
           <input

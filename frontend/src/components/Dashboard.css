@@ -1,6 +1,5 @@
 .dash-container {
-  min-width: 0;
-  max-width: 1024px;
+  width: 100%;
   margin: auto;
   overflow: visible;
   box-sizing: border-box;
@@ -12,8 +11,12 @@
 }
 
 .dash-container.loading {
-  margin-top: calc(100% - 40%);
+  margin-top: 50%;
+  height: fit-content;
   padding: 1.5rem;
+
+  justify-content: center;
+  align-items: center;
 
   background: var(--text-trans-2);
   border-radius: 1.5rem;
@@ -92,22 +95,28 @@
 .dash-box>span {
   width: fit-content;
   padding: 0 0.25rem;
-  padding-top: 0.25rem;
 
   display: flex;
   align-items: center;
   gap: 0.25rem;
 
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .dash-clickable,
-.tool-box:last-child>span,
+.isr-header>span:last-child,
 .dash-box>span {
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.isr-header>span:last-child {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+
 }
 
 .dash-clickable:hover,
@@ -126,6 +135,7 @@
 }
 
 .rank-box {
+  position: relative;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -139,12 +149,12 @@
 
 .rank-league {
   padding: 0.5rem;
+  list-style-type: none;
+
   display: flex;
   justify-content: space-around;
+  
   border-bottom: 1px solid var(--border);
-  border-radius: 0.75rem 0.75rem 0 0;
-  list-style-type: none;
-  margin: 0;
 }
 
 .league {
@@ -212,9 +222,8 @@
   padding: 0.5rem 0.5rem;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
 
   font-size: 1rem;
   font-weight: 500;
@@ -240,19 +249,9 @@
 
 .rank-num,
 .rank-point {
-  min-width: 1.5rem;
+  min-width: 1rem;
   max-width: fit-content;
-  text-align: end;
 }
-
-.rank-num {
-  padding-left: 0.5rem;
-}
-
-.rank-point {
-  padding-right: 0.5rem;
-}
-
 
 .rank-profile {
   min-width: 2rem;
@@ -262,8 +261,6 @@
 }
 
 .rank-item-mine {
-  padding: 0.5rem 0;
-  margin: 0 0.5rem;
   background-color: var(--warning-highlight);
   border: 1px solid var(--warning);
   border-radius: 0.75rem;
@@ -297,6 +294,7 @@
 .item-box {
   padding: 0.75rem;
   box-sizing: border-box;
+  overflow-x: hidden;
 
   background: var(--text-trans-2);
   border: 1px solid var(--border);
@@ -332,7 +330,7 @@
 }
 
 .liked-item>p {
-  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .stock-empty {
@@ -341,6 +339,220 @@
   font-size: 0.875rem;
   text-align: center;
   color: var(--text-highlight);
+}
+
+/* ─── Investment modal ───────────────────────── */
+.dash-portfolio {
+  display: flex;
+  /* flex-direction: column; */
+  gap: 1rem;
+}
+
+.profile-investment-section {
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.profile-investment-section-title-row {
+  padding: 0.75rem 0.75rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-investment-section-title-row h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-investment-section-title-row span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.profile-investment-section-body {
+  padding: 0.5rem;
+  padding-left: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.profile-investment-empty {
+  min-height: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-highlight);
+  font-size: 1rem;
+}
+
+/* ─── Portfolio pie chart ────────────────────── */
+.profile-investment-pie-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-investment-pie {
+  min-width: 120px;
+  min-height: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  will-change: background;
+  transition: background 0.3s linear;
+}
+
+.profile-investment-pie-hole {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-investment-pie-hole-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-highlight);
+}
+
+.profile-investment-pie-hole strong {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.profile-investment-pie-hole span:last-child {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.profile-investment-legend {
+  width: 100%;
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+}
+
+.profile-investment-legend-item {
+  padding: 0.5rem;
+  overflow-x: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+}
+
+.profile-investment-legend-left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: hidden;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.profile-investment-legend-color {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.profile-investment-legend-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.profile-investment-legend-right strong {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-highlight);
+}
+
+.profile-investment-legend-right span {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dash-stock {
+  width: 100%;
+  height: fit-content;
+  box-sizing: border-box;
+  overflow: visible;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.dash-stock-list {
+  display: flex;
+  gap: 1rem;
+}
+
+.stock-content {
+  flex: 1;
+  height: fit-content;
+  padding: 0.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dash-description {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.description-slave {
+  text-align: end;
+  cursor: default;
+
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.description-slave span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.gain {
+  color: var(--danger);
+}
+
+.loss {
+  color: var(--primary);
 }
 
 /* ISR */
@@ -353,7 +565,7 @@
 }
 
 .isr-header>span {
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -450,7 +662,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
 }
 
 .isr-name {
@@ -578,7 +789,7 @@
 
 .quest-item {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem;
   box-sizing: border-box;
 
   display: flex;
@@ -604,6 +815,9 @@
 }
 
 @media (max-width: 1280px) {
+  .dash-portfolio {
+    flex-direction: column;
+  }
 
   .dash-master {
     grid-template-columns: repeat(2, 1fr);
@@ -627,18 +841,8 @@
     left: 12%;
   }
 
-  .dash-thread {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1024px) {
-  .breadcrumb {
-    padding: 0rem 1rem 0 1rem;
-  }
-
   .stock-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .league-badge {
@@ -647,20 +851,57 @@
   }
 }
 
-@media (max-width: 874px) {
-  .dash-master {
+@media (max-width: 1024px) {
+
+  .profile-investment-section-body {
+    padding: 0.5rem;
+    padding-top: 1rem;
+    flex-direction: column;
+  }
+
+  .stock-list {
     grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dash-portfolio {
+    flex-direction: row;
+  }
+
+  .breadcrumb {
+    padding: 0rem 1rem 0 1rem;
   }
 
   .dash-title h1 {
     font-size: 1.75rem;
   }
 
-  .dash-thread:first-child {
-    order: 2;
-  }
-
   .quest-list {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  
+  .dash-portfolio {
+    flex-direction: column;
+  }
+
+  .stock-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .rank-item {
+    flex-direction: column;
+  }
+
+  .rank-point {
+    text-align: right;
+  }
+
+  .liked-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

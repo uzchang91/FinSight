@@ -146,6 +146,7 @@
   max-width: 1280px;
   padding: 1.5rem;
   padding-top: 12rem;
+  margin: auto;
   box-sizing: border-box;
 
   display: flex;
@@ -664,6 +665,17 @@
 }
 
 @media (max-width: 768px) {
+
+  .kakao_btn2,
+  .google_btn2 {
+    padding: 1rem 0.5rem;
+  }
+
+  .kakao_btn2>span,
+  .google_btn2>span {
+    font-size: 0.875rem;
+  }
+
   .intro-description {
     font-size: 1rem;
     line-height: 1.3;

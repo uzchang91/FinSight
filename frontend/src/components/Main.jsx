@@ -32,9 +32,6 @@ const Main = () => {
   const [activeMenu, setActiveMenu] = useState(getInitialMenu)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [membershipType, setMembershipType] = useState(null)
-  const [navCollapsed, setNavCollapsed] = useState(
-    () => localStorage.getItem('nav_collapsed') === 'true'
-  )
   const [profileCollapsed, setProfileCollapsed] = useState(
     () => localStorage.getItem('profile_collapsed') === 'true'
   )
@@ -216,27 +213,27 @@ const Main = () => {
 
   return (
     <>
-      <aside className='navigation-area'>
-        <Navigation
-          setActiveMenu={handleMenuChange}
-          activeMenu={activeMenu}
-          membershipType={membershipType}
-          collapsed={navCollapsed}
-          setCollapsed={setNavCollapsed}
-          role={role}
-        />
-      </aside>
       <div className={`main-body ${profileCollapsed ? 'profile-collapsed' : ''}`}>
+        <aside className='navigation-area'>
+          <Navigation
+            setActiveMenu={handleMenuChange}
+            activeMenu={activeMenu}
+            membershipType={membershipType}
+            role={role}
+          />
+        </aside>
 
-        {renderContent()}
+        <div className='content-area'>
+          {renderContent()}
+        </div>
 
+        <aside className='profile-area'>
+          <Profile
+            collapsed={profileCollapsed}
+            setCollapsed={setProfileCollapsed}
+          />
+        </aside>
       </div>
-      <aside className='profile-area'>
-        <Profile
-          collapsed={profileCollapsed}
-          setCollapsed={setProfileCollapsed}
-        />
-      </aside>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../config/api';
 import './NewsTicker.css';
-import close from '../assets/icons/close.svg'
+import Close from '../assets/icons/close.svg?react'
 
 const NewsTicker = () => {
   const [newsList, setNewsList] = useState([]);
@@ -63,7 +63,9 @@ const NewsTicker = () => {
           <div className="news-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="news-modal-header">
               <h3>오늘의 실시간 주식 뉴스</h3>
-              <img src={close} alt="close" onClick={() => setIsModalOpen(false)} />
+              <button className='faq-modal-close' alt="close" onClick={() => setIsModalOpen(false)} >
+                <Close />
+              </button>
             </div>
             <div className="news-modal-list">
               {newsList.map((news) => (

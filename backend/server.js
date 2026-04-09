@@ -28,10 +28,8 @@ console.log("[ENV CHECK]", {
 const BASE_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:5000",
-  "https://3rd-test-khaki.vercel.app",
-  "https://3rd-test-git-main-shkims-projects-92f4c7c6.vercel.app",
-  "https://3rd-test-l9pc4h59k-shkims-projects-92f4c7c6.vercel.app",
-  "https://3rd-test-cqvv5youa-shkims-projects-92f4c7c6.vercel.app",
+  "https://project3-finsight.vercel.app",
+  "https://fin-sight-8m6c.vercel.app"
 ];
 
 const allowedOrigins = process.env.FRONTEND_URL

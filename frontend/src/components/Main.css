@@ -3,46 +3,32 @@ body {
 }
 
 .main-body {
-  margin-top: 5.5rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 1.5rem;
-  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.main-body.profile-collapsed {
-  grid-template-columns:minmax(0, 1fr) 5.5rem;
-}
-.navigation-area,
-.content-area,
-.profile-area {
+  position: relative;
   min-width: 0;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) 5rem;
+  gap: 1.5rem;
 }
 
 .content-area {
+  width: 100%;
+  max-width: 1280px;
   padding-bottom: 1.5rem;
+  margin: 0 auto;
 }
 
-@media (max-width: 1024px) {
-  .main-body {
-    /* keep grid layout but force collapsed column widths */
-    grid-template-columns: minmax(0, 1fr) 5.5rem;
-  }
+.profile-area {
+  position: fixed;
+  top: 0;
+  right: 0;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .main-body {
-    width: 100%;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 5rem 3rem;
-  }
-
-  .main-body.profile-collapsed {
-    width: 100%;
-    overflow-x: hidden;
+    max-width: calc(100vw - 3rem);
+    padding: 5rem 0;
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 1rem;

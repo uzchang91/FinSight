@@ -467,7 +467,7 @@ const Education = () => {
         </div>
       </div>
 
-      {actionMessage && <div className='education-empty-box education-message-box'>{actionMessage}</div>}
+      {actionMessage && <div className='education-empty-box education-message-box education-badge-new'>{actionMessage}</div>}
       {error && <div className='education-empty-box education-message-box'>{error}</div>}
 
       <div className='education-list'>

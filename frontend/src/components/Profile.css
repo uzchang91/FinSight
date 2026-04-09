@@ -2,27 +2,23 @@
 .profile {
   height: auto;
   height: 100vh;
-  width: 100%;
+  width: 280px;
   padding: 0.5rem;
-
-  position: sticky;
-  top: 0;
-  overflow-y: visible;
+  overflow: auto;
   overflow-x: visible;
 
-  background-color: var(--bg);
+  background-color: var(--bg-trans);
+  backdrop-filter: blur(0.2rem);
   border-left: 1px solid var(--border);
   box-sizing: border-box;
 
   z-index: 10;
 
-  opacity: 1;
-  visibility: visible;
   transition: width 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
 }
 
 .profile.collapsed {
-  width: 5.5rem;
+  width: 5rem;
   min-height: 100vh;
   padding: 0.5rem 1rem;
   transition: width 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
@@ -62,9 +58,17 @@
 .profile.collapsed .profile-set {
   padding: 0;
   padding-top: 0.5rem;
+  flex-direction: column;
 }
 
 .profile.collapsed .profile-set .profile-set-extra:nth-child(2) {
+  opacity: 1;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile.collapsed .profile-set .profile-set-extra:nth-child(2) .icon-container:nth-child(2) {
+  display: none;
   width: 0;
   opacity: 0;
   visibility: hidden;
@@ -75,6 +79,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .set-icons {
@@ -302,24 +307,6 @@
   font-weight: 500;
 }
 
-.description-slave {
-  padding: 0 0.5rem;
-  text-align: end;
-  cursor: default;
-}
-
-.description-slave span {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.gain {
-  color: var(--danger);
-}
-
-.loss {
-  color: var(--primary);
-}
 
 /* ─── Stock card ─────────────────────────────── */
 .profile-stock {
@@ -345,18 +332,6 @@
 .profile-stock h2 {
   font-size: 1rem;
   font-weight: 600;
-}
-
-.profile-stock-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.stock-content {
-  height: fit-content;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ─── Nickname edit ──────────────────────────── */
@@ -498,10 +473,13 @@
 }
 
 .notification-dropdown--fixed {
+  /* Position is set via inline style from the portal; these are safety defaults */
   position: fixed;
-  top: 4.5rem;
-  right: calc(0% + 16rem);
-  z-index: 10000;
+  top: 4rem;
+  right: 0;
+  transform: translateX(-50%);
+  z-index: 99999;
+  max-width: min(320px, calc(100vw - 2rem));
 }
 
 .notification-dropdown-header {
@@ -709,7 +687,6 @@
 
 .achievement-recent-tooltip-arrow,
 .achievement-grid-tooltip-arrow,
-.bubble-arrow,
 .bubble-arrow2 {
   width: 0.5rem;
   height: 0.5rem;
@@ -729,12 +706,6 @@
 .achievement-grid-tooltip-arrow {
   left: 50%;
   top: 50%;
-  background: transparent;
-}
-
-.bubble-arrow {
-  left: 88%;
-  top: 98%;
   background: transparent;
 }
 
@@ -912,41 +883,12 @@
   filter: saturate(1);
 }
 
-.achievement-speech-bubble {
-  width: 240px;
-  padding: 0.5rem 0.75rem;
-
-  position: absolute;
-  bottom: calc(100% + 0.75rem);
-  right: -5px;
-
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  box-shadow: 0 0.5rem 1rem var(--shadow-2);
-
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(0.75rem);
-
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.achievement-trigger-item:hover .achievement-speech-bubble {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
 .achievement-speech-bubble2 {
   width: calc(100% - 1.75rem);
   padding: 0.5rem 0.75rem;
 
   position: absolute;
-  bottom: calc(0vh - 4rem);
+  top: calc(30vh + 1.25rem);
   left: 0;
 
   background: var(--box-bg);
@@ -959,6 +901,12 @@
   pointer-events: none;
 
   transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.achievement-trigger-item:hover+.achievement-speech-bubble2 {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .bubble-content {
@@ -1314,7 +1262,7 @@
 }
 
 .point-history-list {
-  max-height: 44rem;
+  max-height: 38.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1399,349 +1347,17 @@
   display: none;
 }
 
-/* ─── Investment modal ───────────────────────── */
-.profile-investment-modal-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: var(--text-trans);
-  backdrop-filter: blur(0.5rem);
-  z-index: 12000;
-}
-
-.profile-investment-modal {
-  width: min(920px, calc(100vw - 2rem));
-  max-height: calc(100vh - 2rem);
-
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  animation: profileInvestmentModalUp 0.3s ease-out;
-}
-
-@keyframes profileInvestmentModalUp {
-  from {
-    opacity: 0;
-    transform: translateY(0.875rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.profile-investment-modal-header {
-  padding-left: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  background: var(--bg);
-  box-shadow: 0 0.5rem 1rem var(--shadow-1);
-}
-
-.profile-investment-modal-header h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.profile-investment-modal-close {
-  padding: 0.75rem;
-  display: flex;
-  align-items: center;
-  border: none;
-  border-radius: 1.5rem;
-  background: transparent;
-  cursor: pointer;
-}
-
-.profile-investment-modal-close:hover,
-.profile-investment-modal-close:hover path {
-  fill: var(--primary);
-  background: var(--primary-highlight2);
-}
-
-.profile-investment-modal-body {
-  padding: 1rem;
-  max-height: calc(100vh - 8rem);
-  overflow-y: auto;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  background: var(--bg);
-  box-shadow: 0 0.5rem 1rem var(--shadow-1);
-}
-
-.profile-investment-summary-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.profile-investment-summary-card {
-  padding: 1rem;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-}
-
-.profile-investment-summary-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-highlight);
-}
-
-.profile-investment-summary-value {
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: end;
-}
-
-.profile-investment-summary-value span {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.profile-investment-sections {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  align-items: start;
-}
-
-.profile-investment-section {
-  min-width: 0;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  overflow: hidden;
-}
-
-.profile-investment-section-title-row {
-  padding: 0.75rem 0.75rem 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.profile-investment-section-title-row h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.profile-investment-section-title-row span {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.profile-investment-section-body {
-  padding: 0 0 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.profile-side-stock-item {
-  padding: 0 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.profile-side-stock-item:first-child {
-  padding: 0.5rem 0.5rem 0;
-}
-
-.profile-side-stock-item:last-child {
-  border-bottom: none;
-}
-
-.profile-side-stock-top,
-.profile-side-stock-mid {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.profile-side-stock-top p {
-  min-width: 0;
-  overflow-x: hidden;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.profile-side-stock-top p:last-child {
-  flex-shrink: 0;
-}
-
-.profile-side-stock-mid span:first-child {
-  min-width: 0;
-  font-size: 0.875rem;
-  color: var(--text-highlight);
-}
-
-.profile-side-stock-mid span:last-child {
-  min-width: 0;
-  flex-shrink: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.profile-liked-badge {
-  color: var(--danger) !important;
-  font-weight: 600 !important;
-}
-
-.profile-investment-empty {
-  min-height: 7rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-highlight);
-  font-size: 1rem;
-}
-
-/* ─── Portfolio pie chart ────────────────────── */
-.profile-investment-pie-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem 1rem 0.5rem;
-}
-
-.profile-investment-pie {
-  min-width: 180px;
-  min-height: 180px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-  will-change: background;
-  transition: background 0.3s linear;
-}
-
-.profile-investment-pie-hole {
-  width: 9rem;
-  height: 9rem;
-  border-radius: 50%;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-investment-pie-hole-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-highlight);
-}
-
-.profile-investment-pie-hole strong {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.2;
-}
-
-.profile-investment-pie-hole span:last-child {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.profile-investment-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.profile-investment-legend-item {
-  padding: 0.5rem 0.75rem;
-  margin: 0 0.5rem;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  background: var(--bg);
-}
-
-.profile-investment-legend-left {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  overflow-x: hidden;
-
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.profile-investment-legend-color {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.profile-investment-legend-right {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.profile-investment-legend-right strong {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-highlight);
-}
-
-.profile-investment-legend-right span {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
 /* ─── profile-set-extra: hidden when desktop sidebar is collapsed ─── */
 .profile-set-extra.profile-set-extra--hidden {
-  display: none;
-  visibility: hidden;
+  display: flex;
+  visibility: visible;
 }
 
 .profile-set-extra {
   display: contents;
 }
 
-/* ─── Responsive: max-width 1024px ───────────── */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
 
   .profile-pic {
     width: 104px;
@@ -1765,6 +1381,8 @@
     padding: 0rem;
     background: transparent;
     z-index: 999990;
+    flex-direction: row;
+    justify-content: space-evenly;
   }
 
   .point-history-item {
@@ -1774,7 +1392,8 @@
   /* Fixed top bar — same shell for both states */
   .profile {
     width: calc(100% - 2rem);
-    max-height: calc(100% - 2rem);
+    height: fit-content;
+    max-height: calc(100vh - 7rem);
     padding: 0.5rem;
     box-sizing: border-box;
 
@@ -1811,6 +1430,17 @@
     min-height: 0;
     max-height: calc(100vh - 3rem);
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: max-content;
+  }
+
+  .profile-set {
+    grid-column: span 2/3;
+  }
+
+  .profile-stock:last-child {
+    grid-column: span 2/3;
   }
 
   .profile-content-pop {
@@ -1819,13 +1449,17 @@
     overflow-y: auto;
   }
 
-  .notification-dropdown--fixed {
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    min-width: 300px;
-    max-width: min(400px, calc(100vw - 2rem));
+  .profile-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
   }
+
+  /* notification-dropdown--fixed is a portal on document.body;
+     its position is set via inline style from getBoundingClientRect,
+     so no override is needed here */
 
   /* Always show all 4 icons — override desktop hidden state */
   .profile-set-extra--hidden {
@@ -1841,18 +1475,15 @@
   .profile:not(.collapsed) .profile-content>*:not(.profile-set) {
     display: flex !important;
     /* flex-wrap: wrap; */
-    padding: 0.5rem 0;
-    max-height: calc(100% - 4rem);
+    padding: 0.5rem;
     width: 100%;
     box-sizing: border-box;
     animation: profileDropDown 0.3s ease;
   }
 
-  .profile:not(.collapsed) .profile-content>*:not(.profile-set, .profile-master) {
-    padding: 0.5rem;
-    height: fit-content;
-    max-height: calc(100vh - 4rem);
-    z-index: 100;
+  .profile-stats hr {
+    width: 100%;
+    height: 1px
   }
 
   @keyframes profileDropDown {
@@ -1894,12 +1525,6 @@
     visibility: hidden;
   }
 
-  .achievement-trigger-item:hover+.achievement-speech-bubble2 {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
   .achievement-grid-full {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     overflow-y: auto;
@@ -1914,13 +1539,18 @@
 
   .title-summary-card {
     position: relative;
-    height: calc(100vh - 5.65rem);
   }
 
   .title-list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5rem;
+  }
+
+  .notification-dropdown--fixed {
+    right: auto;
+    /* left: 0%; */
+    transform: translateX(calc(0vw + 50%));
   }
 }
 
@@ -1953,12 +1583,16 @@
     height: calc(50vh - 9rem);
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+
+  .achievement-speech-bubble2 {
+    top: calc(0% + 9.75rem);
+  }
 }
 
 /* ─── Responsive: max-width 480px ───────────── */
 @media (max-width: 480px) {
   .title-list {
-    height: calc(30vh - 5.5rem);
+    height: calc(10vh + 1.5rem);
     overflow-y: auto;
   }
 

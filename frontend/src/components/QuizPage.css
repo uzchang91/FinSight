@@ -16,22 +16,17 @@
   gap: 1rem;
 
   border: 1px solid var(--border);
-  border-radius: 1.5rem;
+  border-radius: 0.75rem;
 }
 
 .quiz-title {
   height: fit-content;
-  padding: 1rem 1.5rem;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   justify-content: start;
   gap: 0.5rem;
-
-  background-color: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  box-sizing: border-box;
 }
 
 .quiz-title h1 {
@@ -50,7 +45,6 @@
 }
 
 .quiz-subtitle {
-  text-align: center;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text);
@@ -315,13 +309,15 @@
 }
 
 .explanation-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
   padding: 1rem;
+  
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
 }
 
 .explanation-title {
@@ -891,7 +887,7 @@
 
   background-color: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 1.5rem;
+  border-radius: 0.75rem;
 }
 
 .quiz-ranking-header {
@@ -1063,7 +1059,7 @@
 
 .wrong-note-toggle {
   width: 100%;
-  padding: 1rem 1.1rem;
+  padding: 1rem;
   background: transparent;
   border: none;
   display: flex;
@@ -1110,10 +1106,12 @@
 
 .wrong-note-body.open {
   max-height: 500px;
+  padding:0.5rem 1rem;
+  padding-bottom: 1rem;
 }
 
 .wrong-note-options {
-  padding: 0 1rem 1rem;
+  padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1123,7 +1121,7 @@
   padding: 0.75rem 1rem;
   display: flex;
   gap: 0.5rem;
-  border-radius: 0.625rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: var(--bg);
   font-size: 1rem;

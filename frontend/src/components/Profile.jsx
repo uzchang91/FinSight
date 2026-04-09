@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import ReactDOM from 'react-dom'
 import './Profile.css'
 import Notification from '../assets/icons/notification.svg?react'
 import Edit from '../assets/icons/edit.svg?react'
 import Account from '../assets/icons/account.svg?react'
 import Logout from '../assets/icons/logout.svg?react'
 import Spread from '../assets/icons/spread.svg?react'
-import CloseIcon from '../assets/icons/close.svg?react'
 import Premium from '../assets/icons/premium.svg?react'
 import defaultProfile from '../assets/chicken running machine.png'
 import { getAchievementIcon } from '../utils/achievementIconMap'
@@ -200,7 +200,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const [notifications, setNotifications] = useState([])
   const [notificationPosition, setNotificationPosition] = useState({
     top: 0,
-    right: 0,
+    left: 0,
   })
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -271,7 +271,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
       if (
         notificationRef.current &&
         !notificationRef.current.contains(event.target) &&
-        !event.target.closest('.notification-dropdown')
+        !event.target.closest('.notification-dropdown--fixed')
       ) {
         setIsNotificationOpen(false)
       }
@@ -775,58 +775,58 @@ const Profile = ({ collapsed, setCollapsed }) => {
   }
 
   const handleSave = async () => {
-  if (!editNickname.trim()) {
-    setSaveError('닉네임을 입력해주세요.')
-    nicknameInputRef.current?.focus()
-    return
-  }
-
-  setSaving(true)
-  setSaveError('')
-
-  try {
-    if (fileInputRef.current?.files[0]) {
-      const formData = new FormData()
-      formData.append('profile_image', fileInputRef.current.files[0])
-
-      const imageRes = await fetch(`${API_BASE_URL}/api/auth/me/image`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: formData,
-      })
-
-      let imageData = null
-      try {
-        imageData = await imageRes.json()
-      } catch (_) {
-        imageData = null
-      }
-
-      if (!imageRes.ok || imageData?.success === false) {
-        throw new Error(imageData?.message || '프로필 이미지 업로드에 실패했습니다.')
-      }
+    if (!editNickname.trim()) {
+      setSaveError('닉네임을 입력해주세요.')
+      nicknameInputRef.current?.focus()
+      return
     }
 
-    const data = await api.patch('/api/auth/me', {
-      nickname: editNickname.trim(),
-    })
+    setSaving(true)
+    setSaveError('')
 
-    setMember((prev) => ({
-      ...prev,
-      ...data.data.member,
-      profile_image2: editPreviewUrl || data.data.member.profile_image2,
-    }))
+    try {
+      if (fileInputRef.current?.files[0]) {
+        const formData = new FormData()
+        formData.append('profile_image', fileInputRef.current.files[0])
 
-    setEditMode(false)
-    setEditPreviewUrl(null)
-  } catch (err) {
-    setSaveError(err.message || '프로필 저장에 실패했습니다.')
-  } finally {
-    setSaving(false)
+        const imageRes = await fetch(`${API_BASE_URL}/api/auth/me/image`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: formData,
+        })
+
+        let imageData = null
+        try {
+          imageData = await imageRes.json()
+        } catch (_) {
+          imageData = null
+        }
+
+        if (!imageRes.ok || imageData?.success === false) {
+          throw new Error(imageData?.message || '프로필 이미지 업로드에 실패했습니다.')
+        }
+      }
+
+      const data = await api.patch('/api/auth/me', {
+        nickname: editNickname.trim(),
+      })
+
+      setMember((prev) => ({
+        ...prev,
+        ...data.data.member,
+        profile_image2: editPreviewUrl || data.data.member.profile_image2,
+      }))
+
+      setEditMode(false)
+      setEditPreviewUrl(null)
+    } catch (err) {
+      setSaveError(err.message || '프로필 저장에 실패했습니다.')
+    } finally {
+      setSaving(false)
+    }
   }
-}
 
   const handleLogout = () => {
     if (!confirm('로그아웃 하시겠어요?')) return
@@ -1045,57 +1045,57 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 </div>
               )}
             </div>
-              {filteredPointHistory.length > 10 && (
-                <div
-                  className={`point-history-more-row ${visibleHistoryCount <= 10 ? 'single' : 'double'}`}
-                >
-                  {visibleHistoryCount <= 10 ? (
-                    <button
-                      type='button'
-                      className='title-equip-btn'
-                      onClick={() =>
-                        setVisibleHistoryCount((prev) =>
-                          Math.min(prev + 10, filteredPointHistory.length)
-                        )
-                      }
-                    >
-                      더보기
-                    </button>
-                  ) : (
-                    <>
-                      {visibleHistoryCount < filteredPointHistory.length ? (
-                        <button
-                          type='button'
-                          className='title-equip-btn'
-                          onClick={() =>
-                            setVisibleHistoryCount((prev) =>
-                              Math.min(prev + 10, filteredPointHistory.length)
-                            )
-                          }
-                        >
-                          더보기
-                        </button>
-                      ) : (
-                        <div className='point-history-more-placeholder' />
-                      )}
-
-                      <span className='point-history-visible-count'>
-                        {visibleHistory.length} / {filteredPointHistory.length}
-                      </span>
-
+            {filteredPointHistory.length > 10 && (
+              <div
+                className={`point-history-more-row ${visibleHistoryCount <= 10 ? 'single' : 'double'}`}
+              >
+                {visibleHistoryCount <= 10 ? (
+                  <button
+                    type='button'
+                    className='title-equip-btn'
+                    onClick={() =>
+                      setVisibleHistoryCount((prev) =>
+                        Math.min(prev + 10, filteredPointHistory.length)
+                      )
+                    }
+                  >
+                    더보기
+                  </button>
+                ) : (
+                  <>
+                    {visibleHistoryCount < filteredPointHistory.length ? (
                       <button
                         type='button'
                         className='title-equip-btn'
                         onClick={() =>
-                          setVisibleHistoryCount((prev) => Math.max(prev - 10, 10))
+                          setVisibleHistoryCount((prev) =>
+                            Math.min(prev + 10, filteredPointHistory.length)
+                          )
                         }
                       >
-                        접기
+                        더보기
                       </button>
-                    </>
-                  )}
-                </div>
-              )}
+                    ) : (
+                      <div className='point-history-more-placeholder' />
+                    )}
+
+                    <span className='point-history-visible-count'>
+                      {visibleHistory.length} / {filteredPointHistory.length}
+                    </span>
+
+                    <button
+                      type='button'
+                      className='title-equip-btn'
+                      onClick={() =>
+                        setVisibleHistoryCount((prev) => Math.max(prev - 10, 10))
+                      }
+                    >
+                      접기
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -1215,39 +1215,29 @@ const Profile = ({ collapsed, setCollapsed }) => {
               {achievementLoading ? (
                 <div className='achievement-empty-block'>불러오는 중...</div>
               ) : inProgressAchievements.length > 0 ? (
-              inProgressAchievements.map((item) => (
-              <React.Fragment key={item.ach_id}>
-                <div className='achievement-trigger-item'>
-                  <div className='achievement-mini-icon'>
-                    <img
-                      src={getAchievementIcon(item.ach_id)}
-                      alt={item.name}
-                      className='achievement-mini-icon-img'
-                    />
-                  </div>
-
-                  <div className='achievement-speech-bubble'>
-                    <div className='bubble-arrow' />
-                    <div className='bubble-content'>
-                      <strong className='bubble-name'>{item.name}</strong>
-                      <p className='bubble-desc'>
-                        {getTooltipText(item, '업적 설명이 없습니다.')}
-                      </p>
+                inProgressAchievements.map((item) => (
+                  <React.Fragment key={item.ach_id}>
+                    <div className='achievement-trigger-item'>
+                      <div className='achievement-mini-icon'>
+                        <img
+                          src={getAchievementIcon(item.ach_id)}
+                          alt={item.name}
+                          className='achievement-mini-icon-img'
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className='achievement-speech-bubble2'>
-                  <div className='bubble-arrow2' />
-                  <div className='bubble-content'>
-                    <strong className='bubble-name'>{item.name}</strong>
-                    <p className='bubble-desc'>
-                      {getTooltipText(item, '업적 설명이 없습니다.')}
-                    </p>
-                  </div>
-                </div>
-              </React.Fragment>
-            ))
+                    <div className='achievement-speech-bubble2'>
+                      <div className='bubble-arrow2' />
+                      <div className='bubble-content'>
+                        <strong className='bubble-name'>{item.name}</strong>
+                        <p className='bubble-desc'>
+                          {getTooltipText(item, '업적 설명이 없습니다.')}
+                        </p>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))
               ) : (
                 <div className='achievement-empty-block'>진행 중인 업적이 없습니다.</div>
               )}
@@ -1285,6 +1275,15 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   className={`icon-container set-icons ${isNotificationOpen ? 'set-icons--active' : ''}`}
                   onClick={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect()
+                    const dropdownWidth = 320
+                    const clampedLeft = Math.min(
+                      rect.left,
+                      window.innerWidth - dropdownWidth - 8
+                    )
+                    setNotificationPosition({
+                      top: rect.bottom + 8,
+                      left: Math.max(8, clampedLeft),
+                    })
                     setIsNotificationOpen((prev) => {
                       const next = !prev
                       if (next) setHasUnreadNotification(false)
@@ -1297,8 +1296,10 @@ const Profile = ({ collapsed, setCollapsed }) => {
                   {hasUnreadNotification && <span className='notification-dot' />}
                 </button>
 
-                {isNotificationOpen && (
-                  <div className='notification-dropdown notification-dropdown--fixed'>
+                {isNotificationOpen && ReactDOM.createPortal(
+                  <div
+                    className='notification-dropdown notification-dropdown--fixed'
+                  >
                     <div className='notification-dropdown-header'>
                       <div className='notification-dropdown-title'>최근 알림 목록</div>
                       <button
@@ -1333,7 +1334,8 @@ const Profile = ({ collapsed, setCollapsed }) => {
                         </div>
                       ))
                     )}
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
 
@@ -1494,76 +1496,36 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 )}
 
               </div>
-              <div className='profile-stats'>
-                <div className='stats-description'>
-                  <span className='description-top'>{displayTier || '브론즈'}</span>
-                  <p>{tierRank ? `${tierRank}` : '-'}<span className='point-unit'>위</span></p>
-                </div>
-                <hr />
-                <div className='stats-description'>
-                  <span className='description-top'>ISR</span>
-                  <p>{member?.isr_score ?? 0}</p>
-                </div>
-              </div>
 
-              <div className='total-description'>
-                <span className='description-top'>보유 포인트</span>
-                <p
-                  className='description-slave'
-                >
-                  <span
-                    className='clickable-points'
-                    onClick={() => setShowPointHistory(true)}
-                  >
-                    {formatNumber(member?.points ?? 0)}
-                  </span>
-                  <span className='point-unit'>pt</span>
-                </p>
-              </div>
-
-              <div className='profile-stock'>
-                <div className='achievement-title-row'>
-                  <h2>투자 현황</h2>
-                  <button
-                    type='button'
-                    className='achievement-more-btn'
-                    onClick={() => setShowInvestmentModal(true)}
-                  >
-                    더보기
-                  </button>
-                </div>
-                <div className='profile-stock-list'>
-                  <div className='stock-content'>
-                    <span className='description-top'>원금</span>
-                    <p className='description-slave'>
-                      {formatNumber(displayTotalInvested)}
-                      <span>pt</span>
-                    </p>
+              <div className='profile-investment-legend'>
+                <div className='profile-stats'>
+                  <div className='stats-description'>
+                    <span className='description-top'>{displayTier || '브론즈'}</span>
+                    <p>{tierRank ? `${tierRank}` : '-'}<span className='point-unit'>위</span></p>
                   </div>
-
-                  <div className='stock-content'>
-                    <span className='description-top'>
-                      총손익
+                  <hr />
+                  <div className='stats-description'>
+                    <span className='description-top'>ISR</span>
+                    <p>{member?.isr_score ?? 0}</p>
+                  </div>
+                </div>
+                
+                <div className='total-description'>
+                  <span className='description-top'>보유 포인트</span>
+                  <p
+                    className='description-slave'
+                  >
+                    <span
+                      className='clickable-points'
+                      onClick={() => setShowPointHistory(true)}
+                    >
+                      {formatNumber(member?.points ?? 0)}
                     </span>
-                    <p
-                      className={`description-slave ${Number(displayTotalProfit) >= 0 ? 'gain' : 'loss'}`}
-                    >
-                      {formatSignedNumber(displayTotalProfit)}
-                      <span>pt</span>
-                    </p>
-                  </div>
-
-                  <div className='stock-content'>
-                    <span className='description-top'>변동률</span>
-                    <p
-                      className={`description-slave ${Number(totalProfitRate) >= 0 ? 'gain' : 'loss'}`}
-                    >
-                      {formatSignedPercent(Number(totalProfitRate).toFixed(2))}
-                      <span>%</span>
-                    </p>
-                  </div>
+                    <span className='point-unit'>pt</span>
+                  </p>
                 </div>
               </div>
+
 
               <div className='profile-stock'>
                 <div className='achievement-title-row'>
@@ -1608,173 +1570,6 @@ const Profile = ({ collapsed, setCollapsed }) => {
           )}
         </div>
       </div>
-      {showInvestmentModal && (
-        <div
-          className='profile-investment-modal-overlay'
-          onClick={() => setShowInvestmentModal(false)}
-        >
-          <div
-            className='profile-investment-modal'
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className='profile-investment-modal-header'>
-              <h2>나의 포트폴리오</h2>
-              <button
-                type='button'
-                className='profile-investment-modal-close'
-                onClick={() => setShowInvestmentModal(false)}
-              >
-                <CloseIcon alt="close" />
-              </button>
-            </div>
-
-            <div className='profile-investment-modal-body'>
-              <div className='profile-investment-summary-grid'>
-                <div className='profile-investment-summary-card'>
-                  <span className='profile-investment-summary-label'>원금</span>
-                  <strong className='profile-investment-summary-value'>
-                    {formatNumber(displayTotalInvested)}
-                    <span>pt</span>
-                  </strong>
-                </div>
-
-                <div className='profile-investment-summary-card'>
-                  <span className='profile-investment-summary-label'>총손익</span>
-                  <strong
-                    className={`profile-investment-summary-value ${Number(displayTotalProfit) >= 0 ? 'gain' : 'loss'
-                      }`}
-                  >
-                    {formatSignedNumber(displayTotalProfit)}
-                    <span>pt</span>
-                  </strong>
-                </div>
-
-                <div className='profile-investment-summary-card'>
-                  <span className='profile-investment-summary-label'>변동률</span>
-                  <strong
-                    className={`profile-investment-summary-value ${Number(totalProfitRate) >= 0 ? 'gain' : 'loss'
-                      }`}
-                  >
-                    {formatSignedPercent(Number(totalProfitRate).toFixed(2))}
-                    <span>%</span>
-                  </strong>
-                </div>
-              </div>
-
-              <div className='profile-investment-sections'>
-                <div className='profile-investment-section'>
-                  <div className='profile-investment-section-title-row'>
-                    <h3>보유 주식</h3>
-                    <span>{ownedStocks.length}개</span>
-                  </div>
-
-                  <div className='profile-investment-section-body'>
-                    {ownedStocks.length > 0 ? (
-                      ownedStocks.map((stock) => (
-                        <>
-                          <div
-                            key={`profile-owned-${stock.stockCode ?? stock.stock_code ?? stock.stockName}`}
-                            className='profile-side-stock-item'
-                          >
-                            <div className='profile-side-stock-top'>
-                              <p>{stock.stockName || stock.name || '-'}</p>
-                              <p>
-                                {stock.price !== null && stock.price !== undefined
-                                  ? `${Number(stock.price).toLocaleString()}원`
-                                  : '-'}
-                              </p>
-                            </div>
-
-                            <div className='profile-side-stock-mid'>
-                              <span>
-                                {Number(stock.quantity || 0)}주
-                                {' '}
-                                (평단가 {Number(stock.avgPrice || stock.avg_price || 0).toLocaleString()}원)
-                              </span>
-                              <span
-                                className={
-                                  Number(stock.myChangeRate || stock.myChangeRate || 0) >= 0
-                                    ? 'gain'
-                                    : 'loss'
-                                }
-                              >
-                                {stock.myChangeRate !== null && stock.myChangeRate !== undefined
-                                  ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(
-                                    stock.myChangeRate).toFixed(2)}%`
-                                  : stock.change_rate !== null && stock.change_rate !== undefined
-                                    ? `${Number(stock.change_rate) >= 0 ? '+' : ''}${Number(
-                                      stock.change_rate
-                                    ).toFixed(2)}%`
-                                    : '-'}
-                              </span>
-                            </div>
-                          </div>
-                          <div className='hr' />
-                        </>
-                      ))
-                    ) : (
-                      <div className='profile-investment-empty'>보유 주식이 없습니다.</div>
-                    )}
-                  </div>
-                </div>
-
-                <div className='profile-investment-section'>
-                  <div className='profile-investment-section-title-row'>
-                    <h3>보유 비중</h3>
-                    <span>원금 기준</span>
-                  </div>
-
-                  <div className='profile-investment-section-body'>
-                    {portfolioChartData.segments.length > 0 ? (
-                      <>
-                        <div className='profile-investment-pie-wrap'>
-                          <div
-                            className='profile-investment-pie'
-                            style={{ background: animatedPortfolioChartData.gradient }}
-                          >
-                            <div className='profile-investment-pie-hole'>
-                              <span className='profile-investment-pie-hole-label'>총 원금</span>
-                              <p>
-                                <strong>{formatNumber(portfolioChartData.total)}</strong>
-                                <span>pt</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className='profile-investment-legend'>
-                          {portfolioChartData.segments.map((item) => (
-                            <div className='profile-investment-legend-item' key={item.id}>
-                              <div className='profile-investment-legend-left'>
-                                <span
-                                  className='profile-investment-legend-color'
-                                  style={{ backgroundColor: item.color }}
-                                />
-                                <span>{item.name}</span>
-                              </div>
-
-                              <div className='profile-investment-legend-right'>
-                                <span>{formatNumber(item.amount)}pt</span>
-                                <strong>
-                                  {item.ratio.toFixed(2)}%
-                                </strong>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <div className='profile-investment-empty'>
-                        보유 주식이 없습니다.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }
