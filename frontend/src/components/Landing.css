@@ -96,11 +96,15 @@
   width: fit-content;
   box-sizing: border-box;
   display: flex;
-  gap: 1rem;
+}
+
+.floating-nav {
+  gap: 0.5rem;
 }
 
 .floating-nav2 {
   width: 100%;
+  gap: 1rem;
 }
 
 .kakao_btn,
@@ -729,6 +733,7 @@
 
   .kakao_btn,
   .google_btn {
+    width: 2.5rem;
     justify-content: center;
     padding: 0.5rem;
   }
