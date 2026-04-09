@@ -406,8 +406,7 @@ exports.kakaoCallback = async (req, res) => {
       user.provider,
       user.providerId,
       user.nickname,
-      user.profile_image,
-      user.profile_image2
+      user.profile_image2 || user.profile_image,
     );
 
     const token = createToken(result.member);
@@ -507,8 +506,7 @@ exports.googleCallback = async (req, res) => {
       user.provider,
       user.providerId,
       user.nickname,
-      user.profile_image,
-      user.profile_image2
+      user.profile_image2 || user.profile_image,
     );
 
     const token = createToken(result.member);
