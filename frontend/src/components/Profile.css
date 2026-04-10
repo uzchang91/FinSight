@@ -1277,7 +1277,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.25rem;
 
   background: var(--bg);
   border: 1px solid var(--border);
@@ -1383,10 +1383,6 @@
     z-index: 999990;
     flex-direction: row;
     justify-content: space-evenly;
-  }
-
-  .point-history-item {
-    gap: 0.25rem;
   }
 
   /* Fixed top bar — same shell for both states */
