@@ -454,7 +454,8 @@
 }
 
 .notification-dropdown {
-  min-width: 280px;
+  min-width: 30%;
+  max-width: 50%;
   max-height: fit-content;
   overflow-y: auto;
   overflow-x: hidden;
@@ -475,9 +476,8 @@
 .notification-dropdown--fixed {
   /* Position is set via inline style from the portal; these are safety defaults */
   position: fixed;
-  top: 4rem;
-  right: 0;
-  transform: translateX(-50%);
+  top: 5rem;
+  right: 1rem;
   z-index: 99999;
   max-width: min(320px, calc(100vw - 2rem));
 }
@@ -1545,12 +1545,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5rem;
-  }
-
-  .notification-dropdown--fixed {
-    right: auto;
-    /* left: 0%; */
-    transform: translateX(calc(0vw + 50%));
   }
 }
 

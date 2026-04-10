@@ -84,6 +84,7 @@ const Stocks = () => {
   const [ownedStocks, setOwnedStocks] = useState([]);
   const [likedStocks, setLikedStocks] = useState([]);
   const [likedCodeSet, setLikedCodeSet] = useState(new Set());
+  const [sideTab, setSideTab] = useState('owned');
 
   const normalizeArray = (res) => {
     const data = res?.data?.data ?? res?.data ?? [];
@@ -677,77 +678,82 @@ const Stocks = () => {
 
         <div className='stocks-side'>
           <div className='stocks-card'>
-            <h3>보유 주식</h3>
-            <div className='stocks-card-body'>
-              {ownedStocks.length > 0 ? (
-                ownedStocks.map((stock) => (
-                  <React.Fragment key={`owned-${stock.stockCode}`}>
-                    <div
-                      className={`side-stock-item ${openStockCode === stock.stockCode ? 'flex' : ''}`}
-                      onClick={() =>
-                        setOpenStockCode((prev) =>
-                          prev === stock.stockCode ? null : stock.stockCode
-                        )
-                      }
-                    >
-                      <div className='side-stock-text'>
-                        <div className='side-stock-top'>
-                          <p>{stock.stockName}</p>
-                          <p>
-                            {stock.price !== null && stock.totalPrice !== undefined
-                              ? `${Number(stock.totalPrice).toLocaleString()}`
-                              : '-'}
-                            <span>pt</span>
-                          </p>
-                        </div>
-
-                        <div className='side-stock-mid'>
-                          <span>
-                            {stock.quantity}주 (평단가 {Number(stock.avgPrice || 0).toLocaleString()})
-                          </span>
-                          <span
-                            className={Number(stock.myChangeRate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}
-                          >
-                            {stock.myChangeRate !== null && stock.myChangeRate !== undefined
-                              ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(
-                                stock.myChangeRate
-                              ).toFixed(2)}%`
-                              : '-'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className={`side-stock-actions ${openStockCode === stock.stockCode ? 'flex' : ''}`}>
-                        <button
-                          className='trade-btn buy side'
-                          onClick={(e) => openTradeModal('buy', stock, e)}
-                        >
-                          매수
-                        </button>
-                        <button
-                          className='trade-btn sell side'
-                          onClick={(e) => openTradeModal('sell', stock, e)}
-                        >
-                          매도
-                        </button>
-                      </div>
-                    </div>
-                  </React.Fragment>
-                ))
-              ) : (
-                <div className='stocks-empty side-empty'>보유 주식이 없습니다.</div>
-              )}
+            <div className='stocks-card-tabs'>
+              <button
+                className={`stocks-card-tab ${sideTab === 'owned' ? 'active' : ''}`}
+                onClick={() => setSideTab('owned')}
+              >
+                보유 주식
+              </button>
+              <button
+                className={`stocks-card-tab ${sideTab === 'liked' ? 'active' : ''}`}
+                onClick={() => setSideTab('liked')}
+              >
+                찜한 주식
+              </button>
             </div>
-          </div>
 
-          <div className='stocks-card'>
-            <h3>찜한 주식</h3>
             <div className='stocks-card-body'>
-              {likedStocks.length > 0 ? (
-                likedStocks.map((stock) => {
-                  const liked = isLiked(stock.stockCode);
+              {sideTab === 'owned' ? (
+                ownedStocks.length > 0 ? (
+                  ownedStocks.map((stock) => (
+                    <React.Fragment key={`owned-${stock.stockCode}`}>
+                      <div
+                        className={`side-stock-item ${openStockCode === stock.stockCode ? 'flex' : ''}`}
+                        onClick={() =>
+                          setOpenStockCode((prev) =>
+                            prev === stock.stockCode ? null : stock.stockCode
+                          )
+                        }
+                      >
+                        <div className='side-stock-text'>
+                          <div className='side-stock-top'>
+                            <p>{stock.stockName}</p>
+                            <p>
+                              {stock.price !== null && stock.totalPrice !== undefined
+                                ? `${Number(stock.totalPrice).toLocaleString()}`
+                                : '-'}
+                              <span>pt</span>
+                            </p>
+                          </div>
 
-                  return (
+                          <div className='side-stock-mid'>
+                            <span>
+                              {stock.quantity}주 (평단가 {Number(stock.avgPrice || 0).toLocaleString()})
+                            </span>
+                            <span
+                              className={Number(stock.myChangeRate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}
+                            >
+                              {stock.myChangeRate !== null && stock.myChangeRate !== undefined
+                                ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(stock.myChangeRate).toFixed(2)}%`
+                                : '-'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className={`side-stock-actions ${openStockCode === stock.stockCode ? 'flex' : ''}`}>
+                          <button
+                            className='trade-btn buy side'
+                            onClick={(e) => openTradeModal('buy', stock, e)}
+                          >
+                            매수
+                          </button>
+                          <button
+                            className='trade-btn sell side'
+                            onClick={(e) => openTradeModal('sell', stock, e)}
+                          >
+                            매도
+                          </button>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <div className='stocks-empty side-empty'>보유 주식이 없습니다.</div>
+                )
+              ) : (
+                likedStocks.length > 0 ? (
+                  likedStocks.map((stock) => (
                     <React.Fragment key={`liked-${stock.stockCode}`}>
                       <div
                         className='side-stock-item flex'
@@ -770,7 +776,6 @@ const Stocks = () => {
                         </div>
 
                         <div className='side-liked-actions flex'>
-
                           <button
                             type='button'
                             className='side-like-btn liked'
@@ -786,14 +791,13 @@ const Stocks = () => {
                           >
                             매수
                           </button>
-
                         </div>
-                      </div >
+                      </div>
                     </React.Fragment>
-                  );
-                })
-              ) : (
-                <div className='stocks-empty side-empty'>찜한 주식이 없습니다.</div>
+                  ))
+                ) : (
+                  <div className='stocks-empty side-empty'>찜한 주식이 없습니다.</div>
+                )
               )}
             </div>
           </div>

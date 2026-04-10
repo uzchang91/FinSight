@@ -1,16 +1,18 @@
-.bg-canvas {
+.header-canvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 40vh;
+  overflow: hidden;
   z-index: -3;
   pointer-events: none;
-  
+
   background: linear-gradient(115deg,
-      var(--bg),
       var(--primary-highlight),
-      var(--warning-highlight));
+      var(--warning-highlight),
+      var(--bg),
+      );
   background-size: 200% 200%;
   animation: gradientMove 6s ease infinite;
 }

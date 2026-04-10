@@ -344,8 +344,9 @@
 /* ─── Investment modal ───────────────────────── */
 .dash-portfolio {
   display: flex;
-  /* flex-direction: column; */
   gap: 1rem;
+
+  background: var(--bg);
 }
 
 .profile-investment-section {

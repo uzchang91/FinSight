@@ -90,21 +90,11 @@ const Navigation = ({
 
             <li
               className={`nav-menu ${activeMenu === 'Education' ? 'active' : ''}`}
-              onClick={() => setActiveMenu('Education')}
-              title='교육실'
+              onClick={() => setActiveMenu('Strategy')}
+              title='전략실'
             >
               <div className='nav-line'>
                 <Education alt='Education' className='icons icon-btn' />
-              </div>
-            </li>
-
-            <li
-              className={`nav-menu ${activeMenu === 'Quiz' ? 'active' : ''}`}
-              onClick={() => setActiveMenu('Quiz')}
-              title='퀴즈'
-            >
-              <div className='nav-line'>
-                <Quiz alt='퀴즈' className='icons icon-btn' />
               </div>
             </li>
 

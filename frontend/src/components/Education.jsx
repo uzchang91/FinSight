@@ -46,7 +46,7 @@ const getDailyCountsStorageKey = (memberId) => {
   return memberId ? `educationDailyCounts_${memberId}` : 'educationDailyCounts_guest'
 }
 
-const Education = ({ onNavigate }) => {
+const Education = () => {
   const [searchText, setSearchText] = useState('')
   const [openLessonId, setOpenLessonId] = useState(null)
   const [showAllLessons, setShowAllLessons] = useState(false)
@@ -217,7 +217,7 @@ const Education = ({ onNavigate }) => {
 
   // 🟢 수정 3: 검색이나 필터를 바꾸면 다시 초기 5개로 리셋
   useEffect(() => {
-    setVisibleCount(5)
+    setVisibleCount(10)
     setOpenLessonId(null)
     setCountdown(0)
   }, [searchText, selectedStatusFilter, selectedDifficultyFilter])
@@ -230,7 +230,7 @@ const Education = ({ onNavigate }) => {
   const handleCollapse = () => {
     setVisibleCount((prev) => {
       const newCount = prev - 10
-      return newCount < 5 ? 5 : newCount
+      return newCount < 10 ? 10 : newCount
     })
   }
 
@@ -350,12 +350,10 @@ const Education = ({ onNavigate }) => {
 
   return (
     <div className='education-container'>
-      <div className='breadcrumb'>대시보드 &gt; 교육실</div>
-
       <div className='education-top-card'>
         <div className='education-title-wrap'>
           <h1>
-            주식의 <strong>기초를 알아가자!</strong>
+            <strong>주식 교육</strong> 리스트
           </h1>
           <p>
             기초를 알아야 <span className='daily-percent'>발전</span>해요!
@@ -563,11 +561,11 @@ const Education = ({ onNavigate }) => {
               )
             })}
 
-            {filteredLessons.length > 5 && (
+            {filteredLessons.length > 10 && (
               <div className='education-more-wrap'>
 
                 {/* 5개 이상 열렸을 때만 '학습 접기' 버튼 표시 */}
-                {visibleCount > 5 && (
+                {visibleCount > 10 && (
                   <button
                     type='button'
                     className='education-more-btn'

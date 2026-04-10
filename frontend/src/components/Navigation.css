@@ -219,8 +219,9 @@
     align-items: center;
   }
 
-  .nav-line span {
-    display: none;
+  .nav-line {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 
   .nav-menu {
@@ -236,10 +237,6 @@
   .billing-nav-button {
     padding: 0.5rem;
     height: 2.5rem;
-  }
-
-  .billing-nav-button span {
-    display: none;
   }
 
   .nav-content {

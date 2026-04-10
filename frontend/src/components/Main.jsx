@@ -3,13 +3,14 @@ import './Main.css'
 import Navigation from './Navigation'
 import Dashboard from './Dashboard'
 import Profile from './Profile'
-import Education from './Education'
-import Quiz from './QuizPage'
+import Strategy from './Strategy'
 import Stocks from './Stocks'
 import Ranking from './Ranking'
 import Billing from './Billing'
 import FAQPage from './FAQPage'
 import { api } from '../config/api'
+import HeaderBackground from './HeaderBackground'
+import HeaderGrid from './HeaderGrid'
 
 const Main = () => {
   const VALID_MENUS = [
@@ -20,13 +21,15 @@ const Main = () => {
     'Ranking',
     'Billing',
     'FAQ',
+    'Strategy',
   ]
 
   const PROTECTED_MENUS = ['Quiz', 'Stocks', 'Billing']
 
   const getInitialMenu = () => {
     const hash = window.location.hash.replace('#', '')
-    return VALID_MENUS.includes(hash) ? hash : 'Dashboard'
+    const menu = hash.split('/')[0]
+    return VALID_MENUS.includes(menu) ? menu : 'Dashboard'
   }
 
   const [activeMenu, setActiveMenu] = useState(getInitialMenu)
@@ -52,7 +55,8 @@ const Main = () => {
     setIsLoggedIn(loggedIn)
 
     const initialHash = window.location.hash.replace('#', '')
-    if (PROTECTED_MENUS.includes(initialHash) && !loggedIn) {
+    const initialMenu = initialHash.split('/')[0]
+    if (PROTECTED_MENUS.includes(initialMenu) && !loggedIn) {
       window.location.hash = 'Dashboard'
       setActiveMenu('Dashboard')
     }
@@ -67,16 +71,17 @@ const Main = () => {
 
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '')
-      if (!VALID_MENUS.includes(hash)) return
+      const menu = hash.split('/')[0]
+      if (!VALID_MENUS.includes(menu)) return
 
       const currentLoggedIn = !!localStorage.getItem('token')
 
-      if (PROTECTED_MENUS.includes(hash) && !currentLoggedIn) {
+      if (PROTECTED_MENUS.includes(menu) && !currentLoggedIn) {
         window.location.hash = 'Dashboard'
         return
       }
 
-      setActiveMenu(hash)
+      setActiveMenu(menu)
     }
 
     window.addEventListener('hashchange', handleHashChange)
@@ -189,10 +194,11 @@ const Main = () => {
     switch (activeMenu) {
       case 'Dashboard':
         return <Dashboard onNavigate={handleMenuChange} />
-      case 'Education':
-        return <Education onNavigate={handleMenuChange} />
-      case 'Quiz':
-        return loggedIn ? <Quiz /> : <Dashboard />
+      case 'Strategy':
+        return <Strategy
+          onNavigate={handleMenuChange}
+          activeMenu={activeMenu}
+        />
       case 'Stocks':
         return loggedIn ? <Stocks /> : <Dashboard />
       case 'Ranking':
@@ -213,7 +219,11 @@ const Main = () => {
 
   return (
     <>
-      <div className={`main-body ${profileCollapsed ? 'profile-collapsed' : ''}`}>
+    <div className='header-gd'>
+      <HeaderGrid />
+      <HeaderBackground />
+    </div>
+      <div className='main-body'>
         <aside className='navigation-area'>
           <Navigation
             setActiveMenu={handleMenuChange}

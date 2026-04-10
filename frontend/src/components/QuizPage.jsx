@@ -1384,8 +1384,6 @@ const QuizPage = () => {
 
   return (
     <div className='quiz-container'>
-      <div className='breadcrumb'>대시보드 &gt; 퀴즈</div>
-
       <div className='quiz-title'>
         <h1>나의 기초를 <strong>도전해보자!</strong></h1>
         <p>교육실에서 배운 내용을 적용해보세요.</p>

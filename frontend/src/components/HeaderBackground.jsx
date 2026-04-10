@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import "./MarketBackground.css";
+import "./HeaderBackground.css";
 
-const MarketBackground = () => {
+const HeaderBackground = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const MarketBackground = () => {
 
       candles.forEach((c) => {
         const wickOscillation = Math.sin(t * (c.speed * 0.2) + c.phase);
-        const wickVariation = (wickOscillation + 1) * 40;
+        const wickVariation = (wickOscillation + 1) * 20;
         const cy = c.base * H + Math.sin(t * c.speed + c.phase) * c.amp;
         const bodyH = 8 + Math.abs(Math.sin(t * c.speed * 1.5 + c.phase)) * 50;
         const open = cy - bodyH / 1;
@@ -139,7 +139,7 @@ const MarketBackground = () => {
     };
 
     const draw = () => {
-      t += 0.012;
+      t += 0.009;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawCandles();
       drawLines();
@@ -149,20 +149,13 @@ const MarketBackground = () => {
 
     draw();
 
-    const handleScroll = () => {
-      canvas.style.transform = `translateY(${88 + window.scrollY * 1.1}px)`;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="market-bg-canvas" />;
+  return <canvas ref={canvasRef} className="header-bg-canvas" />;
 };
 
-export default MarketBackground;
+export default HeaderBackground;
