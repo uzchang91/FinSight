@@ -320,7 +320,7 @@
   flex-direction: column;
   gap: 0.5rem;
 
-  background-color: var(--bg);
+  background: transparent;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
   font-size: 1.5rem;

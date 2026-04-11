@@ -1,10 +1,29 @@
 .header-gd {
   width: 100%;
-  height: 40vh;
+  height: 100%;
 
   position: absolute;
+  z-index: -3;
+  background: linear-gradient(105deg,
+      var(--primary-highlight),
+      var(--bg),
+      var(--warning-highlight));
+  background-size: 150% 150%;
+  animation: gradientMove 6s ease infinite;
+}
 
-  background: var(--bg-trans-gd);
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 0%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .main-body {

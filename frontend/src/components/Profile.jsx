@@ -1511,7 +1511,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 </div>
                 
                 <div className='total-description'>
-                  <span className='description-top'>보유 포인트</span>
+                  <span className='description-top'>잔여 포인트</span>
                   <p
                     className='description-slave'
                   >

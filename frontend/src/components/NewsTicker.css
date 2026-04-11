@@ -10,10 +10,11 @@
   align-items: center; /* 세로 중앙 정렬 */
   gap: 1rem;
 
-  background-color: var(--bg); /* 하얀 배경 */
+  background-color: var(--bg-trans); /* 하얀 배경 */
   border: 1px solid var(--border); /* 하단 경계선 */
   border-radius: 0.75rem; /* 둥근 모서리 */
   
+  backdrop-filter: blur(0.2rem);
   overflow: hidden; /* 영역 밖으로 나가는 글자 숨김 */
 }
 

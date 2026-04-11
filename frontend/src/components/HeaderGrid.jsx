@@ -45,7 +45,7 @@ const HeaderGrid = () => {
     };
 
     const draw = () => {
-      t += 0.012;
+      t += 0.02;
       drawGrid();
     };
 

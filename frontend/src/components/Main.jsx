@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
 import './Main.css'
 import Navigation from './Navigation'
 import Dashboard from './Dashboard'
@@ -13,6 +15,99 @@ import HeaderBackground from './HeaderBackground'
 import HeaderGrid from './HeaderGrid'
 
 const Main = () => {
+
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
+      // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+      // starting from v2 you can add only the features you need reducing the bundle size
+      //await loadAll(engine);
+      //await loadFull(engine);
+      await loadSlim(engine);
+      //await loadBasic(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
+  const particlesLoaded = (container) => {
+    console.log(container);
+  };
+
+  const options = useMemo(
+    () => ({
+      fullScreen: {
+        enable: true,
+        zIndex: -2,
+      },
+      fpsLimit: 120,
+      interactivity: {
+        events: {
+          onClick: {
+            enable: false,
+            mode: "push",
+          },
+          onHover: {
+            enable: true,
+            mode: "repulse",
+          },
+          resize: true,
+        },
+        modes: {
+          push: {
+            quantity: 10,
+          },
+          repulse: {
+            distance: 80,
+            duration: 1,
+          },
+        },
+      },
+      particles: {
+        color: {
+          value: ["#4775FF", "#9d47ff", "#FF4766"],
+        },
+        links: {
+          color: "random",
+          distance: 400,
+          enable: true,
+          opacity: 0.5,
+          width: 1,
+        },
+        move: {
+          direction: "none",
+          enable: true,
+          outModes: {
+            default: "bounce",
+          },
+          random: false,
+          speed: 1,
+          straight: false,
+        },
+        number: {
+          density: {
+            enable: true,
+            value_area: 110,
+          },
+          value: 70,
+        },
+        opacity: {
+          value: 1,
+        },
+        shape: {
+          type: "circle",
+        },
+        size: {
+          value: { min: 1, max: 3 },
+        },
+      },
+      detectRetina: true,
+    }),
+    [],
+  );
+
   const VALID_MENUS = [
     'Dashboard',
     'Education',
@@ -216,36 +311,41 @@ const Main = () => {
         return <Dashboard />
     }
   }
-
-  return (
-    <>
-    <div className='header-gd'>
-      <HeaderGrid />
-      <HeaderBackground />
-    </div>
-      <div className='main-body'>
-        <aside className='navigation-area'>
-          <Navigation
-            setActiveMenu={handleMenuChange}
-            activeMenu={activeMenu}
-            membershipType={membershipType}
-            role={role}
-          />
-        </aside>
-
-        <div className='content-area'>
-          {renderContent()}
+  if (init) {
+    return (
+      <>
+        <HeaderGrid />
+        <Particles
+          id="tsparticles"
+          particlesLoaded={particlesLoaded}
+          options={options}
+        />
+        <div className='header-gd'>
         </div>
+        <div className='main-body'>
+          <aside className='navigation-area'>
+            <Navigation
+              setActiveMenu={handleMenuChange}
+              activeMenu={activeMenu}
+              membershipType={membershipType}
+              role={role}
+            />
+          </aside>
 
-        <aside className='profile-area'>
-          <Profile
-            collapsed={profileCollapsed}
-            setCollapsed={setProfileCollapsed}
-          />
-        </aside>
-      </div>
-    </>
-  )
+          <div className='content-area'>
+            {renderContent()}
+          </div>
+
+          <aside className='profile-area'>
+            <Profile
+              collapsed={profileCollapsed}
+              setCollapsed={setProfileCollapsed}
+            />
+          </aside>
+        </div>
+      </>
+    )
+  }
 }
 
 export default Main

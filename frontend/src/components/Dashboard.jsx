@@ -631,7 +631,7 @@ const Dashboard = ({ onNavigate }) => {
           </span>
         </p>
         <ul className='quest-list'>
-          <li onClick={() => onNavigate?.('Quiz')} className='quest-item dash-clickable'>
+          <li onClick={() => onNavigate?.('Strategy')} className='quest-item dash-clickable'>
             <span>오늘 푼 퀴즈</span>
             <strong>
               {todaySolvedDisplay} / {questStatus.dailyGoal}
