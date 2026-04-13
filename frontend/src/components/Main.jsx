@@ -67,7 +67,7 @@ const Main = () => {
       },
       particles: {
         color: {
-          value: ["#4775FF", "#9d47ff", "#FF4766"],
+          value: ["#4775FF", "#d858ff", "#FF4766"],
         },
         links: {
           color: "random",
@@ -89,7 +89,7 @@ const Main = () => {
         number: {
           density: {
             enable: true,
-            value_area: 110,
+            value_area: 120,
           },
           value: 70,
         },

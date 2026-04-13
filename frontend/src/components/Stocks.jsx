@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import Close from '../assets/icons/close.svg?react'
-import MinusD from '../assets/icons/minus_default.svg?react'
-import PlusD from '../assets/icons/plus_default.svg?react'
+import Close from '../assets/icons/close.svg?react';
+import MinusD from '../assets/icons/minus_default.svg?react';
+import PlusD from '../assets/icons/plus_default.svg?react';
+import Heart from '../assets/icons/heart.svg?react';
+import StocksOwned from '../assets/icons/stocks_owned.svg?react';
+import { Sparklines, SparklinesLine } from 'react-sparklines';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -60,23 +63,27 @@ const RANGES = [
 
 const Stocks = () => {
   const [activeTab, setActiveTab] = useState('popular');
-  const [openStockCode, setOpenStockCode] = useState(null);
   const [openLikeCode, setOpenLikeCode] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ── Main list chart state ──
   const [expandedSymbol, setExpandedSymbol] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [selectedRangeLabel, setSelectedRangeLabel] = useState('일');
   const chartContainerRef = React.useRef(null);
   const chartInstanceRef = React.useRef(null);
 
-  const [tradeModal, setTradeModal] = useState({
-    isOpen: false,
-    type: '',
-    stock: null,
-  });
+  // ── Owned-panel chart state (fully independent) ──
+  const [expandedOwnedCode, setExpandedOwnedCode] = useState(null);
+  const [ownedChartData, setOwnedChartData] = useState(null);
+  const [ownedRangeLabel, setOwnedRangeLabel] = useState('일');
+  const ownedChartContainerRef = React.useRef(null);
+  const ownedChartInstanceRef = React.useRef(null);
+
+  const [tradeModal, setTradeModal] = useState({ isOpen: false, type: '', stock: null, });
+
   const [tradeQuantity, setTradeQuantity] = useState(0);
   const [tradeLoading, setTradeLoading] = useState(false);
 
@@ -85,6 +92,9 @@ const Stocks = () => {
   const [likedStocks, setLikedStocks] = useState([]);
   const [likedCodeSet, setLikedCodeSet] = useState(new Set());
   const [sideTab, setSideTab] = useState('owned');
+  const [sparklineMap, setSparklineMap] = useState({});
+  const [sparklineWidths, setSparklineWidths] = useState({});
+  const sparklineRefs = React.useRef({});
 
   const normalizeArray = (res) => {
     const data = res?.data?.data ?? res?.data ?? [];
@@ -175,6 +185,7 @@ const Stocks = () => {
       const res = await api.get(url);
       const resultData = normalizeArray(res);
       setStocks(resultData);
+      resultData.forEach(stock => fetchSparkline(getStockCode(stock)));
     } catch (err) {
       console.error('주식 목록 로드 실패:', err);
       setStocks([]);
@@ -194,6 +205,7 @@ const Stocks = () => {
       const likedData = normalizeArray(likedRes);
 
       setOwnedStocks(ownedData);
+      ownedData.forEach(stock => fetchSparkline(String(stock.stockCode).padStart(6, '0')));
       setLikedStocks(likedData);
       setLikedCodeSet(new Set(likedData.map((item) => String(item.stockCode).padStart(6, '0'))));
     } catch (err) {
@@ -201,6 +213,18 @@ const Stocks = () => {
       setOwnedStocks([]);
       setLikedStocks([]);
       setLikedCodeSet(new Set());
+    }
+  };
+
+  const fetchSparkline = async (stockCode) => {
+    if (sparklineMap[stockCode]) return; // already cached
+    try {
+      const res = await api.get(`/api/stocks/${stockCode}/chart?range=30d&interval=1d`);
+      const data = res?.data?.data ?? res?.data ?? [];
+      const closes = Array.isArray(data) ? data.map(p => p.c).filter(Boolean) : [];
+      setSparklineMap(prev => ({ ...prev, [stockCode]: closes }));
+    } catch {
+      setSparklineMap(prev => ({ ...prev, [stockCode]: [] }));
     }
   };
 
@@ -260,19 +284,47 @@ const Stocks = () => {
     }
   };
 
+  // ── Owned-panel chart fetcher ──
+  const fetchOwnedChart = async (stockCode, rangeItem) => {
+    setOwnedRangeLabel(rangeItem.label);
+    setOwnedChartData(null);
+    try {
+      const res = await api.get(
+        `/api/stocks/${stockCode}/chart?range=${rangeItem.range}&interval=${rangeItem.interval}`
+      );
+      let resultData = res?.data?.data ?? res?.data ?? [];
+      if (Array.isArray(resultData)) {
+        resultData = [...resultData].sort((a, b) => new Date(a.x) - new Date(b.x));
+      } else {
+        resultData = [];
+      }
+      setOwnedChartData({ datasets: [{ data: resultData }] });
+    } catch (err) {
+      console.error('보유 주식 차트 로드 실패:', err);
+      setOwnedChartData(null);
+    }
+  };
+
+  const handleOwnedStockClick = (stockCode) => {
+    if (expandedOwnedCode === stockCode) {
+      setExpandedOwnedCode(null);
+      setOwnedChartData(null);
+      return;
+    }
+    setExpandedOwnedCode(stockCode);
+    const defaultRange = RANGES.find((r) => r.label === '일');
+    if (defaultRange) fetchOwnedChart(stockCode, defaultRange);
+  };
+
   const handleStockClick = async (symbol) => {
     if (expandedSymbol === symbol) {
       setExpandedSymbol(null);
       setChartData(null);
       return;
     }
-
     setExpandedSymbol(symbol);
-
     const defaultRange = RANGES.find((r) => r.label === '일');
-    if (defaultRange) {
-      fetchStockChart(symbol, defaultRange);
-    }
+    if (defaultRange) fetchStockChart(symbol, defaultRange);
   };
 
   const openTradeModal = (type, stock, e) => {
@@ -375,128 +427,104 @@ const Stocks = () => {
     }
   };
 
-  // Resize the Chart.js canvas whenever the container width changes.
-  // This fires after nav/profile collapse transitions complete so the
-  // canvas repaints at the correct column width instead of overflowing.
+  // Resize main list chart on container resize
   useEffect(() => {
     const container = chartContainerRef.current;
     if (!container || !expandedSymbol) return;
-
     const ro = new ResizeObserver(() => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.resize();
-      }
+      if (chartInstanceRef.current) chartInstanceRef.current.resize();
     });
-
     ro.observe(container);
     return () => ro.disconnect();
   }, [expandedSymbol, chartData]);
 
-  let timeUnit = 'month';
-  let xFormat = 'MM/dd';
-  let tipFormat = 'yyyy-MM-dd';
+  // Resize owned-panel chart on container resize
+  useEffect(() => {
+    const container = ownedChartContainerRef.current;
+    if (!container || !expandedOwnedCode) return;
+    const ro = new ResizeObserver(() => {
+      if (ownedChartInstanceRef.current) ownedChartInstanceRef.current.resize();
+    });
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [expandedOwnedCode, ownedChartData]);
 
-  if (selectedRangeLabel === '일') {
-    timeUnit = 'day';
-    xFormat = 'MM/dd';
-    tipFormat = 'yyyy-MM-dd';
-  } else if (selectedRangeLabel === '주') {
-    timeUnit = 'month';
-    xFormat = 'yy.MM';
-    tipFormat = 'yyyy-MM-dd';
-  } else if (selectedRangeLabel === '월') {
-    timeUnit = 'year';
-    xFormat = 'yyyy.MM';
-    tipFormat = 'yyyy-MM';
-  } else if (selectedRangeLabel === '년') {
-    timeUnit = 'year';
-    xFormat = 'yyyy';
-    tipFormat = 'yyyy-MM';
-  }
+  // Observe sparkline container widths responsively
+  useEffect(() => {
+    const observers = [];
+    Object.entries(sparklineRefs.current).forEach(([code, el]) => {
+      if (!el) return;
+      const ro = new ResizeObserver(([entry]) => {
+        const w = Math.floor(entry.contentRect.width);
+        if (w > 0) setSparklineWidths(prev => ({ ...prev, [code]: w }));
+      });
+      ro.observe(el);
+      observers.push(ro);
+    });
+    return () => observers.forEach(ro => ro.disconnect());
+  }, [stocks, ownedStocks]);
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-      padding: { left: 5, right: 5, top: 10, bottom: 0 },
-    },
-    scales: {
-      x: {
-        type: 'timeseries',
-        time: {
-          unit: timeUnit,
-          displayFormats: {
-            day: xFormat,
-            month: xFormat,
-            year: xFormat,
+  const buildChartOptions = (rangeLabel) => {
+    let timeUnit = 'month', xFormat = 'MM/dd', tipFormat = 'yyyy-MM-dd';
+    if (rangeLabel === '일') { timeUnit = 'day'; xFormat = 'MM/dd'; tipFormat = 'yyyy-MM-dd'; }
+    else if (rangeLabel === '주') { timeUnit = 'month'; xFormat = 'yy.MM'; tipFormat = 'yyyy-MM-dd'; }
+    else if (rangeLabel === '월') { timeUnit = 'year'; xFormat = 'yyyy.MM'; tipFormat = 'yyyy-MM'; }
+    else if (rangeLabel === '년') { timeUnit = 'year'; xFormat = 'yyyy'; tipFormat = 'yyyy-MM'; }
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { left: 5, right: 5, top: 10, bottom: 0 } },
+      scales: {
+        x: {
+          type: 'timeseries',
+          time: {
+            unit: timeUnit,
+            displayFormats: { day: xFormat, month: xFormat, year: xFormat },
+            tooltipFormat: tipFormat,
           },
-          tooltipFormat: tipFormat,
+          bounds: 'data',
+          grid: { display: false, drawBorder: false },
+          ticks: { autoSkip: true, maxTicksLimit: 6, maxRotation: 0, color: '#8b95a1', font: { size: 12, weight: '500' } },
         },
-        bounds: 'data',
-        grid: {
-          display: false,
-          drawBorder: false,
-        },
-        ticks: {
-          autoSkip: true,
-          maxTicksLimit: 6,
-          maxRotation: 0,
-          color: '#8b95a1',
-          font: {
-            size: 14,
-            weight: '500',
-          },
+        y: {
+          position: 'right',
+          grid: { color: '#ececec', drawBorder: false },
+          border: { display: false },
+          ticks: { color: '#8b95a1', font: { size: 12 }, callback: (v) => Number(v).toLocaleString() },
         },
       },
-      y: {
-        position: 'right',
-        grid: {
-          color: '#ececec',
-          drawBorder: false,
-        },
-        border: {
-          display: false,
-        },
-        ticks: {
-          color: '#8b95a1',
-          font: { size: 14 },
-          callback: function (value) {
-            return Number(value).toLocaleString();
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          padding: 8,
+          titleFont: { size: 14 },
+          bodyFont: { size: 14 },
+          callbacks: {
+            label: (ctx) => {
+              const p = ctx.raw;
+              if (!p) return '';
+              return [
+                `시가: ${Number(p.o).toLocaleString()}pt`,
+                `고가: ${Number(p.h).toLocaleString()}pt`,
+                `저가: ${Number(p.l).toLocaleString()}pt`,
+                `종가: ${Number(p.c).toLocaleString()}pt`,
+              ];
+            },
           },
         },
-      },
-    },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        padding: 8,
-        titleFont: { size: 14 },
-        bodyFont: { size: 14 },
-        callbacks: {
-          label: (context) => {
-            const point = context.raw;
-            if (!point) return '';
-            return [
-              `시가: ${Number(point.o).toLocaleString()}pt`,
-              `고가: ${Number(point.h).toLocaleString()}pt`,
-              `저가: ${Number(point.l).toLocaleString()}pt`,
-              `종가: ${Number(point.c).toLocaleString()}pt`,
-            ];
-          },
-        },
-      },
-      zoom: {
-        limits: { x: { min: 'original', max: 'original' } },
-        pan: { enabled: true, mode: 'x' },
         zoom: {
-          wheel: { enabled: true },
-          pinch: { enabled: true },
-          mode: 'x',
+          limits: { x: { min: 'original', max: 'original' } },
+          pan: { enabled: true, mode: 'x' },
+          zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
         },
       },
-    },
+    };
   };
+
+  const chartOptions = buildChartOptions(selectedRangeLabel);
+  const ownedChartOptions = buildChartOptions(ownedRangeLabel);
 
   const ownedMap = useMemo(() => {
     const map = new Map();
@@ -511,6 +539,171 @@ const Stocks = () => {
       <div className='breadcrumb'>대시보드 &gt; 주식</div>
 
       <div className='stocks-layout'>
+        <div className='stocks-side'>
+          <div className='stocks-card'>
+            <h3>보유 주식</h3>
+            <div className='stocks-card-body'>
+              {ownedStocks.length > 0 ? (
+                ownedStocks.map((stock) => {
+                  const ownedCode = String(stock.stockCode).padStart(6, '0');
+                  const isExpanded = expandedOwnedCode === ownedCode;
+
+                  return (
+                    <div key={`owned-${stock.stockCode}`} className='stock-item-wrap'>
+                      <div
+                        className='side-stock-item-owned'
+                        onClick={() => handleOwnedStockClick(ownedCode)}
+                      >
+                        <div className='side-stock-top'>
+                          <p>{stock.stockName}</p>
+                          <div
+                            className='stock-sparkline'
+                            ref={el => { sparklineRefs.current[ownedCode] = el; }}
+                          >
+                            <Sparklines data={sparklineMap[ownedCode] ?? []} width={sparklineWidths[ownedCode] || 70} height={24}>
+                              <SparklinesLine
+                                color={Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF'}
+                                style={{
+                                  fill: Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF',
+                                  strokeWidth: 1.5,
+                                }}
+                              />
+                            </Sparklines>
+                          </div>
+                          <span>{stock.quantity}주</span>
+                          <div className='side-stock-end'>
+                            <p>
+                              {stock.price !== null && stock.totalPrice !== undefined
+                                ? `${Number(stock.totalPrice).toLocaleString()}`
+                                : '-'}
+                              <span>pt</span>
+                            </p>
+                            <p>
+                              <span className={Number(stock.myChangeRate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}>
+                                ({stock.myChangeRate !== null && stock.myChangeRate !== undefined
+                                  ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(stock.myChangeRate).toFixed(2)}%`
+                                  : '-'})
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className={`side-stock-actions ${isExpanded ? 'flex' : ''}`}>
+                          <button className='trade-btn buy' onClick={(e) => openTradeModal('buy', stock, e)}>매수</button>
+                          <button className='trade-btn sell' onClick={(e) => openTradeModal('sell', stock, e)}>매도</button>
+                        </div>
+                      </div>
+
+                      {isExpanded && (
+                        <div className='stock-chart-expanded'>
+                          <div className='chart-toolbar'>
+                            <div className='chart-legend-badge'>
+                              <span className='legend-item'><span className='color-box up'></span> 상승</span>
+                              <span className='legend-item'><span className='color-box down'></span> 하락</span>
+                            </div>
+                            <div className='chart-range-group'>
+                              {RANGES.map((r) => (
+                                <button
+                                  key={r.label}
+                                  className={`chart-range-btn ${ownedRangeLabel === r.label ? 'active' : ''}`}
+                                  onClick={(e) => { e.stopPropagation(); fetchOwnedChart(ownedCode, r); }}
+                                >
+                                  {r.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className='chart-render-area' ref={ownedChartContainerRef}>
+                            {ownedChartData ? (
+                              <Chart
+                                key={`owned-${ownedCode}-${ownedRangeLabel}`}
+                                ref={ownedChartInstanceRef}
+                                type='candlestick'
+                                data={ownedChartData}
+                                options={ownedChartOptions}
+                              />
+                            ) : (
+                              <div className='stocks-empty'>차트 로딩 중...</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className='stocks-empty'>보유 주식이 없습니다.</div>
+              )}
+            </div>
+          </div>
+
+          <div className='stocks-card'>
+            <h3>찜한 주식</h3>
+            <div className='stocks-card-body'>
+              {likedStocks.length > 0 ? (
+                likedStocks.map((stock) => {
+                  const liked = isLiked(stock.stockCode);
+
+                  return (
+                    <React.Fragment key={`liked-${stock.stockCode}`}>
+                      <div
+                        className={`side-stock-item ${openLikeCode === stock.stockCode ? 'flex' : ''}`}
+                        onClick={() =>
+                          setOpenLikeCode((prev) =>
+                            prev === stock.stockCode ? null : stock.stockCode
+                          )
+                        }
+                      >
+                        <div className='side-stock-top-liked'>
+                          <p>{stock.stockName}</p>
+                          
+                          <div className='side-stock-description'>
+                            <p>
+                              {stock.price !== null && stock.price !== undefined
+                                ? `${Number(stock.price).toLocaleString()}`
+                                : '-'}
+                              <span>pt</span>
+                            </p>
+                            <span
+                              className={Number(stock.rate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}
+                            >
+                              ({Number(stock.rate || 0) >= 0 ? '+' : ''}
+                              {Number(stock.rate || 0).toFixed(2)}%)
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className={`side-liked-actions ${openLikeCode === stock.stockCode ? 'flex' : ''}`}>
+
+                          <button
+                            type='button'
+                            className='side-like-btn liked'
+                            onClick={(e) => handleToggleLike(stock, e)}
+                            title='찜 해제'
+                          >
+                            ♥
+                          </button>
+                          <button
+                            type='button'
+                            className='trade-btn buy'
+                            onClick={(e) => openTradeModal('buy', stock, e)}
+                          >
+                            매수
+                          </button>
+
+                        </div>
+                      </div >
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <div className='stocks-empty'>찜한 주식이 없습니다.</div>
+              )}
+            </div>
+          </div>
+
+        </div>
         <div className='stocks-main'>
           <div className='stocks-search-row'>
             <input
@@ -676,173 +869,7 @@ const Stocks = () => {
           </div>
         </div>
 
-        <div className='stocks-side'>
-          <div className='stocks-card'>
-            <div className='stocks-card-tabs'>
-              <button
-                className={`stocks-card-tab ${sideTab === 'owned' ? 'active' : ''}`}
-                onClick={() => setSideTab('owned')}
-              >
-                보유 주식
-              </button>
-              <button
-                className={`stocks-card-tab ${sideTab === 'liked' ? 'active' : ''}`}
-                onClick={() => setSideTab('liked')}
-              >
-                찜한 주식
-              </button>
-            </div>
 
-            <div className='stocks-card-body'>
-              {sideTab === 'owned' ? (
-                ownedStocks.length > 0 ? (
-                  ownedStocks.map((stock) => (
-                    <React.Fragment key={`owned-${stock.stockCode}`}>
-                      <div
-                        className={`side-stock-item ${openStockCode === stock.stockCode ? 'flex' : ''}`}
-                        onClick={() =>
-                          setOpenStockCode((prev) =>
-                            prev === stock.stockCode ? null : stock.stockCode
-                          )
-                        }
-                      >
-                        <div className='side-stock-text'>
-                          <div className='side-stock-top'>
-                            <p>{stock.stockName}</p>
-                            <p>
-                              {stock.price !== null && stock.totalPrice !== undefined
-                                ? `${Number(stock.totalPrice).toLocaleString()}`
-                                : '-'}
-                              <span>pt</span>
-                            </p>
-                          </div>
-
-                          <div className='side-stock-mid'>
-                            <span>
-                              {stock.quantity}주 (평단가 {Number(stock.avgPrice || 0).toLocaleString()})
-                            </span>
-                            <span
-                              className={Number(stock.myChangeRate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}
-                            >
-                              {stock.myChangeRate !== null && stock.myChangeRate !== undefined
-                                ? `${Number(stock.myChangeRate) >= 0 ? '+' : ''}${Number(stock.myChangeRate).toFixed(2)}%`
-                                : '-'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className={`side-stock-actions ${openStockCode === stock.stockCode ? 'flex' : ''}`}>
-                          <button
-                            className='trade-btn buy side'
-                            onClick={(e) => openTradeModal('buy', stock, e)}
-                          >
-                            매수
-                          </button>
-                          <button
-                            className='trade-btn sell side'
-                            onClick={(e) => openTradeModal('sell', stock, e)}
-                          >
-                            매도
-                          </button>
-                        </div>
-                      </div>
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <div className='stocks-empty side-empty'>보유 주식이 없습니다.</div>
-                )
-              ) : (
-                likedStocks.length > 0 ? (
-                  likedStocks.map((stock) => (
-                    <React.Fragment key={`liked-${stock.stockCode}`}>
-                      <div
-                        className='side-stock-item flex'
-                        onClick={() =>
-                          setOpenLikeCode((prev) =>
-                            prev === stock.stockCode ? null : stock.stockCode
-                          )
-                        }
-                      >
-                        <div className='side-stock-top'>
-                          <p>{stock.stockName}</p>
-                          <div className='side-stock-description'>
-                            <p>
-                              {stock.price !== null && stock.price !== undefined
-                                ? `${Number(stock.price).toLocaleString()}`
-                                : '-'}
-                              <span>pt</span>
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className='side-liked-actions flex'>
-                          <button
-                            type='button'
-                            className='side-like-btn liked'
-                            onClick={(e) => handleToggleLike(stock, e)}
-                            title='찜 해제'
-                          >
-                            ♥
-                          </button>
-                          <button
-                            type='button'
-                            className='trade-btn buy'
-                            onClick={(e) => openTradeModal('buy', stock, e)}
-                          >
-                            매수
-                          </button>
-                        </div>
-                      </div>
-                    </React.Fragment>
-                  ))
-                ) : (
-                  <div className='stocks-empty side-empty'>찜한 주식이 없습니다.</div>
-                )
-              )}
-            </div>
-          </div>
-
-          <div className='stocks-card'>
-            <h3>최근 매매 내역</h3>
-            <div className='st-history-list'>
-              {tradeHistory.length === 0 ? (
-                <div className='stocks-empty side-empty'>매매 내역이 없습니다.</div>
-              ) : (
-                tradeHistory.map((item) => (
-                  <React.Fragment key={item.id}>
-                    <div className='st-history-item'>
-                      <div className='st-history-left'>
-                        <div className='st-history-name'>{item.stockName}</div>
-                        <div
-                          className={`st-history-right ${item.type === 'buy'
-                            ? 'buy'
-                            : item.type === 'sell'
-                              ? 'sell'
-                              : 'buy'
-                            }`}
-                        >
-                          <div className='st-history-action'>
-                            {item.type === 'buy' && `매수 ${item.quantity}주`}
-                            {item.type === 'sell' && `매도 ${item.quantity}주`}
-                            {item.type === 'like' && '찜하기'}
-                            {item.type === 'unlike' && '찜 해제'}
-                          </div>
-                        </div>
-                      </div>
-                      <div className='st-history-left'>
-                        <div className='st-history-date'>{item.date}</div>
-                        <div className='st-history-price'>
-                          {item.price ? `${item.price.toLocaleString()}pt` : '0pt'}
-                        </div>
-                      </div>
-                    </div>
-                    <div className='hr' />
-                  </React.Fragment>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
       </div>
 
       {

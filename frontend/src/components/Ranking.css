@@ -68,12 +68,12 @@
   max-height: 600px;
 
   overflow: hidden;
-  border-top-left-radius: 1.75rem;
+  border-top-left-radius: 1.25rem;
 }
 
 .league-emblem-wrap {
   width: 100%;
-  height: 3.5rem;
+  height: 2.5rem;
   box-sizing: border-box;
 
   display: flex;
@@ -83,20 +83,20 @@
 
   background-color: var(--primary-highlight);
   border-bottom: 1px solid var(--border);
-  border-radius: 2.25rem;
+  border-radius: 1rem;
   border-top-right-radius: 0.75rem;
   border-bottom-right-radius: 0;
 }
 
 .league-emblem-wrap>span {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
   text-align: center;
 }
 
 .league-emblem-badge {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   object-fit: contain;
 }
 

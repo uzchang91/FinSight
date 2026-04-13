@@ -1,7 +1,9 @@
+/* ─────────────────────────────────────────
+   Layout
+───────────────────────────────────────── */
 .stocks-container {
   width: 100%;
   min-height: 100vh;
-
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -11,20 +13,16 @@
 .stocks-layout {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(40vw, 2fr) minmax(10vw, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   align-items: start;
 }
 
-.stocks-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
+/* ─────────────────────────────────────────
+   Search row
+───────────────────────────────────────── */
 .stocks-search-row {
   width: 100%;
-
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -35,14 +33,13 @@
   height: 3rem;
   padding: 0.75rem 1rem;
   box-sizing: border-box;
-
-  background-color: var(--bg);
+  background-color: var(--bg-trans3);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   font-size: 1rem;
   color: var(--text);
   outline: none;
-  transform: all 0.3s ease;
+  transition: border-color 0.3s ease;
 }
 
 .stocks-search-input::placeholder {
@@ -67,14 +64,13 @@
   white-space: nowrap;
 }
 
+/* ─────────────────────────────────────────
+   Tab group
+───────────────────────────────────────── */
 .stocks-tab-group {
   width: fit-content;
-
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 0rem;
-
   border-radius: 0.75rem;
 }
 
@@ -91,19 +87,16 @@
 }
 
 .stocks-tab:first-child {
-  border-top-left-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
+  border-radius: 0.75rem 0 0 0.75rem;
 }
 
 .stocks-tab:last-child {
-  border-top-right-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
+  border-radius: 0 0.75rem 0.75rem 0;
 }
 
 .stocks-tab:hover {
   background-color: var(--primary-highlight2);
   border-color: transparent;
-  color: var(--primary);
 }
 
 .stocks-tab.active {
@@ -112,28 +105,33 @@
   color: var(--bg);
 }
 
+/* ─────────────────────────────────────────
+   Main panel
+───────────────────────────────────────── */
+.stocks-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .stocks-chart-panel {
   width: 100%;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .stocks-panel-header {
-  padding: 0.25rem 0.5rem 0.75rem;
-
+  padding: 0.75rem 0.5rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-
-  border-bottom: 1px solid var(--border);
 }
 
 .stocks-panel-header h3 {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -143,6 +141,9 @@
   color: var(--text-highlight);
 }
 
+/* ─────────────────────────────────────────
+   Stock list items
+───────────────────────────────────────── */
 .stocks-list {
   overflow-y: auto;
   display: flex;
@@ -151,29 +152,26 @@
 }
 
 .stock-item-wrap {
-  background-color: var(--bg);
+  background-color: var(--bg-trans3);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-
+  backdrop-filter: blur(0.2rem);
   overflow: hidden;
 }
 
 .stocks-list-item {
   padding: 0.5rem;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .stock-info-clickable {
   flex: 1;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   cursor: pointer;
 }
 
@@ -181,8 +179,22 @@
   overflow-x: hidden;
   display: flex;
   align-items: center;
-
   gap: 0.5rem;
+}
+
+.stock-sparkline {
+  min-width: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+.stock-sparkline svg {
+  width: 100%;
+  height: 24px;
+  display: block;
 }
 
 .stocks-item-left,
@@ -219,7 +231,6 @@
 .stocks-item-price span:last-child {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--text);
 }
 
 .stocks-owned-badge {
@@ -231,11 +242,9 @@
 .stock-rank-badge {
   min-width: 2.5rem;
   min-height: 2.5rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background-color: var(--border);
   color: var(--text);
   font-size: 1rem;
@@ -243,6 +252,9 @@
   border-radius: 0.5rem;
 }
 
+/* ─────────────────────────────────────────
+   Trade buttons
+───────────────────────────────────────── */
 .stock-trade-btns {
   display: flex;
   gap: 0.5rem;
@@ -254,10 +266,8 @@
   min-width: 3.5rem;
   height: 2.5rem;
   padding: 0.5rem 0.75rem;
-
   border: none;
   border-radius: 0.5rem;
-
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -278,28 +288,27 @@
 .side-like-btn {
   width: 2.5rem;
   height: 2.5rem;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-
   color: var(--text);
   font-size: 1.5rem;
   font-weight: 200;
-
   cursor: pointer;
 }
 
 .side-like-btn.liked {
-  border: 1px solid var(--danger);
+  border-color: var(--danger);
   background: var(--danger-highlight);
   color: var(--danger);
 }
 
+/* ─────────────────────────────────────────
+   Color helpers
+───────────────────────────────────────── */
 .stocks-up {
   color: var(--danger) !important;
   font-weight: 600;
@@ -311,7 +320,7 @@
 }
 
 .stocks-empty {
-  min-height: 12rem;
+  min-height: 8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -319,13 +328,10 @@
   font-size: 1rem;
 }
 
-.side-empty {
-  min-height: 6rem;
-}
-
+/* ─────────────────────────────────────────
+   Side panel
+───────────────────────────────────────── */
 .stocks-side {
-  position: sticky;
-  top: 3.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -333,61 +339,18 @@
 
 .stocks-card {
   width: 100%;
-  min-height: 24vh;
-  max-height: 50vh;
   padding-bottom: 0.5rem;
-  overflow-y: hidden;
-
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-
   transition: all 0.3s ease;
 }
 
-.stocks-card-tabs {
-  display: flex;
-}
-
-.stocks-card-tab {
-  flex: 1;
-  padding: 0.65rem 0.5rem;
-  background: var(--primary-highlight);
-  border: 1px solid var(--border-prim);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--primary);
-  cursor: pointer;
-  transition: color 0.3s ease, background 0.3s ease;
-}
-
-.stocks-card-tab:hover {
-  color: var(--primary);
-  background: var(--primary-highlight2);
-  border: 1px solid var(--border-prim);
-}
-
-.stocks-card-tab.active {
-  color: var(--bg);
-  background: var(--primary);
-  border: 1px solid var(--primary);
-}
-
-.stocks-card-tab:first-child {
-  border-radius: 0.75rem 0 0 0.75rem;
-}
-
-.stocks-card-tab:last-child {
-  border-radius: 0 0.75rem 0.75rem 0;
-}
-
 .stocks-card h3 {
-  padding: 0.75rem 1rem 0.75rem;
-
+  padding: 0.75rem 0.5rem 0;
   font-size: 0.875rem;
   font-weight: 700;
-  text-align: start;
   color: var(--text);
 }
 
@@ -395,56 +358,37 @@
   min-height: 0;
   max-height: 75vh;
   overflow-y: auto;
-
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .side-stock-item {
-  padding: 0.75rem 0.75rem;
+  background: var(--bg-trans3);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(0.2rem);
+}
 
+.side-stock-item-owned,
+.side-stock-item {
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0rem;
-
-  background: var(--bg);
-  border: 1px solid var(--border);
+  gap: 0;
   border-radius: 0.75rem;
   cursor: pointer;
-
   transition: all 0.3s ease;
 }
 
-.hr:last-child {
-  visibility: hidden;
-}
-
+.side-stock-item-owned:hover,
 .side-stock-item:hover {
   background: var(--primary-highlight);
-  border: 1px solid var(--border-prim);
-  border-radius: 0.75rem;
+  border-color: var(--border-prim);
 }
 
-.side-stock-item.flex {
-  gap: 0.5rem;
-}
-
-.hr {
-  margin: 0 0.5rem;
-  border-top: 1px solid var(--border);
-}
-
-.side-stock-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.side-stock-top,
-.side-stock-mid {
-  display: flex;
-  justify-content: space-between;
+.side-stock-top {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 0.5fr 1fr;
   align-items: center;
   gap: 0.5rem;
 }
@@ -453,54 +397,73 @@
   overflow-x: hidden;
 }
 
-.side-stock-description {
-  text-align: end;
+.side-stock-top-liked p,
+.side-stock-top p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.side-stock-top-liked {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-stock-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .side-stock-top span {
   font-size: 0.875rem;
 }
 
-.side-stock-mid span {
-  font-size: 0.875rem;
-  color: var(--text-highlight);
+.side-stock-description {
+  text-align: end;
 }
 
+/* Animated action row — hidden by default, slides in on expand */
 .side-liked-actions,
 .side-stock-actions {
   max-height: 0;
-
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
-  transform: translateY(-1rem);
+  transform: translateY(-0.75rem);
   opacity: 0;
   visibility: hidden;
-
-  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  transition: max-height 0.3s ease, opacity 0.25s ease, transform 0.25s ease;
 }
 
 .side-liked-actions.flex,
 .side-stock-actions.flex {
-  max-height: 40px;
-  
+  max-height: 48px;
+  padding-top: 0.5rem;
   gap: 0.5rem;
-
-  transform: translateY(0rem);
+  transform: translateY(0);
   opacity: 1;
   visibility: visible;
 }
 
+/* ─────────────────────────────────────────
+   Candlestick chart — shared expand area
+   Used in BOTH main list and owned panel.
+   Stays within its own grid column because
+   .stock-item-wrap / .stocks-card-body
+   already constrain the width.
+───────────────────────────────────────── */
 .stock-chart-expanded {
-  height: auto;
-  min-height: fit-content;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   background-color: var(--text-trans-2);
   border-top: 1px solid var(--border);
+  /* clip to column — never escape grid area */
+  min-width: 0;
+  overflow: hidden;
 }
 
 .chart-toolbar {
@@ -508,14 +471,13 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .chart-legend-badge {
   padding: 0.5rem 0.75rem;
-
   display: flex;
   gap: 1rem;
-
   background-color: var(--box-bg);
   border-radius: 0.75rem;
   font-size: 0.875rem;
@@ -561,26 +523,37 @@
 }
 
 .chart-range-btn:first-child {
-  border-top-left-radius: 0.75rem;
-  border-bottom-left-radius: 0.75rem;
+  border-radius: 0.75rem 0 0 0.75rem;
 }
 
 .chart-range-btn:last-child {
-  border-top-right-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
+  border-radius: 0 0.75rem 0.75rem 0;
 }
 
 .chart-range-btn.active {
   background: var(--primary-highlight2);
-  border: 1px solid var(--primary);
-  /* color: var(--primary); */
+  border-color: var(--primary);
 }
 
+/*
+  The render area must:
+  - fill the full width of its parent column
+  - have a fixed height so Chart.js has a stable box to paint into
+  - never overflow horizontally past the grid column
+*/
 .chart-render-area {
   width: 100%;
   min-width: 0;
-  height: 310px;
+  /* prevent flex/grid blowout */
+  height: clamp(220px, 28vh, 380px);
+  position: relative;
   overflow: hidden;
+}
+
+/* Belt-and-suspenders: force canvas to match container */
+.chart-render-area canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .chart-notice {
@@ -590,6 +563,9 @@
   color: var(--text-highlight);
 }
 
+/* ─────────────────────────────────────────
+   Trade modal
+───────────────────────────────────────── */
 .trade-modal-overlay {
   position: fixed;
   inset: 0;
@@ -602,12 +578,9 @@
 
 .trade-modal-content {
   width: 360px;
-
   background-color: var(--bg);
   border-radius: 1.5rem;
-
   box-shadow: 0 0.5rem 1rem var(--shadow-1);
-
   animation: slideUp 0.2s ease-out;
 }
 
@@ -625,11 +598,9 @@
 
 .trade-modal-header {
   padding: 1rem;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   border-bottom: 1px solid var(--border);
 }
 
@@ -641,16 +612,13 @@
 
 .trade-modal-close {
   display: flex;
-
   background: none;
   border: none;
-
   cursor: pointer;
 }
 
 .trade-modal-body {
   padding: 1rem;
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -679,7 +647,6 @@
 .quantity-buttons {
   display: flex;
   align-items: center;
-
   border: 1px solid var(--border-prim);
   border-radius: 0.5rem;
   overflow: hidden;
@@ -688,10 +655,8 @@
 .quantity-buttons button {
   padding: 0.5rem;
   display: flex;
-
   background-color: var(--primary-highlight);
   border: none;
-
   cursor: pointer;
 }
 
@@ -706,11 +671,8 @@
 .quantity-buttons input {
   width: 3rem;
   height: 2.5rem;
-
   border: none;
-
   text-align: center;
-
   font-size: 1.125rem;
   font-weight: 500;
   color: var(--text);
@@ -749,7 +711,6 @@
 .btn-cancel {
   flex: 1;
   padding: 0.75rem;
-
   background-color: var(--text-trans-2);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -757,7 +718,7 @@
   font-weight: 600;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .btn-cancel:hover {
@@ -767,7 +728,6 @@
 .submit-btn {
   flex: 1;
   padding: 0.75rem;
-
   border-radius: 0.75rem;
   border: 1px solid transparent;
   font-size: 1rem;
@@ -784,97 +744,25 @@
   background-color: var(--primary) !important;
 }
 
-.st-history-list {
-  min-height: 0;
-  max-height: 75vh;
-  overflow-y: auto;
+/* ─────────────────────────────────────────
+   Responsive
+───────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .stocks-list-item {
+    flex-direction: column;
+    align-items: flex-end;
+  }
 
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  border-top: 1px solid var(--border);
-}
-
-.st-history-item {
-  padding: 0.75rem 0.5rem 0.5rem;
-  margin: 0 0.5rem;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  border: 1px solid transparent;
-  border-radius: 0.75rem;
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-}
-
-.st-history-left {
-  width: 100%;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.side-stock-top p,
-.side-stock-top p:first-child,
-.st-history-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.st-history-date {
-  font-size: 0.875rem;
-  color: var(--text-highlight);
-  text-align: start;
-}
-
-.st-history-right {
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.st-history-action {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.st-history-right.buy .st-history-action {
-  color: var(--danger);
-}
-
-.st-history-right.sell .st-history-action {
-  color: var(--primary);
-}
-
-.st-history-price {
-  font-size: 0.875rem;
-  color: var(--text-highlight);
+  .stock-info-clickable {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
   .stocks-layout {
-    align-items: stretch;
-  }
-  .st-history-action{
-    font-size: 0.875rem;
-    font-weight: 700;
-  }
-  .stocks-layout {
     display: flex;
     flex-direction: column;
-  }
-
-  .stocks-side {
-    width: 100%;
-    position: static;
+    align-items: stretch;
   }
 
   .stocks-card {
@@ -897,13 +785,12 @@
     align-items: flex-start;
   }
 
-  .trade-btn.liked-buy {
-    width: 100%;
+  .chart-render-area {
+    height: clamp(180px, 25vh, 300px);
   }
 }
 
 @media (max-width: 580px) {
-
   .stocks-tab-group {
     width: calc(100vw - 2rem);
     justify-content: flex-start;
@@ -918,4 +805,7 @@
     align-items: stretch;
   }
 
+  .chart-render-area {
+    height: 200px;
+  }
 }

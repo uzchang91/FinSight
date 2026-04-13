@@ -888,7 +888,7 @@
   padding: 0.5rem 0.75rem;
 
   position: absolute;
-  top: calc(30vh + 1.25rem);
+  bottom: -5.25rem;
   left: 0;
 
   background: var(--box-bg);

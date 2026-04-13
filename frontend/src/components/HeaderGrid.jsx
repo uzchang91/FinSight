@@ -27,7 +27,7 @@ const HeaderGrid = () => {
     // ── Grid ─────────────────────────────────────────────
     const drawGrid = () => {
       const W = canvas.width, H = canvas.height;
-      const cols = 12, rows = 8;
+      const cols = 24, rows = 16;
       ctx.strokeStyle = "#0b153210";
       ctx.lineWidth = 1;
       for (let c = 0; c <= cols; c++) {
