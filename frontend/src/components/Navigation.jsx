@@ -91,12 +91,12 @@ const Navigation = ({
             </li>
 
             <li
-              className={`nav-menu ${activeMenu === 'Education' ? 'active' : ''}`}
+              className={`nav-menu ${activeMenu === 'Strategy' ? 'active' : ''}`}
               onClick={() => setActiveMenu('Strategy')}
               title='전략실'
             >
               <div className='nav-line'>
-                <Education alt='Education' className='icons icon-btn' />
+                <Education alt='Strategy' className='icons icon-btn' />
               </div>
             </li>
 
