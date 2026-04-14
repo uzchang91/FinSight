@@ -38,6 +38,10 @@
     inset 0 0 1rem var(--primary);
 }
 
+.icon-btn path {
+  fill: var(--text);
+}
+
 .nav-menu:hover .icon-btn path,
 .nav-menu.active .icon-btn path {
   fill: var(--primary);

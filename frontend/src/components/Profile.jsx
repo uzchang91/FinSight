@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './Profile.css'
 import Notification from '../assets/icons/notification.svg?react'
 import Edit from '../assets/icons/edit.svg?react'
+import Mode from '../assets/icons/mode.svg?react'
 import Account from '../assets/icons/account.svg?react'
 import Logout from '../assets/icons/logout.svg?react'
 import Spread from '../assets/icons/spread.svg?react'
@@ -237,6 +238,11 @@ const Profile = ({ collapsed, setCollapsed }) => {
 
   const isProfileCollapsed = collapsed
   const setIsProfileCollapsed = setCollapsed
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+  }, []);
 
   // Auto-collapse when ≤1280px, restore when wider
   useEffect(() => {
@@ -637,6 +643,14 @@ const Profile = ({ collapsed, setCollapsed }) => {
       setTitleLoading(false)
     }
   }
+
+  const toggleTheme = () => {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  };
 
   const handleEquipTitle = async (achId) => {
     try {
@@ -1367,6 +1381,14 @@ const Profile = ({ collapsed, setCollapsed }) => {
                 title={editMode ? '편집 취소' : '프로필 편집'}
               >
                 <Edit alt='edit' className='icons' />
+              </button>
+
+              <button
+                type='button'
+                className='icon-container set-icons'
+                onClick={toggleTheme}
+              >
+                <Mode alt='change mode' className='icons' />
               </button>
 
               <button

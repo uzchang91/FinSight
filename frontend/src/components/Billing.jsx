@@ -127,36 +127,6 @@ const Billing = ({ membershipType, setMembershipType }) => {
           </div>
         </section>
 
-        <section className="billing-section">
-          <div className="billing-section-head">
-            <h2 className="billing-section-title">결제 수단 선택</h2>
-            <p className="billing-section-note">
-              현재는 토스페이먼츠를 우선 지원하며, 다른 결제수단은 순차적으로 확장 예정입니다.
-            </p>
-          </div>
-          <div className="payment-grid">
-            {PAYMENT_OPTIONS.map((option) => {
-              const selected = selectedPayment === option.key
-              const disabled = !option.enabled || isPremium || !isMembershipLoaded
-              return (
-                <button
-                  key={option.key}
-                  type="button"
-                  className={`payment-card ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}`}
-                  onClick={() => handleSelectPayment(option.key, option.enabled)}
-                  disabled={isPremium || !isMembershipLoaded}
-                >
-                  <div className="payment-card-top">
-                    <span className="payment-name">{option.name}</span>
-                    <span className={`payment-badge ${option.enabled ? 'enabled' : 'soon'}`}>{option.badge}</span>
-                  </div>
-                  <p className="payment-description">{option.description}</p>
-                </button>
-              )
-            })}
-          </div>
-        </section>
-
         <section className="billing-section billing-action-section">
           <div className="billing-summary-card">
             <div className="billing-summary-row">

@@ -4,8 +4,10 @@
 :root {
   --primary: #4775FF;
   --bg: #FFFFFF;
+  --bg2: #FFFFFF;
   --secondary: #00B849;
   --text: #0B1532;
+  --text2: #0B1532;
   --danger: #FF4766;
   --warning: #FFAD14;
 
@@ -47,6 +49,11 @@
   --shadow-1: color-mix(in oklab, var(--text) 24%, transparent);
   --shadow-2: color-mix(in oklab, var(--text) 12%, transparent);
   --shadow-warning: color-mix(in oklab, var(--warning) 24%, transparent);
+}
+
+[data-theme="dark"] {
+  --bg: #0B1532;
+  --text: #FFFFFF;
 }
 
 * {
@@ -156,6 +163,7 @@ input[type=number] {
 }
 
 @media (max-width: 1024px) {
+
   ::-webkit-scrollbar-thumb,
   ::-webkit-scrollbar-track,
   ::-webkit-scrollbar {

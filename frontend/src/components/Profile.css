@@ -55,6 +55,10 @@
   transition: width 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
 }
 
+.profile-set path {
+  fill: var(--text);
+}
+
 .profile.collapsed .profile-set {
   padding: 0;
   padding-top: 0.5rem;
@@ -257,6 +261,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   text-align: center;
+  color: var(--text);
 }
 
 /* ─── Stats ──────────────────────────────────── */

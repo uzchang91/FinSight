@@ -51,15 +51,15 @@
 }
 
 .stocks-search-btn {
-  width: 5rem;
   height: 3rem;
   padding: 0.75rem 1rem;
+
   background-color: var(--primary);
-  color: var(--bg);
   border: none;
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 500;
+  color: var(--bg2);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -102,7 +102,7 @@
 .stocks-tab.active {
   background-color: var(--primary);
   border-color: transparent;
-  color: var(--bg);
+  color: var(--bg2);
 }
 
 /* ─────────────────────────────────────────
@@ -431,6 +431,7 @@
 .side-stock-top-liked span,
 .side-stock-top span {
   font-size: 0.875rem;
+  color: var(--text);
 }
 
 .side-stock-description {
@@ -533,6 +534,7 @@
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
+  color: var(--text);
 }
 
 .chart-range-btn:first-child {

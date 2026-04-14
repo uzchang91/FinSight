@@ -34,16 +34,19 @@
 .education-title-wrap h1 {
   font-size: 2.125rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .education-title-wrap strong {
   font-size: 2.25rem;
   font-weight: 700;
+  color: var(--text);
 }
 
 .education-title-wrap p {
   font-size: 1.125rem;
   font-weight: 400;
+  color: var(--text);
 }
 
 .education-top-meta {

@@ -572,11 +572,6 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
               </div>
             </div>
 
-            <div className='question-board-head'>
-              <div className='question-col-title'>제목</div>
-              <div className='question-col-writer'>작성자</div>
-            </div>
-
             <div className='question-board'>
               {filteredQuestions.length === 0 ? (
                 <div className='question-board-empty'>등록된 질문이 없습니다.</div>

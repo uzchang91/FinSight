@@ -151,8 +151,8 @@ const Landing = ({ setPage }) => {
 
   return (
     <div className='white-section' ref={topRef}>
-      <MarketBackground />
       <BackgroundGrid />
+      <MarketBackground />
 
       <div className='landing-header'>
         <div className='header-logo'>
