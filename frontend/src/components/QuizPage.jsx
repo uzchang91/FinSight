@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { api } from '../config/api'
 import './QuizPage.css'
 import close from '../assets/icons/close.svg'
@@ -1002,13 +1003,12 @@ const QuizPage = () => {
                         return (
                           <div
                             key={num}
-                            className={`wrong-note-option ${
-                              isCorrectAnswer
-                                ? 'correct'
-                                : isMyAnswer
-                                  ? 'my-answer'
-                                  : ''
-                            }`}
+                            className={`wrong-note-option ${isCorrectAnswer
+                              ? 'correct'
+                              : isMyAnswer
+                                ? 'my-answer'
+                                : ''
+                              }`}
                           >
                             <strong className='wrong-note-option-num'>{num}번</strong>
                             <span>{optionText}</span>
@@ -1111,88 +1111,6 @@ const QuizPage = () => {
           <button className='ox-floating-btn' onClick={handleOpenOxModal}>
             일일 O/X
           </button>
-
-          {isOxModalOpen && (
-            <div className='ox-modal-overlay'>
-              <div className='ox-modal-content'>
-                <div className='ox-modal-header'>
-                  <div className='ox-header-title'>
-                    <h2>FinSight 일일 O/X 퀴즈</h2>
-                  </div>
-                  <button className='ox-modal-close' onClick={() => setIsOxModalOpen(false)}>
-                    <img src={close} alt='닫기' />
-                  </button>
-                </div>
-
-                <div className='ox-modal-body'>
-                  <p className='ox-guide-text'>
-                    하루에 단 한 번 참여 가능합니다. (정답 시 500P, 참가상 100P)
-                  </p>
-
-                  {oxType && !oxResult && (
-                    <div className={getOxTypeClass(oxType)}>
-                      {getOxTypeLabel(oxType)}
-                    </div>
-                  )}
-
-                  {oxTodayCount >= 1 && !oxResult ? (
-                    <div className='ox-status-box finished'>
-                      <h3>오늘의 퀴즈 완료!</h3>
-                      <p>내일 새로운 주가 퀴즈로 만나요</p>
-                      <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
-                        닫기
-                      </button>
-                    </div>
-                  ) : oxResult ? (
-                    <div className={`ox-status-box result ${oxResult.isCorrect ? 'correct' : 'wrong'}`}>
-                      <div className={getOxTypeClass(oxResult.type)}>
-                        {getOxTypeLabel(oxResult.type)}
-                      </div>
-                      <div className='ox-reward-title'>
-                        <h3>{oxResult.isCorrect ? '정답입니다!' : '아쉬워요!'}</h3>
-                        <p className='ox-reward'>
-                          <span>{oxResult.rewardPoints}</span><span>pt</span> 지급 완료
-                        </p>
-                      </div>
-                      <div className='ox-explanation-card'>
-                        <div className='exp-answer'>정답: <strong>{oxResult.correctAnswer}</strong></div>
-                        <p className='exp-text'>{oxResult.explanation}</p>
-                      </div>
-                      <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
-                        돌아가기
-                      </button>
-                    </div>
-                  ) : oxQuizData ? (
-                    <div className='ox-quiz-play'>
-                      <div className='ox-question-card'>
-                        <p className='ox-question-text'>{oxQuizData.question}</p>
-                        {oxQuizData.referenceDate && (
-                          <div className='ox-reference-date'>
-                            ({oxQuizData.referenceDate} 기준)
-                          </div>
-                        )}
-                      </div>
-                      <div className='ox-btn-group'>
-                        <button className='btn-ox btn-o' onClick={() => handleOxSubmit('O')}>
-                          <span className='ox-char'>O</span>
-                          <span className='ox-label'>그렇다</span>
-                        </button>
-                        <button className='btn-ox btn-x' onClick={() => handleOxSubmit('X')}>
-                          <span className='ox-char'>X</span>
-                          <span className='ox-label'>아니다</span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className='ox-loading'>
-                      <div className='spinner'></div>
-                      <p>OX 퀴즈를 준비 중입니다.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -1393,6 +1311,89 @@ const QuizPage = () => {
       {step === 'PLAYING' && currentQuiz && renderPlaying()}
       {step === 'RESULT' && currentQuiz && renderResult()}
       {step === 'SUMMARY' && renderSummary()}
+
+      {isOxModalOpen && createPortal(
+        <div className='ox-modal-overlay'>
+          <div className='ox-modal-content'>
+            <div className='ox-modal-header'>
+              <div className='ox-header-title'>
+                <h2>FinSight 일일 O/X 퀴즈</h2>
+              </div>
+              <button className='ox-modal-close' onClick={() => setIsOxModalOpen(false)}>
+                <img src={close} alt='닫기' />
+              </button>
+            </div>
+
+            <div className='ox-modal-body'>
+              <p className='ox-guide-text'>
+                하루에 단 한 번 참여 가능합니다. (정답 시 500P, 참가상 100P)
+              </p>
+
+              {oxType && !oxResult && (
+                <div className={getOxTypeClass(oxType)}>
+                  {getOxTypeLabel(oxType)}
+                </div>
+              )}
+
+              {oxTodayCount >= 1 && !oxResult ? (
+                <div className='ox-status-box finished'>
+                  <h3>오늘의 퀴즈 완료!</h3>
+                  <p>내일 새로운 주가 퀴즈로 만나요</p>
+                  <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
+                    닫기
+                  </button>
+                </div>
+              ) : oxResult ? (
+                <div className={`ox-status-box result ${oxResult.isCorrect ? 'correct' : 'wrong'}`}>
+                  <div className={getOxTypeClass(oxResult.type)}>
+                    {getOxTypeLabel(oxResult.type)}
+                  </div>
+                  <div className='ox-reward-title'>
+                    <h3>{oxResult.isCorrect ? '정답입니다!' : '아쉬워요!'}</h3>
+                    <p className='ox-reward'>
+                      <span>{oxResult.rewardPoints}</span><span>pt</span> 지급 완료
+                    </p>
+                  </div>
+                  <div className='ox-explanation-card'>
+                    <div className='exp-answer'>정답: <strong>{oxResult.correctAnswer}</strong></div>
+                    <p className='exp-text'>{oxResult.explanation}</p>
+                  </div>
+                  <button className='btn btn-submit' onClick={() => setIsOxModalOpen(false)}>
+                    돌아가기
+                  </button>
+                </div>
+              ) : oxQuizData ? (
+                <div className='ox-quiz-play'>
+                  <div className='ox-question-card'>
+                    <p className='ox-question-text'>{oxQuizData.question}</p>
+                    {oxQuizData.referenceDate && (
+                      <div className='ox-reference-date'>
+                        ({oxQuizData.referenceDate} 기준)
+                      </div>
+                    )}
+                  </div>
+                  <div className='ox-btn-group'>
+                    <button className='btn-ox btn-o' onClick={() => handleOxSubmit('O')}>
+                      <span className='ox-char'>O</span>
+                      <span className='ox-label'>그렇다</span>
+                    </button>
+                    <button className='btn-ox btn-x' onClick={() => handleOxSubmit('X')}>
+                      <span className='ox-char'>X</span>
+                      <span className='ox-label'>아니다</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className='ox-loading'>
+                  <div className='spinner'></div>
+                  <p>OX 퀴즈를 준비 중입니다.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

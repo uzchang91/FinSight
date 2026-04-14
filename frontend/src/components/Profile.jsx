@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useThemeStore } from '../store/useThemeStore';
 import ReactDOM from 'react-dom'
 import './Profile.css'
 import Notification from '../assets/icons/notification.svg?react'
@@ -644,13 +645,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
     }
   }
 
-  const toggleTheme = () => {
-    const html = document.documentElement;
-    const isDark = html.getAttribute('data-theme') === 'dark';
-    const next = isDark ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  };
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   const handleEquipTitle = async (achId) => {
     try {

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useThemeStore } from '../store/useThemeStore';
 import './Navigation.css'
-import LongLogo from '../assets/finsight.svg?react'
+import LogoDark from '../assets/finsight.svg?react'
+import LogoWhite from '../assets/finsight-w.svg?react'
 import Dashboard from '../assets/icons/dashboard.svg?react'
 import Education from '../assets/icons/strategy.svg?react'
 import Card from '../assets/icons/card.svg?react'
@@ -67,12 +69,14 @@ const Navigation = ({
     }
   }
 
+  const isDarkMode = useThemeStore((state) => state.isDarkMode);
+
   return (
     <aside className='navigation'>
       <nav className='nav-content'>
 
-        <LongLogo alt='logo' className='nav-logo' />
-        
+        {isDarkMode ? <LogoWhite className='nav-logo'/> : <LogoDark className='nav-logo'/>}
+
         <div className='nav-wrapper'>
 
           <ul className='nav-list'>

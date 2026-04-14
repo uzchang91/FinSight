@@ -64,7 +64,7 @@
 .faq-primary-btn {
   background-color: var(--primary);
   border: none;
-  color: var(--bg2);
+  color: var(--bg);
 }
 
 .faq-secondary-btn {
@@ -232,7 +232,7 @@
 .comment-write-box textarea:focus,
 .comment-guest-meta input:focus,
 .comment-guest-delete input:focus {
-  border-color: var(--border);
+  outline: 1px solid var(--border);
 }
 
 .faq-field-meta {
@@ -294,7 +294,7 @@
 .faq-sort-bar button.active {
   border-color: transparent;
   background: var(--primary);
-  color: var(--bg2);
+  color: var(--bg);
 }
 
 .question-board {
@@ -435,9 +435,11 @@
   flex-direction: column;
   gap: 0.25rem;
 
-  background-color: var(--text-trans-2);
+  background: transparent;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
+
+  backdrop-filter: blur(0.2rem);
 }
 
 .question-detail-section-title,
@@ -604,15 +606,24 @@
 .comment-write-box textarea,
 .comment-guest-delete input {
   width: 100%;
+  padding: 0.5rem 0.75rem;
   box-sizing: border-box;
+  outline: none;
+
+  background: transparent;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
-  background: var(--bg);
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
   line-height: 1.5;
+  font-size: 1rem;
   color: var(--text);
-  outline: none;
+
+  backdrop-filter: blur(0.2rem);
+}
+
+.comment-guest-meta input:focus,
+.comment-write-box textarea:focus,
+.comment-guest-delete input:focus {
+  outline: 1px solid var(--primary);
 }
 
 .comment-guest-delete {

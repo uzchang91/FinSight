@@ -126,7 +126,7 @@
 
 .billing-nav-button {
   width: 100%;
-  padding: 1rem;
+  padding: 0.75rem;
 
   display: flex;
   justify-content: center;
@@ -189,7 +189,7 @@
     bottom: calc(0% + 1rem);
     left: calc(0% + 1rem);
 
-    background-color: var(--bg-trans2);
+    background-color: var(--bg-trans);
     border-right: none;
     border-bottom: 1px solid var(--border);
     border-radius: 1.5rem;

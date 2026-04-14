@@ -41,12 +41,12 @@
 }
 
 .profile-set {
-  padding: 0.5rem;
+  /* padding: 0.5rem; */
 
   position: relative;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: auto;
 
   z-index: 200;
 
@@ -204,7 +204,7 @@
 .profile-pic {
   width: 144px;
   height: 144px;
-  border-radius: 2.5rem;
+  border-radius: 1.5rem;
   object-fit: cover;
 }
 
@@ -242,15 +242,17 @@
 .avatar-edit-overlay {
   position: absolute;
   inset: 0;
-  border-radius: 2.5rem;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 1.5rem;
   font-size: 1.5rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
   z-index: 3;
+  
+  transition: opacity 0.3s ease;
 }
 
 .glowing-container--editable:hover .avatar-edit-overlay {

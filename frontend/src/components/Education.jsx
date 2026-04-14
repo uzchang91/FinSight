@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import './Education.css'
 import ArrowDown from '../assets/icons/arrow-down-line.svg?react'
-import FinsightLogo from '../assets/finsight.svg?react'
+import FinsightLogo from '../assets/icons/logoIcon.svg?react'
 import CrownIcon from '../assets/icons/premium.svg?react'
 import { api } from '../config/api'
 

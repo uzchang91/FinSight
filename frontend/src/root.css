@@ -14,7 +14,7 @@
   --border-prim: color-mix(in oklab, var(--primary) 70%, var(--bg)100%);
   --border: color-mix(in oklab, var(--bg)88%, var(--text) 12%);
 
-  --text-highlight: color-mix(in oklab, var(--text) 48%, var(--bg));
+  --text-highlight: color-mix(in oklab, var(--text) 56%, var(--bg));
   --primary-highlight: color-mix(in oklab, var(--primary) 4%, var(--bg) 96%);
   --primary-highlight2: color-mix(in oklab, var(--primary) 24%, var(--bg) 96%);
   --danger-highlight: color-mix(in oklab, var(--danger) 4%, var(--bg) 96%);
@@ -26,7 +26,7 @@
   --box-bg-2: color-mix(in oklab, var(--bg) 98%, var(--text));
   --box-prim: color-mix(in oklab, var(--primary) 8%, transparent);
   --text-trans: color-mix(in oklab, var(--text) 64%, transparent);
-  --text-trans-1: color-mix(in oklab, var(--text) 12%, transparent);
+  --text-trans-1: color-mix(in oklab, var(--text) 24%, transparent);
   --text-trans-2: color-mix(in oklab, var(--text) 2%, transparent);
   --bg-trans: color-mix(in oklab, var(--bg) 64%, transparent);
   --bg-trans2: color-mix(in oklab, var(--bg) 88%, transparent);
@@ -54,6 +54,7 @@
 [data-theme="dark"] {
   --bg: #0B1532;
   --text: #FFFFFF;
+  --primary: hsl(225, 100%, 72%);
 }
 
 * {
@@ -62,6 +63,10 @@
   padding: 0;
   font-variant-numeric: tabular-nums;
   word-break: keep-all;
+}
+
+*:focus {
+  outline: none;
 }
 
 body {
@@ -82,7 +87,7 @@ path,
 .icons {
   width: 1.5rem;
   height: 1.5rem;
-  object-fit: contain;
+  /* object-fit: contain; */
   display: block;
   pointer-events: none;
 }

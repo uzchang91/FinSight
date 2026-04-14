@@ -59,7 +59,7 @@
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--bg2);
+  color: var(--bg);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -102,7 +102,7 @@
 .stocks-tab.active {
   background-color: var(--primary);
   border-color: transparent;
-  color: var(--bg2);
+  color: var(--bg);
 }
 
 /* ─────────────────────────────────────────
@@ -351,6 +351,10 @@
   flex-direction: column;
   gap: 0.5rem;
   transition: all 0.3s ease;
+}
+
+.stocks-card path {
+  fill: var(--text);
 }
 
 .stocks-card h3 {

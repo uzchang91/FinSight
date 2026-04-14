@@ -82,11 +82,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  
+
   background: var(--bg-trans3);
   border-radius: 0.75rem;
   border: 1px solid var(--border);
-  
+
   backdrop-filter: blur(0.2rem);
 }
 
@@ -96,6 +96,10 @@
 
 .tool-box {
   align-self: start;
+}
+
+.dash-box path {
+  fill: var(--text);
 }
 
 .tool-box>span,
@@ -112,6 +116,7 @@
   color: var(--text);
 }
 
+.dash-box path,
 .dash-clickable,
 .isr-header>span:last-child,
 .dash-box>span {
@@ -160,7 +165,7 @@
 
   display: flex;
   justify-content: space-around;
-  
+
   border-bottom: 1px solid var(--border);
 }
 
@@ -231,7 +236,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  
+
   border: 1px solid transparent;
   border-radius: 0.75rem;
   font-size: 1rem;
@@ -807,7 +812,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  
+
   background: var(--bg-trans3);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -902,7 +907,7 @@
   .dash-master {
     grid-template-columns: repeat(1, 1fr);
   }
-  
+
   .dash-portfolio {
     flex-direction: column;
   }
