@@ -184,7 +184,7 @@
 .education-filter-btn.active {
   background: var(--primary);
   border-color: transparent;
-  color: var(--bg);
+  color: var(--bg2);
 }
 
 .education-filter-btn.locked {
@@ -422,7 +422,7 @@
   border: 1px solid transparent;
   border-radius: 0.75rem;
 
-  color: var(--bg);
+  color: var(--bg2);
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 1px;
@@ -604,5 +604,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+  .education-tabs {
+    margin: 0;
+    width: 100%;
   }
 }
