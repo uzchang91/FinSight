@@ -224,6 +224,8 @@ const Profile = ({ collapsed, setCollapsed }) => {
   const [editMode, setEditMode] = useState(false)
   const [editNickname, setEditNickname] = useState('')
   const [editPreviewUrl, setEditPreviewUrl] = useState(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [isTitleDropdownOpen, setIsTitleDropdownOpen] = useState(false)
@@ -840,6 +842,25 @@ const Profile = ({ collapsed, setCollapsed }) => {
     window.location.href = '/'
   }
 
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true)
+    try {
+      await api.delete('/api/auth/me')
+      localStorage.removeItem('token')
+      localStorage.removeItem('member')
+      localStorage.removeItem('nickname')
+      sessionStorage.clear()
+      alert('계정이 삭제되었습니다. 이용해 주셔서 감사합니다.')
+      window.location.href = '/'
+    } catch (err) {
+      console.error('계정 삭제 실패:', err)
+      alert(err?.response?.data?.message || err.message || '계정 삭제에 실패했습니다.')
+    } finally {
+      setDeleteLoading(false)
+      setShowDeleteConfirm(false)
+    }
+  }
+
   const investmentSummary = useMemo(() => {
     return ownedStocks.reduce(
       (acc, stock) => {
@@ -1427,6 +1448,11 @@ const Profile = ({ collapsed, setCollapsed }) => {
                         {saving ? '저장 중...' : '저장'}
                       </button>
                     </div>
+                    <button
+                      className='btn-ox btn-x ox-label'
+                      onClick={() => setShowDeleteConfirm(true)}
+                    >
+                      계정 삭제</button>
                   </div>
                 ) : (
                   <>
@@ -1509,7 +1535,7 @@ const Profile = ({ collapsed, setCollapsed }) => {
                     <p>{member?.isr_score ?? 0}</p>
                   </div>
                 </div>
-                
+
                 <div className='total-description'>
                   <span className='description-top'>잔여 포인트</span>
                   <p
@@ -1570,6 +1596,41 @@ const Profile = ({ collapsed, setCollapsed }) => {
           )}
         </div>
       </div>
+      {showDeleteConfirm && ReactDOM.createPortal(
+        <div className='trade-modal-overlay' onClick={() => !deleteLoading && setShowDeleteConfirm(false)}>
+          <div className='trade-modal-content' onClick={(e) => e.stopPropagation()}>
+            <div className='trade-modal-header'>
+              <h2>계정 삭제</h2>
+            </div>
+            <div className='trade-modal-body'>
+              <p style={{ color: 'var(--text)', lineHeight: 1.6 }}>
+                계정을 삭제하면 모든 데이터(포인트, 주식, 업적 등)가 <strong>영구적으로 삭제</strong>되며 복구할 수 없습니다.
+              </p>
+              <p style={{ color: 'var(--danger)', fontWeight: 600, marginTop: '0.5rem' }}>
+                정말로 삭제하시겠어요?
+              </p>
+            </div>
+            <div className='trade-modal-footer'>
+              <button
+                className='btn-cancel'
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteLoading}
+              >
+                취소
+              </button>
+              <button
+                className='submit-btn buy'
+                onClick={handleDeleteAccount}
+                disabled={deleteLoading}
+                style={{ backgroundColor: 'var(--danger)' }}
+              >
+                {deleteLoading ? '삭제 중...' : '삭제하기'}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   )
 }

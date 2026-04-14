@@ -554,3 +554,28 @@ exports.updateProfileImage = async (req, res) => {
     return fail(res, "이미지 업로드 실패", err.message, 500);
   }
 };
+
+/* 계정 삭제 */
+exports.deleteMe = async (req, res) => {
+  const conn = await db.promise().getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const memberId = req.user.member_id;
+
+    // Delete in dependency order to respect FK constraints
+    await conn.query("DELETE FROM member_achievements WHERE member_id = ?", [memberId]);
+    await conn.query("DELETE FROM gameLog WHERE member_id = ?", [memberId]);
+    await conn.query("DELETE FROM members WHERE member_id = ?", [memberId]);
+
+    await conn.commit();
+
+    return success(res, "계정이 삭제되었습니다.");
+  } catch (err) {
+    await conn.rollback();
+    console.error("deleteMe error =", err);
+    return fail(res, "계정 삭제 실패", err.message, 500);
+  } finally {
+    conn.release();
+  }
+};

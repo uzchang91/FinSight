@@ -82,6 +82,13 @@ const Stocks = () => {
   const ownedChartContainerRef = React.useRef(null);
   const ownedChartInstanceRef = React.useRef(null);
 
+  // ── Liked-panel chart state (fully independent) ──
+  const [expandedLikedCode, setExpandedLikedCode] = useState(null);
+  const [likedChartData, setLikedChartData] = useState(null);
+  const [likedRangeLabel, setLikedRangeLabel] = useState('일');
+  const likedChartContainerRef = React.useRef(null);
+  const likedChartInstanceRef = React.useRef(null);
+
   const [tradeModal, setTradeModal] = useState({ isOpen: false, type: '', stock: null, });
 
   const [tradeQuantity, setTradeQuantity] = useState(0);
@@ -207,6 +214,7 @@ const Stocks = () => {
       setOwnedStocks(ownedData);
       ownedData.forEach(stock => fetchSparkline(String(stock.stockCode).padStart(6, '0')));
       setLikedStocks(likedData);
+      likedData.forEach(stock => fetchSparkline(String(stock.stockCode).padStart(6, '0')));
       setLikedCodeSet(new Set(likedData.map((item) => String(item.stockCode).padStart(6, '0'))));
     } catch (err) {
       console.error('사이드 주식 로드 실패:', err);
@@ -314,6 +322,38 @@ const Stocks = () => {
     setExpandedOwnedCode(stockCode);
     const defaultRange = RANGES.find((r) => r.label === '일');
     if (defaultRange) fetchOwnedChart(stockCode, defaultRange);
+  };
+
+  // ── Liked-panel chart fetcher ──
+  const fetchLikedChart = async (stockCode, rangeItem) => {
+    setLikedRangeLabel(rangeItem.label);
+    setLikedChartData(null);
+    try {
+      const res = await api.get(
+        `/api/stocks/${stockCode}/chart?range=${rangeItem.range}&interval=${rangeItem.interval}`
+      );
+      let resultData = res?.data?.data ?? res?.data ?? [];
+      if (Array.isArray(resultData)) {
+        resultData = [...resultData].sort((a, b) => new Date(a.x) - new Date(b.x));
+      } else {
+        resultData = [];
+      }
+      setLikedChartData({ datasets: [{ data: resultData }] });
+    } catch (err) {
+      console.error('찜 주식 차트 로드 실패:', err);
+      setLikedChartData(null);
+    }
+  };
+
+  const handleLikedStockClick = (stockCode) => {
+    if (expandedLikedCode === stockCode) {
+      setExpandedLikedCode(null);
+      setLikedChartData(null);
+      return;
+    }
+    setExpandedLikedCode(stockCode);
+    const defaultRange = RANGES.find((r) => r.label === '일');
+    if (defaultRange) fetchLikedChart(stockCode, defaultRange);
   };
 
   const handleStockClick = async (symbol) => {
@@ -449,6 +489,17 @@ const Stocks = () => {
     return () => ro.disconnect();
   }, [expandedOwnedCode, ownedChartData]);
 
+  // Resize liked-panel chart on container resize
+  useEffect(() => {
+    const container = likedChartContainerRef.current;
+    if (!container || !expandedLikedCode) return;
+    const ro = new ResizeObserver(() => {
+      if (likedChartInstanceRef.current) likedChartInstanceRef.current.resize();
+    });
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [expandedLikedCode, likedChartData]);
+
   // Observe sparkline container widths responsively
   useEffect(() => {
     const observers = [];
@@ -462,7 +513,7 @@ const Stocks = () => {
       observers.push(ro);
     });
     return () => observers.forEach(ro => ro.disconnect());
-  }, [stocks, ownedStocks]);
+  }, [stocks, ownedStocks, likedStocks]);
 
   const buildChartOptions = (rangeLabel) => {
     let timeUnit = 'month', xFormat = 'MM/dd', tipFormat = 'yyyy-MM-dd';
@@ -525,6 +576,7 @@ const Stocks = () => {
 
   const chartOptions = buildChartOptions(selectedRangeLabel);
   const ownedChartOptions = buildChartOptions(ownedRangeLabel);
+  const likedChartOptions = buildChartOptions(likedRangeLabel);
 
   const ownedMap = useMemo(() => {
     const map = new Map();
@@ -643,39 +695,44 @@ const Stocks = () => {
             <div className='stocks-card-body'>
               {likedStocks.length > 0 ? (
                 likedStocks.map((stock) => {
+                  const likedCode = String(stock.stockCode).padStart(6, '0');
                   const liked = isLiked(stock.stockCode);
+                  const isExpanded = expandedLikedCode === likedCode;
 
                   return (
-                    <React.Fragment key={`liked-${stock.stockCode}`}>
+                    <div key={`liked-${stock.stockCode}`} className='stock-item-wrap'>
                       <div
-                        className={`side-stock-item ${openLikeCode === stock.stockCode ? 'flex' : ''}`}
-                        onClick={() =>
-                          setOpenLikeCode((prev) =>
-                            prev === stock.stockCode ? null : stock.stockCode
-                          )
-                        }
+                        className='side-stock-item-owned'
+                        onClick={() => handleLikedStockClick(likedCode)}
                       >
                         <div className='side-stock-top-liked'>
                           <p>{stock.stockName}</p>
-                          
-                          <div className='side-stock-description'>
+                          <div
+                            className='stock-sparkline'
+                            ref={el => { sparklineRefs.current[`liked-${likedCode}`] = el; }}
+                          >
+                            <Sparklines data={sparklineMap[likedCode] ?? []} width={sparklineWidths[`liked-${likedCode}`] || 70} height={24}>
+                              <SparklinesLine
+                                color={Number(stock.rate || 0) >= 0 ? '#FF4766' : '#4775FF'}
+                                style={{ fill: 'none', strokeWidth: 1.5 }}
+                              />
+                            </Sparklines>
+                          </div>
+                          <div className='side-stock-end'>
                             <p>
-                              {stock.price !== null && stock.price !== undefined
-                                ? `${Number(stock.price).toLocaleString()}`
-                                : '-'}
+                              {stock.price != null ? Number(stock.price).toLocaleString() : '-'}
                               <span>pt</span>
                             </p>
-                            <span
-                              className={Number(stock.rate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}
-                            >
-                              ({Number(stock.rate || 0) >= 0 ? '+' : ''}
-                              {Number(stock.rate || 0).toFixed(2)}%)
-                            </span>
+                            <p>
+                              <span className={Number(stock.rate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}>
+                                ({Number(stock.rate || 0) >= 0 ? '+' : ''}
+                                {Number(stock.rate || 0).toFixed(2)}%)
+                              </span>
+                            </p>
                           </div>
                         </div>
 
-                        <div className={`side-liked-actions ${openLikeCode === stock.stockCode ? 'flex' : ''}`}>
-
+                        <div className={`side-liked-actions ${isExpanded ? 'flex' : ''}`}>
                           <button
                             type='button'
                             className='side-like-btn liked'
@@ -691,10 +748,44 @@ const Stocks = () => {
                           >
                             매수
                           </button>
-
                         </div>
-                      </div >
-                    </React.Fragment>
+                      </div>
+
+                      {isExpanded && (
+                        <div className='stock-chart-expanded'>
+                          <div className='chart-toolbar'>
+                            <div className='chart-legend-badge'>
+                              <span className='legend-item'><span className='color-box up'></span> 상승</span>
+                              <span className='legend-item'><span className='color-box down'></span> 하락</span>
+                            </div>
+                            <div className='chart-range-group'>
+                              {RANGES.map((r) => (
+                                <button
+                                  key={r.label}
+                                  className={`chart-range-btn ${likedRangeLabel === r.label ? 'active' : ''}`}
+                                  onClick={(e) => { e.stopPropagation(); fetchLikedChart(likedCode, r); }}
+                                >
+                                  {r.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div className='chart-render-area' ref={likedChartContainerRef}>
+                            {likedChartData ? (
+                              <Chart
+                                key={`liked-${likedCode}-${likedRangeLabel}`}
+                                ref={likedChartInstanceRef}
+                                type='candlestick'
+                                data={likedChartData}
+                                options={likedChartOptions}
+                              />
+                            ) : (
+                              <div className='stocks-empty'>차트 로딩 중...</div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   );
                 })
               ) : (

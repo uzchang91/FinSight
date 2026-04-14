@@ -405,9 +405,10 @@
 }
 
 .side-stock-top-liked {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) 2fr;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .side-stock-end {

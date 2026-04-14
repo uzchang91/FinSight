@@ -35,6 +35,7 @@ router.get("/google/callback", authController.googleCallback);
 
 /* 로그인 사용자 */
 router.get("/me",          authMiddleware, autoRefreshMiddleware, authController.getMe);
+router.delete("/me",          authMiddleware, autoRefreshMiddleware, authController.deleteMe);
 router.patch("/me",        authMiddleware, autoRefreshMiddleware, validateNickname, authController.updateMe);
 router.patch("/me/image",  authMiddleware, upload.single("profile_image"), authController.updateProfileImage);
 router.get("/meta",        authMiddleware, autoRefreshMiddleware, authController.getProfileMeta);
