@@ -66,9 +66,6 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
 
   const [token, setToken] = useState(getStoredToken())
 
-  const topRef = useRef(null)
-  const questionRef = useRef(null)
-
   const fetchComments = async (questionId) => {
     try {
       const data = await api.get(`/api/faq/questions/${questionId}/comments`)
@@ -136,16 +133,6 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (scrollTarget === 'question' && questionRef.current) {
-      setTimeout(() => {
-        questionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 100)
-    } else if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }, [scrollTarget])
 
   const filteredFaq = useMemo(() => {
     return faqList.filter((item) =>
@@ -410,7 +397,7 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
   }
 
   return (
-    <div className='faq-page' ref={topRef}>
+    <div className='faq-page'>
       <div className='faq-topbar'>
         <div className='faq-header'>
           <h1 className='faq-title'>도움말 센터</h1>
@@ -428,7 +415,7 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
       </div>
 
       {openForm && (
-        <section className='faq-panel' id='faq-form-section' ref={questionRef}>
+        <section className='faq-panel' id='faq-form-section'>
           <div className='faq-panel-head'>
             <h2>{editQuestionId ? '질문 수정' : '질문 남기기'}</h2>
           </div>

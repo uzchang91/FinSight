@@ -157,6 +157,12 @@
   border-radius: 0.75rem;
   backdrop-filter: blur(0.2rem);
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stock-item-wrap:hover {
+  background-color: var(--primary-highlight);
+  border: 1px solid var(--border-prim);
 }
 
 .stocks-list-item {
@@ -291,7 +297,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
+  background: transparent;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   color: var(--text);
@@ -349,6 +355,11 @@
 
 .stocks-card h3 {
   padding: 0.75rem 0.5rem 0;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--text);
@@ -417,6 +428,7 @@
   align-items: flex-end;
 }
 
+.side-stock-top-liked span,
 .side-stock-top span {
   font-size: 0.875rem;
 }

@@ -340,7 +340,7 @@ const Stocks = () => {
       }
       setLikedChartData({ datasets: [{ data: resultData }] });
     } catch (err) {
-      console.error('찜 주식 차트 로드 실패:', err);
+      console.error('관심 주식 차트 로드 실패:', err);
       setLikedChartData(null);
     }
   };
@@ -409,8 +409,8 @@ const Stocks = () => {
 
       window.dispatchEvent(new Event('pointsUpdated'));
     } catch (err) {
-      console.error('찜 토글 실패:', err);
-      alert(err?.response?.data?.message || err?.message || '찜하기 처리에 실패했습니다.');
+      console.error('관심 토글 실패:', err);
+      alert(err?.response?.data?.message || err?.message || '관심하기 처리에 실패했습니다.');
     }
   };
 
@@ -593,7 +593,7 @@ const Stocks = () => {
       <div className='stocks-layout'>
         <div className='stocks-side'>
           <div className='stocks-card'>
-            <h3>보유 주식</h3>
+            <h3><StocksOwned />보유 주식</h3>
             <div className='stocks-card-body'>
               {ownedStocks.length > 0 ? (
                 ownedStocks.map((stock) => {
@@ -617,7 +617,7 @@ const Stocks = () => {
                                 color={Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF'}
                                 style={{
                                   fill: Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF',
-                                  strokeWidth: 1.5,
+                                  strokeWidth: 1,
                                 }}
                               />
                             </Sparklines>
@@ -691,11 +691,11 @@ const Stocks = () => {
           </div>
 
           <div className='stocks-card'>
-            <h3>찜한 주식</h3>
+            <h3><Heart />관심 주식</h3>
             <div className='stocks-card-body'>
               {likedStocks.length > 0 ? (
                 likedStocks.map((stock) => {
-                  const likedCode = String(stock.stockCode).padStart(6, '0');
+                  const likedCode = String(stock.stockCode);
                   const liked = isLiked(stock.stockCode);
                   const isExpanded = expandedLikedCode === likedCode;
 
@@ -713,8 +713,11 @@ const Stocks = () => {
                           >
                             <Sparklines data={sparklineMap[likedCode] ?? []} width={sparklineWidths[`liked-${likedCode}`] || 70} height={24}>
                               <SparklinesLine
-                                color={Number(stock.rate || 0) >= 0 ? '#FF4766' : '#4775FF'}
-                                style={{ fill: 'none', strokeWidth: 1.5 }}
+                                color={Number(stock.changeRate || 0) >= 0 ? '#FF4766' : '#4775FF'}
+                                style={{
+                                  fill: Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF',
+                                  strokeWidth: 1,
+                                }}
                               />
                             </Sparklines>
                           </div>
@@ -723,12 +726,10 @@ const Stocks = () => {
                               {stock.price != null ? Number(stock.price).toLocaleString() : '-'}
                               <span>pt</span>
                             </p>
-                            <p>
-                              <span className={Number(stock.rate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}>
-                                ({Number(stock.rate || 0) >= 0 ? '+' : ''}
-                                {Number(stock.rate || 0).toFixed(2)}%)
-                              </span>
-                            </p>
+                            <span className={Number(stock.changeRate || 0) >= 0 ? 'stocks-up' : 'stocks-down'}>
+                              ({Number(stock.changeRate || 0) >= 0 ? '+' : ''}
+                              {Number(stock.changeRate || 0).toFixed(2)}%)
+                            </span>
                           </div>
                         </div>
 
@@ -737,9 +738,9 @@ const Stocks = () => {
                             type='button'
                             className='side-like-btn liked'
                             onClick={(e) => handleToggleLike(stock, e)}
-                            title='찜 해제'
+                            title='관심 해제'
                           >
-                            ♥
+                            {liked ? '♥' : '♡'}
                           </button>
                           <button
                             type='button'
@@ -789,7 +790,7 @@ const Stocks = () => {
                   );
                 })
               ) : (
-                <div className='stocks-empty'>찜한 주식이 없습니다.</div>
+                <div className='stocks-empty'>관심 주식이 없습니다.</div>
               )}
             </div>
           </div>
@@ -838,11 +839,11 @@ const Stocks = () => {
                   const ownedInfo = ownedMap.get(stockCode);
 
                   return (
-                    <div key={stockCode} className='stock-item-wrap'>
-                      <div className='stocks-list-item'>
-                        <div className='stock-info-clickable'
+                    <div key={stockCode} className='stock-item-wrap'
                           onClick={() => handleStockClick(stockCode)}
-                        >
+                    >
+                      <div className='stocks-list-item'>
+                        <div className='stock-info-clickable'>
                           <div className='stocks-info-group'>
                             <div className='stock-rank-badge'>{index + 1}</div>
 
@@ -884,7 +885,7 @@ const Stocks = () => {
                             type='button'
                             className={`side-like-btn ${liked ? 'liked' : ''}`}
                             onClick={(e) => handleToggleLike(stock, e)}
-                            title={liked ? '찜 해제' : '찜하기'}
+                            title={liked ? '관심 해제' : '관심하기'}
                           >
                             {liked ? '♥' : '♡'}
                           </button>

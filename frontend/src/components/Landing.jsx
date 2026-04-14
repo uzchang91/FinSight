@@ -210,7 +210,7 @@ const Landing = ({ setPage }) => {
             <p>주식 차트 분석, 투자 판단, 그리고 나만의 투자 성향 분석까지.</p>
             <p>실전 데이터를 기반으로 투자 감각을 훈련하는 금융 트레이닝 플랫폼.</p>
           </div>
-          <div className='ad-title'>
+          <div className='ad-title' ref={serviceRef}>
             <h2>많은 사람들이 투자에 관심이 있지만,</h2>
             <div className='intro-description'>
               <h3>사기를 당할까 걱정...</h3>
@@ -218,7 +218,7 @@ const Landing = ({ setPage }) => {
               <h4>어디서부터 시작해야 할지 모르겠고...</h4>
             </div>
           </div>
-          <div className='title-description' ref={serviceRef}>
+          <div className='title-description'>
             <p>그래서 우리는 투자를 안전하게 연습할 수 있는 공간을 만들고,</p>
             <p>실제 시장 데이터 기반으로 투자 판단을 습득하고 자신의 투자 스타일을 분석!</p>
           </div>

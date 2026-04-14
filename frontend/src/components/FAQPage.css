@@ -15,13 +15,6 @@
   gap: 1rem;
 }
 
-.landing-faq-accordion:hover {
-  border: 1px solid var(--primary);
-  background-color: var(--box-prim);
-  transform: translateY(-1px);
-  box-shadow: 0 0.25rem 0.5rem var(--shadow-2);
-}
-
 .faq-form input:focus,
 .faq-form textarea:focus {
   border-color: var(--primary);

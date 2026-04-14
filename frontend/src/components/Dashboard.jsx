@@ -772,11 +772,11 @@ const Dashboard = ({ onNavigate }) => {
           </div>
 
           <div className='dash-box'>
-            <span onClick={() => onNavigate?.('Stocks')}><Heart />찜한 주식</span>
+            <span onClick={() => onNavigate?.('Stocks')}><Heart />관심 주식</span>
             <div className='stock-box'>
               <ul className='stock-list'>
                 {likedStocks.length === 0 ? (
-                  <li className='stock-empty'>찜한 주식이 없습니다.</li>
+                  <li className='stock-empty'>관심 주식이 없습니다.</li>
                 ) : (
                   likedStocks.map((stock) => (
                     <li
