@@ -371,7 +371,7 @@
   background: linear-gradient(90deg, transparent 0%, var(--text-trans) 25%, var(--text-trans) 75%, transparent 100%);
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--bg);
+  color: var(--bg2);
   opacity: 0;
   transform: translateY(4px) translateX(0%);
   transition: opacity 0.3s ease, transform 0.3s ease;

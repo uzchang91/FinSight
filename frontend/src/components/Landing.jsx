@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useThemeStore } from '../store/useThemeStore';
 import './Landing.css'
 import FAQPage from './FAQPage'
 import { api, API_BASE_URL } from '../config/api'
@@ -10,9 +11,11 @@ import FaqIcon from '../assets/icons/megaphone.svg?react'
 import Minus from '../assets/icons/minus.svg?react'
 import Plus from '../assets/icons/plus.svg?react'
 import CloseIcon from '../assets/icons/close.svg?react'
-import Finsight from '../assets/finsight.svg?react'
+import LogoDark from '../assets/finsight.svg?react'
+import LogoWhite from '../assets/finsight-w.svg?react'
 import LongLogo from '../assets/logo_long.svg?react'
-import idk from '../assets/idk.jpg'
+import LongLogoW from '../assets/logo_long_w.svg?react'
+import Mode from '../assets/icons/mode.svg?react'
 import MarketBackground from './MarketBackground'
 import BackgroundGrid from './BackgroundGrid'
 
@@ -149,6 +152,10 @@ const Landing = ({ setPage }) => {
     setOpenFaqId((prev) => (prev === faqId ? null : faqId))
   }
 
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+
+  const isDarkMode = useThemeStore((state) => state.isDarkMode);
+
   return (
     <div className='white-section' ref={topRef}>
       <BackgroundGrid />
@@ -156,8 +163,8 @@ const Landing = ({ setPage }) => {
 
       <div className='landing-header'>
         <div className='header-logo'>
-          <Finsight alt='logo' className='landing-logo2' />
-          <LongLogo alt='logo' className='landing-logo' />
+          {isDarkMode ? <LongLogoW className='landing-logo' /> : <LongLogo className='landing-logo' />}
+          {isDarkMode ? <LogoWhite className='landing-logo2' /> : <LogoDark className='landing-logo2' />}
         </div>
 
         <div className='landing-navigation'>
@@ -184,6 +191,15 @@ const Landing = ({ setPage }) => {
             >
               <FaqIcon alt='faq' className='landing-menu' />
               <p>FAQ</p>
+            </button>
+
+            <button
+              type='button'
+              className='landing-navigation-menu'
+              onClick={toggleTheme}
+            >
+              <Mode alt='change mode' className='landing-menu' />
+              <p>테마</p>
             </button>
           </div>
         </div>

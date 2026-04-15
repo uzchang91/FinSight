@@ -25,7 +25,7 @@
   --box-bg: color-mix(in oklab, var(--bg) 96%, var(--text));
   --box-bg-2: color-mix(in oklab, var(--bg) 98%, var(--text));
   --box-prim: color-mix(in oklab, var(--primary) 8%, transparent);
-  --text-trans: color-mix(in oklab, var(--text) 64%, transparent);
+  --text-trans: color-mix(in oklab, var(--text2) 64%, transparent);
   --text-trans-1: color-mix(in oklab, var(--text) 24%, transparent);
   --text-trans-2: color-mix(in oklab, var(--text) 2%, transparent);
   --bg-trans: color-mix(in oklab, var(--bg) 64%, transparent);

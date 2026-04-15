@@ -593,6 +593,8 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
+  backdrop-filter: blur(0.5rem);
 }
 
 .trade-modal-content {
@@ -663,6 +665,10 @@
   color: var(--text);
 }
 
+.quantity-buttons path {
+  fill: var(--text);
+}
+
 .quantity-buttons {
   display: flex;
   align-items: center;
@@ -694,6 +700,7 @@
   text-align: center;
   font-size: 1.125rem;
   font-weight: 500;
+  background: var(--bg);
   color: var(--text);
   outline: none;
 }
@@ -703,6 +710,7 @@
   border-top: 1px dashed var(--border);
   font-size: 1rem;
   font-weight: 500;
+  color: var(--text);
 }
 
 .trade-total-price strong {
