@@ -514,7 +514,7 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
 
           <section className='faq-panel'>
             <div className='faq-panel-head'>
-              <h2>자주 묻는 질문</h2>
+              <h2>▶ 자주 묻는 질문</h2>
             </div>
 
             <div className='faq-list'>
@@ -551,7 +551,7 @@ const FAQPage = ({ setPage, scrollTarget = 'top' }) => {
 
           <section className='faq-panel'>
             <div className='faq-panel-head'>
-              <h2>유저 질문</h2>
+              <h2>▶ 유저 질문</h2>
 
               <div className='faq-sort-bar'>
                 <button

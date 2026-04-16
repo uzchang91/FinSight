@@ -12,7 +12,7 @@ router.post("/:stockCode/like", authMiddleware, stockController.toggleLikeStock)
 router.post("/:stockCode/buy", authMiddleware, stockController.buyStock);
 router.post("/:stockCode/sell", authMiddleware, stockController.sellStock);
 
-router.get("/:symbol/chart", stockController.getStockChart);
-router.get("/:symbol", stockController.getStockPrice);
+router.get("/:stockCode/chart", stockController.getStockChart);
+router.get("/:stockCode",       stockController.getStockPrice);
 
 module.exports = router;

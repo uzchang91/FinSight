@@ -33,7 +33,6 @@ const Main = () => {
   }, []);
 
   const particlesLoaded = (container) => {
-    console.log(container);
   };
 
   const options = useMemo(
@@ -60,7 +59,7 @@ const Main = () => {
             quantity: 10,
           },
           repulse: {
-            distance: 80,
+            distance: 160,
             duration: 1,
           },
         },

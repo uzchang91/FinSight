@@ -65,6 +65,10 @@
   word-break: keep-all;
 }
 
+#root {
+  position: relative;
+}
+
 *:focus {
   outline: none;
 }

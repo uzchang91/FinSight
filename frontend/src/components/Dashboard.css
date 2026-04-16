@@ -454,6 +454,7 @@
 .profile-investment-pie-hole span:last-child {
   font-size: 0.875rem;
   font-weight: 500;
+  color: var(--text);
 }
 
 .profile-investment-legend {

@@ -63,7 +63,6 @@ const RANGES = [
 
 const Stocks = () => {
   const [activeTab, setActiveTab] = useState('popular');
-  const [openLikeCode, setOpenLikeCode] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -715,7 +714,7 @@ const Stocks = () => {
                               <SparklinesLine
                                 color={Number(stock.changeRate || 0) >= 0 ? '#FF4766' : '#4775FF'}
                                 style={{
-                                  fill: Number(stock.myChangeRate || 0) >= 0 ? '#FF4766' : '#4775FF',
+                                  fill: Number(stock.changeRate || 0) >= 0 ? '#FF4766' : '#4775FF',
                                   strokeWidth: 1,
                                 }}
                               />
