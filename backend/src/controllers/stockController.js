@@ -39,7 +39,7 @@ function kisRateLimit() {
 // ── Daily call counter ────────────────────────────────────────────────────────
 // KIS personal free-tier: 10,000 calls/day per TR_ID group (resets midnight KST).
 // APP_KEY / APP_SECRET never expire — only the OAuth token does (24 h, auto-refreshed).
-const DAILY_CALL_LIMIT = 5000; // buffer below the 10,000 hard limit
+const DAILY_CALL_LIMIT = 8000; // buffer below the 10,000 hard limit
 let _dailyCallCount = 0;
 let _dailyResetDateKST = _todayKST();
 
@@ -747,9 +747,9 @@ exports.getStockChart = async (req, res) => {
 
     // Map frontend range label → { lookback days, KIS period code }
     const rangeMap = {
-      "1d": { days: 1, period: "D" },
-      "1w": { days: 7, period: "W" },
-      "1m": { days: 30, period: "D" },
+      "30d": { days: 30, period: "D" },
+      "30d": { days: 30, period: "D" },
+      "3mo": { days: 100, period: "D" },
       "1y": { days: 365, period: "W" },
     };
 

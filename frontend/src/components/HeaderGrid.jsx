@@ -28,8 +28,8 @@ const HeaderGrid = () => {
     const drawGrid = () => {
       const W = canvas.width, H = canvas.height;
       const cols = 32, rows = 12;
-      ctx.strokeStyle = "hsla(255, 50%, 50%, 0.12)";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = "hsla(255, 36%, 74%, 0.5)";
+      ctx.lineWidth = 0.5;
       for (let c = 0; c <= cols; c++) {
         ctx.beginPath();
         ctx.moveTo((c / cols) * W, 0);
