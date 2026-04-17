@@ -55,10 +55,10 @@ const tabTitleMap = {
 };
 
 const RANGES = [
-  { label: '일', range: '6mo', interval: '1d' },
-  { label: '주', range: '2y', interval: '1wk' },
-  { label: '월', range: '5y', interval: '1mo' },
-  { label: '년', range: '10y', interval: '3mo' },
+  { label: '일', range: '1d', interval: '1d' },
+  { label: '주', range: '1w', interval: '1w' },
+  { label: '월', range: '1m', interval: '1m' },
+  { label: '년', range: '1y', interval: '1y' },
 ];
 
 const Stocks = () => {

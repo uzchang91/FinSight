@@ -21,7 +21,7 @@ const KIS_BASE = KIS_IS_REAL
 // ── Rate limiter: max 5 calls/second ─────────────────────────────────────────
 // KIS personal free-tier hard cap is 20 req/s. We target 5 req/s (200 ms gap)
 // using a sequential promise queue so concurrent callers never burst past it.
-const KIS_MIN_INTERVAL_MS = 400; // 1000 ms / 5 calls
+const KIS_MIN_INTERVAL_MS = 250; // 1000 ms / 5 calls
 let _kisLastCallAt = 0;
 let _kisQueue = Promise.resolve();
 
@@ -693,9 +693,11 @@ exports.getAllStocks = async (req, res) => {
       realResults = [...cachedStocks];
     } else {
       // kisGet() enforces ≤5 req/s automatically — no manual delay needed.
-      for (const code of TOP_100_STOCKS) {
+      const targetStocks = TOP_100_STOCKS.slice(0, 20);
+
+      for (const code of targetStocks) {
         const quote = await getQuoteByCode(code).catch(() => null);
-        if (!quote) continue;
+        if (!quote) continue; // 없는 종목은 무시
 
         realResults.push({
           symbol: code,
@@ -705,32 +707,7 @@ exports.getAllStocks = async (req, res) => {
           rate: Number(quote.regularMarketChangePercent || 0),
           volume: Number(quote.volume || 0),
         });
-        console.log(code)
       }
-      if (cachedStocks && Date.now() - lastFetchTime < CACHE_TTL) {
-        realResults = [...cachedStocks];
-      } else {
-        // 100개를 모두 돌면 40초(400ms * 100)가 걸리므로 
-        // 상위 50개 정도로 제한하거나, 배경에서 따로 업데이트하는 것을 권장합니다.
-        const targetStocks = TOP_100_STOCKS.slice(0, 50);
-
-        for (const code of targetStocks) {
-          const quote = await getQuoteByCode(code);
-          if (!quote) continue; // 없는 종목은 무시
-
-          realResults.push({
-            symbol: code,
-            name: KOR_NAME_MAP[code] || code,
-            price: quote.regularMarketPrice,
-            change: quote.regularMarketChange,
-            rate: quote.regularMarketChangePercent,
-            volume: quote.volume,
-          });
-        }
-        cachedStocks = [...realResults];
-        lastFetchTime = Date.now();
-      }
-
       cachedStocks = [...realResults];
       lastFetchTime = Date.now();
     }
@@ -770,11 +747,10 @@ exports.getStockChart = async (req, res) => {
 
     // Map frontend range label → { lookback days, KIS period code }
     const rangeMap = {
-      "30d": { days: 30, period: "D" },
-      "6mo": { days: 180, period: "D" },
-      "2y": { days: 730, period: "W" },
-      "5y": { days: 1825, period: "M" },
-      "10y": { days: 3650, period: "M" },
+      "1d": { days: 1, period: "D" },
+      "1w": { days: 7, period: "W" },
+      "1m": { days: 30, period: "D" },
+      "1y": { days: 365, period: "W" },
     };
 
     const { days, period } = rangeMap[range] ?? rangeMap["6mo"];
