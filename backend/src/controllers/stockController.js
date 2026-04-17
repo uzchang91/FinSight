@@ -18,9 +18,55 @@ const KIS_BASE = KIS_IS_REAL
   ? "https://openapi.koreainvestment.com:9443"
   : "https://openapivts.koreainvestment.com:29443";
 
+// ── Rate limiter: max 5 calls/second ─────────────────────────────────────────
+// KIS personal free-tier hard cap is 20 req/s. We target 5 req/s (200 ms gap)
+// using a sequential promise queue so concurrent callers never burst past it.
+const KIS_MIN_INTERVAL_MS = 400; // 1000 ms / 5 calls
+let _kisLastCallAt = 0;
+let _kisQueue = Promise.resolve();
+
+function kisRateLimit() {
+  _kisQueue = _kisQueue.then(() => {
+    const now = Date.now();
+    const wait = KIS_MIN_INTERVAL_MS - (now - _kisLastCallAt);
+    if (wait > 0) return new Promise((r) => setTimeout(r, wait));
+  }).then(() => {
+    _kisLastCallAt = Date.now();
+  });
+  return _kisQueue;
+}
+
+// ── Daily call counter ────────────────────────────────────────────────────────
+// KIS personal free-tier: 10,000 calls/day per TR_ID group (resets midnight KST).
+// APP_KEY / APP_SECRET never expire — only the OAuth token does (24 h, auto-refreshed).
+const DAILY_CALL_LIMIT = 5000; // buffer below the 10,000 hard limit
+let _dailyCallCount = 0;
+let _dailyResetDateKST = _todayKST();
+
+function _todayKST() {
+  // Korea Standard Time = UTC+9
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+function checkDailyLimit() {
+  const today = _todayKST();
+  if (_dailyResetDateKST !== today) {
+    console.log(`[KIS] Daily counter reset (${_dailyCallCount} calls yesterday)`);
+    _dailyCallCount = 0;
+    _dailyResetDateKST = today;
+  }
+  if (_dailyCallCount >= DAILY_CALL_LIMIT) {
+    throw new Error(
+      `[KIS] Daily call limit of ${DAILY_CALL_LIMIT} reached. Resets at midnight KST.`
+    );
+  }
+  _dailyCallCount++;
+}
+
 // ── OAuth token cache ────────────────────────────────────────────────────────
 let _kisToken = null;
 let _kisTokenExpiry = 0;
+let _kisTokenInFlight = null;
 
 /**
  * Fetch (or return cached) OAuth2 access token from KIS.
@@ -28,32 +74,42 @@ let _kisTokenExpiry = 0;
  */
 async function getKisToken() {
   const now = Date.now();
+
+  // 1. Return cached token if valid
   if (_kisToken && now < _kisTokenExpiry) return _kisToken;
 
-  const res = await fetch(`${KIS_BASE}/oauth2/tokenP`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      grant_type: "client_credentials",
-      appkey: KIS_APP_KEY,
-      appsecret: KIS_APP_SECRET,
-    }),
-  });
+  // 2. If a request is already in progress, return that same promise
+  if (_kisTokenInFlight) return _kisTokenInFlight;
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`KIS token error ${res.status}: ${text}`);
-  }
+  // 3. Create a new promise for the fetch and store it
+  _kisTokenInFlight = (async () => {
+    try {
+      const res = await fetch(`${KIS_BASE}/oauth2/tokenP`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          grant_type: "client_credentials",
+          appkey: KIS_APP_KEY,
+          appsecret: KIS_APP_SECRET,
+        }),
+      });
 
-  const data = await res.json();
-  if (!data.access_token) {
-    throw new Error(`KIS token missing in response: ${JSON.stringify(data)}`);
-  }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`KIS token error ${res.status}: ${text}`);
+      }
 
-  _kisToken = data.access_token;
-  // expires_in is in seconds; subtract 5-minute safety margin
-  _kisTokenExpiry = now + (Number(data.expires_in || 86400) - 300) * 1000;
-  return _kisToken;
+      const data = await res.json();
+      _kisToken = data.access_token;
+      _kisTokenExpiry = now + (Number(data.expires_in || 86400) - 300) * 1000;
+      return _kisToken;
+    } finally {
+      // Clear the in-flight tracker so future expires/refreshes can trigger
+      _kisTokenInFlight = null;
+    }
+  })();
+
+  return _kisTokenInFlight;
 }
 
 /**
@@ -63,6 +119,9 @@ async function getKisToken() {
  * @param {string} trId   - KIS TR_ID header (identifies the endpoint)
  */
 async function kisGet(path, query = {}, trId) {
+  checkDailyLimit();    // throws if daily quota exhausted
+  await kisRateLimit(); // enforces 5 req/s via sequential promise queue
+
   const token = await getKisToken();
   const url = new URL(`${KIS_BASE}${path}`);
   for (const [k, v] of Object.entries(query)) {
@@ -77,9 +136,21 @@ async function kisGet(path, query = {}, trId) {
       appkey: KIS_APP_KEY,
       appsecret: KIS_APP_SECRET,
       tr_id: trId,
-      custtype: "P", // P = personal account
+      custtype: "P",
     },
   });
+
+  // EGW00201 = per-second rate limit hit despite our limiter (e.g. server clock skew).
+  // Retry once after 1 s before giving up.
+  if (res.status === 500) {
+    const body = await res.json().catch(() => ({}));
+    if (body?.msg_cd === "EGW00201") {
+      console.warn(`[KIS] Rate limit hit (EGW00201) on ${path} — retrying in 1 s`);
+      await new Promise((r) => setTimeout(r, 1000));
+      return kisGet(path, query, trId); // single retry
+    }
+    throw new Error(`KIS ${path} failed 500: ${JSON.stringify(body)}`);
+  }
 
   if (!res.ok) {
     const text = await res.text();
@@ -104,6 +175,14 @@ async function kisGet(path, query = {}, trId) {
  *   prdy_ctrt – 전일 대비율  (change %, e.g. "1.23")
  *   acml_vol  – 누적 거래량  (accumulated volume)
  */
+
+function normalizeStockCode(value) {
+  if (!value) return "000000";
+  // Strip Yahoo suffixes (.KS, .KQ) and take the first 6 digits
+  const cleanCode = String(value).split('.')[0].trim().replace(/^[^0-9]+/, '');
+  return cleanCode.padStart(6, "0");
+}
+
 async function getQuoteByCode(stockCode) {
   const code = normalizeStockCode(stockCode);
   const trId = KIS_IS_REAL ? "FHKST01010100" : "VHKST01010100";
@@ -242,10 +321,6 @@ function extractMemberId(req) {
     null;
   const memberId = Number(rawId);
   return Number.isInteger(memberId) && memberId > 0 ? memberId : null;
-}
-
-function normalizeStockCode(value) {
-  return String(value || "").trim().padStart(6, "0");
 }
 
 // ── DB helpers ────────────────────────────────────────────────────────────────
@@ -500,45 +575,67 @@ async function checkAndGrantStockAchievements(memberId, context = {}) {
 }
 
 // ── Stock metadata ────────────────────────────────────────────────────────────
+// Exchange legend:
+//   KOSPI  – Korea Stock Exchange main board  (FID_COND_MRKT_DIV_CODE: "J")
+//   KOSDAQ – Korea tech/growth board          (FID_COND_MRKT_DIV_CODE: "Q")
+//
+// ⚠️  VTS (virtual trading server, KIS_IS_REAL=false) only supports KOSPI.
+//     KOSDAQ codes will return "없는 서비스 코드" on VTS — they are filtered
+//     out of TOP_100_STOCKS automatically when running in virtual mode.
 
 const KOR_NAME_MAP = {
+  // ── KOSPI ──────────────────────────────────────────────────────────────────
   "005930": "삼성전자", "000660": "SK하이닉스", "373220": "LG에너지솔루션",
   "207940": "삼성바이오로직스", "005380": "현대차", "000270": "기아",
-  "068270": "셀트리온", "005490": "POSCO홀딩스", "035420": "NAVER",
-  "003670": "포스코퓨처엠", "051910": "LG화학", "012330": "현대모비스",
-  "028260": "삼성물산", "035720": "카카오", "105560": "KB금융",
+  "068270": "셀트리온", "005490": "POSCO홀딩스", "051910": "LG화학",
+  "012330": "현대모비스", "028260": "삼성물산", "105560": "KB금융",
   "055550": "신한지주", "066570": "LG전자", "032830": "삼성생명",
   "096770": "SK이노베이션", "034730": "SK", "015760": "한국전력",
   "033780": "KT&G", "009150": "삼성전기", "017670": "SK텔레콤",
   "011200": "HMM", "018260": "삼성SDS", "316140": "우리금융지주",
-  "010130": "고려아연", "042700": "한미반도체", "003550": "LG",
-  "086520": "에코프로", "000810": "삼성화재", "010950": "S-Oil",
-  "051900": "LG생활건강", "323410": "카카오뱅크", "329180": "HD현대중공업",
-  "011170": "롯데케미칼", "161390": "한국타이어앤테크놀로지", "011070": "LG이노텍",
-  "004020": "현대제철", "047050": "포스코인터내셔널", "005830": "DB손해보험",
-  "090430": "아모레퍼시픽", "241560": "두산밥캣", "024110": "기업은행",
-  "008770": "호텔신라", "001450": "현대해상", "029780": "삼성카드",
-  "000100": "유한양행", "001440": "대한전선", "006400": "삼성SDI",
-  "247540": "에코프로비엠", "028300": "HLB", "066970": "엘앤에프",
-  "352820": "하이브", "036570": "엔씨소프트", "259960": "크래프톤",
-  "012450": "한화에어로스페이스", "042660": "한화오션", "010140": "삼성중공업",
-  "009830": "한화솔루션", "000880": "한화", "028050": "팬오션",
-  "078930": "GS", "377300": "카카오페이", "322310": "현대오토에버",
+  "010130": "고려아연", "003550": "LG", "000810": "삼성화재",
+  "010950": "S-Oil", "051900": "LG생활건강", "329180": "HD현대중공업",
+  "011170": "롯데케미칼", "161390": "한국타이어앤테크놀로지", "004020": "현대제철",
+  "047050": "포스코인터내셔널", "005830": "DB손해보험", "090430": "아모레퍼시픽",
+  "241560": "두산밥캣", "024110": "기업은행", "008770": "호텔신라",
+  "001450": "현대해상", "029780": "삼성카드", "000100": "유한양행",
+  "001440": "대한전선", "006400": "삼성SDI", "012450": "한화에어로스페이스",
+  "042660": "한화오션", "010140": "삼성중공업", "009830": "한화솔루션",
+  "000880": "한화", "028050": "팬오션", "078930": "GS",
   "047810": "한국항공우주", "272210": "한화시스템", "003490": "대한항공",
   "000120": "CJ대한통운", "097950": "CJ제일제당", "001040": "CJ",
   "004990": "롯데지주", "023530": "롯데쇼핑", "007070": "GS리테일",
-  "139480": "이마트", "006800": "미래에셋증권", "039490": "키움증권",
-  "016360": "삼성증권", "005940": "NH투자증권", "031430": "신세계",
+  "139480": "이마트", "006800": "미래에셋증권", "016360": "삼성증권",
+  "005940": "NH투자증권", "031430": "신세계", "128940": "한미약품",
+  "002380": "KCC", "000080": "하이트진로", "030200": "KT",
+  "032640": "LG유플러스", "008930": "한미사이언스",
+
+  // ── KOSDAQ ─────────────────────────────────────────────────────────────────
+  // ⚠️  These fail on VTS (virtual server) — only work with KIS_IS_REAL=true
+  "035420": "NAVER", "035720": "카카오", "003670": "포스코퓨처엠",
+  "086520": "에코프로", "323410": "카카오뱅크", "011070": "LG이노텍",
+  "042700": "한미반도체", "247540": "에코프로비엠", "028300": "HLB",
+  "066970": "엘앤에프", "352820": "하이브", "036570": "엔씨소프트",
+  "259960": "크래프톤", "377300": "카카오페이", "322310": "현대오토에버",
   "145020": "휴젤", "214150": "클래시스", "196170": "알테오젠",
   "035900": "JYP Ent.", "041510": "에스엠", "122870": "와이지엔터테인먼트",
   "293490": "카카오게임즈", "263750": "펄어비스", "112040": "위메이드",
-  "008930": "한미사이언스", "128940": "한미약품", "002380": "KCC",
   "011790": "SKC", "014680": "한솔케미칼", "298380": "에코프로머티",
-  "020150": "일진머티리얼즈", "000080": "하이트진로", "030200": "KT",
-  "032640": "LG유플러스",
+  "020150": "일진머티리얼즈", "039490": "키움증권",
 };
 
-const TOP_100_STOCKS = Object.keys(KOR_NAME_MAP);
+// Stocks confirmed on KOSDAQ — filtered out automatically in VTS mode
+const KOSDAQ_CODES = new Set([
+  "035420", "035720", "003670", "086520", "323410", "011070", "042700",
+  "247540", "028300", "066970", "352820", "036570", "259960", "377300",
+  "322310", "145020", "214150", "196170", "035900", "041510", "122870",
+  "293490", "263750", "112040", "011790", "014680", "298380", "020150", "039490",
+]);
+
+// In VTS mode only KOSPI is supported, so exclude KOSDAQ codes entirely
+const TOP_100_STOCKS = KIS_IS_REAL
+  ? Object.keys(KOR_NAME_MAP)
+  : Object.keys(KOR_NAME_MAP).filter((code) => !KOSDAQ_CODES.has(code));
 
 // ── Stock list cache (5 min TTL) ──────────────────────────────────────────────
 let cachedStocks = null;
@@ -549,6 +646,8 @@ const CACHE_TTL = 5 * 60 * 1000;
    1) 전체 종목 / 검색 / 인기 / 상승 / 하락
    ========================================================================== */
 exports.getAllStocks = async (req, res) => {
+  // Rate limiting (5 req/s) and daily quota are enforced inside kisGet()
+  // via the module-level kisRateLimit() and checkDailyLimit() functions.
   try {
     const { type = "popular", keyword = "" } = req.query;
 
@@ -593,11 +692,10 @@ exports.getAllStocks = async (req, res) => {
     if (cachedStocks && Date.now() - lastFetchTime < CACHE_TTL) {
       realResults = [...cachedStocks];
     } else {
-      // KIS free tier allows ~20 req/sec.
-      // Fetch sequentially with a 60 ms gap to stay safely under the limit.
+      // kisGet() enforces ≤5 req/s automatically — no manual delay needed.
       for (const code of TOP_100_STOCKS) {
         const quote = await getQuoteByCode(code).catch(() => null);
-        if (!quote) { await new Promise((r) => setTimeout(r, 60)); continue; }
+        if (!quote) continue;
 
         realResults.push({
           symbol: code,
@@ -607,8 +705,30 @@ exports.getAllStocks = async (req, res) => {
           rate: Number(quote.regularMarketChangePercent || 0),
           volume: Number(quote.volume || 0),
         });
+        console.log(code)
+      }
+      if (cachedStocks && Date.now() - lastFetchTime < CACHE_TTL) {
+        realResults = [...cachedStocks];
+      } else {
+        // 100개를 모두 돌면 40초(400ms * 100)가 걸리므로 
+        // 상위 50개 정도로 제한하거나, 배경에서 따로 업데이트하는 것을 권장합니다.
+        const targetStocks = TOP_100_STOCKS.slice(0, 50);
 
-        await new Promise((r) => setTimeout(r, 60));
+        for (const code of targetStocks) {
+          const quote = await getQuoteByCode(code);
+          if (!quote) continue; // 없는 종목은 무시
+
+          realResults.push({
+            symbol: code,
+            name: KOR_NAME_MAP[code] || code,
+            price: quote.regularMarketPrice,
+            change: quote.regularMarketChange,
+            rate: quote.regularMarketChangePercent,
+            volume: quote.volume,
+          });
+        }
+        cachedStocks = [...realResults];
+        lastFetchTime = Date.now();
       }
 
       cachedStocks = [...realResults];
