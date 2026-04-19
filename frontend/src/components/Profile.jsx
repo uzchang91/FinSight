@@ -3,17 +3,6 @@ import { useThemeStore } from '../store/useThemeStore'
 import ReactDOM from 'react-dom'
 import './Profile.css'
 
-import Notification from '../assets/icons/notification.svg?react'
-import Edit from '../assets/icons/edit.svg?react'
-import Mode from '../assets/icons/mode.svg?react'
-import Account from '../assets/icons/account.svg?react'
-import Logout from '../assets/icons/logout.svg?react'
-import Spread from '../assets/icons/spread.svg?react'
-import Premium from '../assets/icons/premium.svg?react'
-import defaultProfile from '../assets/chicken running machine.png'
-import { getAchievementIcon } from '../utils/achievementIconMap'
-import { api, API_BASE_URL } from '../config/api'
-
 import PointHistoryPanel from './PointHistoryPanel'
 import AchievementsPanel from './AchievementsPanel'
 import {
@@ -24,6 +13,17 @@ import {
   formatNumber, formatSignedPercent, formatNoticeDate,
   getTooltipText,
 } from './profileUtils'
+
+import Notification from '../assets/icons/notification.svg?react'
+import Edit from '../assets/icons/edit.svg?react'
+import Mode from '../assets/icons/mode.svg?react'
+import Account from '../assets/icons/account.svg?react'
+import Logout from '../assets/icons/logout.svg?react'
+import Spread from '../assets/icons/spread.svg?react'
+import Premium from '../assets/icons/premium.svg?react'
+import defaultProfile from '../assets/chicken running machine.png'
+import { getAchievementIcon } from '../utils/achievementIconMap'
+import { api, API_BASE_URL } from '../config/api'
 
 // ─── Profile ─────────────────────────────────────────────────────────────────
 
