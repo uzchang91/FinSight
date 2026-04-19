@@ -14,8 +14,8 @@ import defaultProfile from '../assets/chicken running machine.png'
 import { getAchievementIcon } from '../utils/achievementIconMap'
 import { api, API_BASE_URL } from '../config/api'
 
-import PointHistoryPanel from './PointHistoryPanel.jsx'
-import AchievementsPanel from './AchievementsPanel.jsx'
+import PointHistoryPanel from './PointHistoryPanel'
+import AchievementsPanel from './AchievementsPanel'
 import {
   extractArrayData, extractObjectData,
   normalizeOwnedStocks, normalizeLikedStocks, normalizeRecentAchievements,
