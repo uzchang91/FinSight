@@ -193,18 +193,17 @@ const Landing = ({ setPage }) => {
               <p>FAQ</p>
             </button>
 
-            <button
-              type='button'
-              className='landing-navigation-menu'
-              onClick={toggleTheme}
-            >
-              <Mode alt='change mode' className='landing-menu' />
-              <p>테마</p>
-            </button>
           </div>
         </div>
 
         <div className='floating-nav'>
+          <button
+            type='button'
+            className='landing-navigation-menu'
+            onClick={toggleTheme}
+          >
+            <Mode alt='change mode' className='landing-menu' />
+          </button>
           <button className='kakao_btn' onClick={handleKakaoLogin}>
             <Kakao alt='카카오' />
             <span>로그인</span>

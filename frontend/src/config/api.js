@@ -5,6 +5,35 @@ function getToken() {
   return localStorage.getItem('token')
 }
 
+// ── Auth-expiry guard ─────────────────────────────────────────────────────────
+// A 401 during the first seconds after login is a race condition (token not yet
+// propagated), not a genuine expiry. We require two 401s within a short window
+// before treating the session as expired. This prevents a single bad request
+// from nuking a freshly-created session.
+let _firstFailedAt = 0
+const AUTH_FAIL_WINDOW_MS = 5000   // two 401s must occur within 5 s
+const LOGIN_GRACE_MS      = 3000   // ignore all 401s for 3 s after token is set
+
+function shouldExpireSession() {
+  const token = getToken()
+  if (!token) return false  // already gone, nothing to do
+
+  // If the token was just written (OAuth callback), ignore the 401 entirely
+  const tokenAge = Date.now() - Number(localStorage.getItem('token_set_at') || 0)
+  if (tokenAge < LOGIN_GRACE_MS) return false
+
+  const now = Date.now()
+  if (now - _firstFailedAt > AUTH_FAIL_WINDOW_MS) {
+    // First failure in a new window — record it but don't expire yet
+    _firstFailedAt = now
+    return false
+  }
+
+  // Second failure inside the window — genuine expiry
+  _firstFailedAt = 0
+  return true
+}
+
 async function request(path, options = {}) {
   const token = getToken()
 
@@ -32,12 +61,16 @@ async function request(path, options = {}) {
   const newToken = response.headers.get('x-new-token')
   if (newToken) {
     localStorage.setItem('token', newToken)
+    localStorage.setItem('token_set_at', String(Date.now()))
   }
 
-  // 토큰 만료 / 인증 실패 → 이벤트로 알리고 throw (hard redirect 금지 — React 상태 파괴함)
+  // 토큰 만료 / 인증 실패 → 연속 두 번 실패 시에만 세션 종료
   if (response.status === 401) {
-    localStorage.removeItem('token')
-    window.dispatchEvent(new CustomEvent('auth:expired'))
+    if (shouldExpireSession()) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('token_set_at')
+      window.dispatchEvent(new CustomEvent('auth:expired'))
+    }
     throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.')
   }
 
@@ -75,4 +108,3 @@ export const api = {
       ...(body ? { body: JSON.stringify(body) } : {}),
     }),
 }
-

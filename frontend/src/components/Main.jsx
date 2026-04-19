@@ -182,6 +182,9 @@ const Main = () => {
 
     // api.js 가 401 을 받으면 hard-redirect 대신 이 이벤트를 발생시킴
     const handleAuthExpired = () => {
+      // Token may have already been refreshed by the time this event fires.
+      // Only redirect if the token is genuinely gone.
+      if (localStorage.getItem('token')) return
       window.location.hash = ''
       window.location.href = '/'
     }

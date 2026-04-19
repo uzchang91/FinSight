@@ -20,14 +20,23 @@ function App() {
     const tokenFromUrl = urlParams.get('token')
 
     if (tokenFromUrl) {
+      // Token must be in localStorage BEFORE replaceState, because replaceState
+      // can fire a hashchange event in some browsers, which syncFromHash reads.
       localStorage.setItem('token', tokenFromUrl)
+      localStorage.setItem('token_set_at', String(Date.now()))  // grace-period stamp for api.js
 
-      // 쿼리스트링만 제거 (hash 는 그대로 유지)
+      // Suppress the synthetic hashchange that replaceState triggers
+      let ignoreNextHashChange = true
+      const guardedHashHandler = () => {
+        if (ignoreNextHashChange) { ignoreNextHashChange = false; return }
+      }
+      window.addEventListener('hashchange', guardedHashHandler, { once: true })
+
+      // Clean query string (keep hash intact)
       const cleanUrl =
         window.location.origin + window.location.pathname + window.location.hash
       window.history.replaceState({}, document.title, cleanUrl)
 
-      // 토큰이 방금 저장됐으므로 바로 main 으로 — 아래 분기로 내려가지 않음
       setPage('main')
       return
     }

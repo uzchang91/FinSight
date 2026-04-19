@@ -22,7 +22,7 @@
   --warning-highlight: color-mix(in oklab, var(--warning) 12%, var(--bg));
   --warning-highlight-2: color-mix(in oklab, var(--warning) 4%, var(--bg));
 
-  --box-bg: color-mix(in oklab, var(--bg) 96%, var(--text));
+  --box-bg: color-mix(color-mix(in oklab, var(--bg) 96%, var(--text)), transparent);
   --box-bg-2: color-mix(in oklab, var(--bg) 98%, var(--text));
   --box-prim: color-mix(in oklab, var(--primary) 8%, transparent);
   --text-trans: color-mix(in oklab, var(--text2) 64%, transparent);

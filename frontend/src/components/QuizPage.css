@@ -80,12 +80,13 @@
   min-width: 180px;
   box-sizing: border-box;
 
-  background: transparent;
+  background: var(--bg-trans);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
   color: var(--text);
+  backdrop-filter: blur(0.2rem);
 }
 
 .quiz-keyword-input:focus {

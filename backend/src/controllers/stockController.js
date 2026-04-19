@@ -9,156 +9,9 @@ const achievementService = require("../services/achievementService");
      KIS_IS_REAL      – set to "true" for real market, omit/false for virtual
    ========================================================================== */
 
-const KIS_APP_KEY = process.env.KIS_APP_KEY || "";
-const KIS_APP_SECRET = process.env.KIS_APP_SECRET || "";
-const KIS_IS_REAL = process.env.KIS_IS_REAL === "true";
-
-// Real vs virtual trading server base URLs
-const KIS_BASE = KIS_IS_REAL
-  ? "https://openapi.koreainvestment.com:9443"
-  : "https://openapivts.koreainvestment.com:29443";
-
-// ── Rate limiter: max 5 calls/second ─────────────────────────────────────────
-// KIS personal free-tier hard cap is 20 req/s. We target 5 req/s (200 ms gap)
-// using a sequential promise queue so concurrent callers never burst past it.
-const KIS_MIN_INTERVAL_MS = 250; // 1000 ms / 5 calls
-let _kisLastCallAt = 0;
-let _kisQueue = Promise.resolve();
-
-function kisRateLimit() {
-  _kisQueue = _kisQueue.then(() => {
-    const now = Date.now();
-    const wait = KIS_MIN_INTERVAL_MS - (now - _kisLastCallAt);
-    if (wait > 0) return new Promise((r) => setTimeout(r, wait));
-  }).then(() => {
-    _kisLastCallAt = Date.now();
-  });
-  return _kisQueue;
-}
-
-// ── Daily call counter ────────────────────────────────────────────────────────
-// KIS personal free-tier: 10,000 calls/day per TR_ID group (resets midnight KST).
-// APP_KEY / APP_SECRET never expire — only the OAuth token does (24 h, auto-refreshed).
-const DAILY_CALL_LIMIT = 8000; // buffer below the 10,000 hard limit
-let _dailyCallCount = 0;
-let _dailyResetDateKST = _todayKST();
-
-function _todayKST() {
-  // Korea Standard Time = UTC+9
-  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
-}
-
-function checkDailyLimit() {
-  const today = _todayKST();
-  if (_dailyResetDateKST !== today) {
-    console.log(`[KIS] Daily counter reset (${_dailyCallCount} calls yesterday)`);
-    _dailyCallCount = 0;
-    _dailyResetDateKST = today;
-  }
-  if (_dailyCallCount >= DAILY_CALL_LIMIT) {
-    throw new Error(
-      `[KIS] Daily call limit of ${DAILY_CALL_LIMIT} reached. Resets at midnight KST.`
-    );
-  }
-  _dailyCallCount++;
-}
-
-// ── OAuth token cache ────────────────────────────────────────────────────────
-let _kisToken = null;
-let _kisTokenExpiry = 0;
-let _kisTokenInFlight = null;
-
-/**
- * Fetch (or return cached) OAuth2 access token from KIS.
- * Tokens are valid for ~24 h; we refresh 5 minutes early.
- */
-async function getKisToken() {
-  const now = Date.now();
-
-  // 1. Return cached token if valid
-  if (_kisToken && now < _kisTokenExpiry) return _kisToken;
-
-  // 2. If a request is already in progress, return that same promise
-  if (_kisTokenInFlight) return _kisTokenInFlight;
-
-  // 3. Create a new promise for the fetch and store it
-  _kisTokenInFlight = (async () => {
-    try {
-      const res = await fetch(`${KIS_BASE}/oauth2/tokenP`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          grant_type: "client_credentials",
-          appkey: KIS_APP_KEY,
-          appsecret: KIS_APP_SECRET,
-        }),
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`KIS token error ${res.status}: ${text}`);
-      }
-
-      const data = await res.json();
-      _kisToken = data.access_token;
-      _kisTokenExpiry = now + (Number(data.expires_in || 86400) - 300) * 1000;
-      return _kisToken;
-    } finally {
-      // Clear the in-flight tracker so future expires/refreshes can trigger
-      _kisTokenInFlight = null;
-    }
-  })();
-
-  return _kisTokenInFlight;
-}
-
-/**
- * Generic KIS REST GET call.
- * @param {string} path   - API path, e.g. "/uapi/domestic-stock/v1/quotations/inquire-price"
- * @param {object} query  - URL query parameters
- * @param {string} trId   - KIS TR_ID header (identifies the endpoint)
- */
-async function kisGet(path, query = {}, trId) {
-  checkDailyLimit();    // throws if daily quota exhausted
-  await kisRateLimit(); // enforces 5 req/s via sequential promise queue
-
-  const token = await getKisToken();
-  const url = new URL(`${KIS_BASE}${path}`);
-  for (const [k, v] of Object.entries(query)) {
-    url.searchParams.set(k, String(v));
-  }
-
-  const res = await fetch(url.toString(), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      appkey: KIS_APP_KEY,
-      appsecret: KIS_APP_SECRET,
-      tr_id: trId,
-      custtype: "P",
-    },
-  });
-
-  // EGW00201 = per-second rate limit hit despite our limiter (e.g. server clock skew).
-  // Retry once after 1 s before giving up.
-  if (res.status === 500) {
-    const body = await res.json().catch(() => ({}));
-    if (body?.msg_cd === "EGW00201") {
-      console.warn(`[KIS] Rate limit hit (EGW00201) on ${path} — retrying in 1 s`);
-      await new Promise((r) => setTimeout(r, 1000));
-      return kisGet(path, query, trId); // single retry
-    }
-    throw new Error(`KIS ${path} failed 500: ${JSON.stringify(body)}`);
-  }
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`KIS ${path} failed ${res.status}: ${text}`);
-  }
-
-  return res.json();
-}
+// ── KIS infrastructure (token, rate-limiter, daily counter) ──────────────────
+// All shared with rankingController via Node's module cache.
+const { kisGet, getQuoteByCode: _getQuoteByCode, normalizeStockCode: _normalizeStockCode, KIS_IS_REAL } = require("./kisClient");
 
 // ── KIS market data helpers ──────────────────────────────────────────────────
 
@@ -177,45 +30,11 @@ async function kisGet(path, query = {}, trId) {
  */
 
 function normalizeStockCode(value) {
-  if (!value) return "000000";
-  // Strip Yahoo suffixes (.KS, .KQ) and take the first 6 digits
-  const cleanCode = String(value).split('.')[0].trim().replace(/^[^0-9]+/, '');
-  return cleanCode.padStart(6, "0");
+  return _normalizeStockCode(value);
 }
 
 async function getQuoteByCode(stockCode) {
-  const code = normalizeStockCode(stockCode);
-  const trId = KIS_IS_REAL ? "FHKST01010100" : "VHKST01010100";
-
-  try {
-    const data = await kisGet(
-      "/uapi/domestic-stock/v1/quotations/inquire-price",
-      {
-        FID_COND_MRKT_DIV_CODE: "J", // J = domestic stock (KOSPI + KOSDAQ)
-        FID_INPUT_ISCD: code,
-      },
-      trId
-    );
-
-    if (data?.rt_cd !== "0") {
-      console.warn(`KIS quote non-zero rt_cd for ${code}:`, data?.msg1);
-      return null;
-    }
-
-    const o = data?.output ?? {};
-    const price = Number(o.stck_prpr || 0);
-    if (price <= 0) return null;
-
-    return {
-      regularMarketPrice: price,
-      regularMarketChange: Number(o.prdy_vrss || 0),
-      regularMarketChangePercent: Number(o.prdy_ctrt || 0),
-      volume: Number(o.acml_vol || 0),
-    };
-  } catch (err) {
-    console.error(`getQuoteByCode(${code}) error:`, err.message);
-    return null;
-  }
+  return _getQuoteByCode(stockCode);
 }
 
 /**
@@ -1128,3 +947,6 @@ exports.sellStock = async (req, res) => {
     if (conn) conn.release();
   }
 };
+// ── Shared KIS helpers re-exported for other controllers ─────────────────────
+exports.getQuoteByCode    = _getQuoteByCode;
+exports.normalizeStockCode = _normalizeStockCode;

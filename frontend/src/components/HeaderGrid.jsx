@@ -1,63 +1,74 @@
 import { useEffect, useRef } from "react";
 import "./HeaderGrid.css";
 
+const COLS = 32;
+const ROWS = 12;
+
 const HeaderGrid = () => {
-  const gridRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = gridRef.current;
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let animId;
-    let t = 0;
 
-    const resize = () => {
+    const setup = () => {
       const dpr = window.devicePixelRatio || 1;
-      const { innerWidth: width, innerHeight: height } = window;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
 
-      // Set the internal resolution (drawing buffer)
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      // Physical pixel buffer
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
 
-      // Scale the context so your drawing coordinates (0 to innerWidth) still work
-      ctx.scale(dpr, dpr);
+      // Reset transform before re-scaling to avoid stacking DPR on resize
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      draw(w, h);
     };
-    resize();
-    window.addEventListener("resize", resize);
 
-    // ── Grid ─────────────────────────────────────────────
-    const drawGrid = () => {
-      const W = canvas.width, H = canvas.height;
-      const cols = 32, rows = 12;
+    const draw = (w, h) => {
+      ctx.clearRect(0, 0, w, h);
+
+      // Compute responsive column/row counts so cells stay square-ish
+      const cellSize = Math.round(w / COLS);        // target cell width
+      const cols = COLS;
+      const rows = ROWS;
+
       ctx.strokeStyle = "hsla(255, 36%, 74%, 0.5)";
       ctx.lineWidth = 0.5;
+
       for (let c = 0; c <= cols; c++) {
+        const x = Math.round((c / cols) * w) + 0.5;
         ctx.beginPath();
-        ctx.moveTo((c / cols) * W, 0);
-        ctx.lineTo((c / cols) * W, H);
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
         ctx.stroke();
       }
+
       for (let r = 0; r <= rows; r++) {
+        const y = Math.round((r / rows) * h) + 0.5;
         ctx.beginPath();
-        ctx.moveTo(0, (r / rows) * H);
-        ctx.lineTo(W, (r / rows) * H);
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
         ctx.stroke();
       }
     };
 
-    const draw = () => {
-      t += 0.02;
-      drawGrid();
+    let rafId;
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(setup);
     };
 
-    draw();
-
+    setup();
+    window.addEventListener("resize", onResize);
     return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
-  return <canvas ref={gridRef} className="header-canvas" />;
+  return <canvas ref={canvasRef} className="header-canvas" />;
 };
 
 export default HeaderGrid;

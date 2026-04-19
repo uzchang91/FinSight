@@ -98,7 +98,6 @@ const Stocks = () => {
   const [ownedStocks, setOwnedStocks] = useState([]);
   const [likedStocks, setLikedStocks] = useState([]);
   const [likedCodeSet, setLikedCodeSet] = useState(new Set());
-  const [sideTab, setSideTab] = useState('owned');
   const [sparklineMap, setSparklineMap] = useState({});
   const [sparklineWidths, setSparklineWidths] = useState({});
   const sparklineRefs = React.useRef({});
@@ -840,7 +839,7 @@ const Stocks = () => {
 
                   return (
                     <div key={stockCode} className='stock-item-wrap'
-                          onClick={() => handleStockClick(stockCode)}
+                      onClick={() => handleStockClick(stockCode)}
                     >
                       <div className='stocks-list-item'>
                         <div className='stock-info-clickable'>
